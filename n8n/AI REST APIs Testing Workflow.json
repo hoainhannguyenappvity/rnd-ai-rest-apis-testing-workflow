@@ -10,8 +10,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        0,
-        48
+        -400,
+        336
       ],
       "id": "7526f780-ce26-46cf-ba2f-7e73bfbe5179",
       "name": "Webhook",
@@ -24,8 +24,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        224,
-        48
+        -176,
+        336
       ],
       "id": "2d9d5daf-560f-4abf-93b9-f61434405af6",
       "name": "UUID"
@@ -37,8 +37,8 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        448,
-        48
+        48,
+        336
       ],
       "id": "f1620739-19f4-4328-ba2c-0d6848162e1f",
       "name": "Execute Codex Prompt"
@@ -46,25 +46,98 @@
     {
       "parameters": {
         "sendTo": "hoainhaannguyen@gmail.com",
-        "subject": "Codex API Testing Workflow",
-        "message": "={{ $json.stdout }}",
-        "options": {}
+        "subject": "=REST APIs Testing {{ $now.format('dd/LL/yyyy h:mm:ss a') }}",
+        "message": "={{ $json.data }}",
+        "options": {
+          "appendAttribution": true,
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {
+                "property": "=summary,test-results,recommendations"
+              }
+            ]
+          }
+        }
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        672,
-        -48
+        1168,
+        336
       ],
       "id": "ad946d7b-a697-48bb-a86c-1cbaadf94a35",
       "name": "Send a message",
       "webhookId": "733b6fc0-fdfa-411c-8a70-fff2938bfe7a",
+      "executeOnce": false,
       "credentials": {
         "gmailOAuth2": {
           "id": "tlS2tP7X2B1KvXCg",
           "name": "Gmail account"
         }
-      }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "fileSelector": "./reports/summary.md",
+        "options": {
+          "dataPropertyName": "summary"
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        272,
+        48
+      ],
+      "id": "85c70fa8-df52-45d0-9018-4e8fecc5b4b1",
+      "name": "Read Summary File from Disk"
+    },
+    {
+      "parameters": {
+        "fileSelector": "./reports/recommendations.md",
+        "options": {
+          "dataPropertyName": "recommendations"
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        496,
+        504
+      ],
+      "id": "35240e27-4093-463a-8e89-ef1cfdde8dad",
+      "name": "Read Recommendations File from Disk"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "binaryPropertyName": "summary",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        496,
+        0
+      ],
+      "id": "11457582-5fb8-42cc-a456-6f84f960a89c",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "mode": "markdownToHtml",
+        "markdown": "={{ $json.data }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        720,
+        0
+      ],
+      "id": "c43267cf-6e0a-4d51-b251-a701b8f9dea9",
+      "name": "Markdown"
     },
     {
       "parameters": {
@@ -83,14 +156,14 @@
           "cachedResultUrl": "https://teams.cloud.microsoft/l/channel/19%3AKhGX9jZOR_wDXqvq-EtbXw4gnvZYSAnr6ZDhQpNiaBw1%40thread.tacv2/RnD%20Discussion?groupId=05432cd9-d2b3-4e44-8212-28405f17eba4&tenantId=bfe53760-c13f-4271-9e14-60cf6e1727b8&allowXTenantAccess=True&ngc=True"
         },
         "contentType": "html",
-        "message": "={{ $json.stdout }}",
+        "message": "={{ $json.data }}",
         "options": {}
       },
       "type": "n8n-nodes-base.microsoftTeams",
       "typeVersion": 2,
       "position": [
-        672,
-        144
+        944,
+        -48
       ],
       "id": "73a2475c-83bb-4243-bcc6-43ef4323e493",
       "name": "Create message",
@@ -100,7 +173,69 @@
           "id": "x9gWBs65kuWF62zf",
           "name": "Microsoft Teams account"
         }
-      }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        496,
+        288
+      ],
+      "id": "c2ce1f19-6931-45e2-9f50-7ea1bb820bbd",
+      "name": "Merge Summary and Test Results"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        720,
+        384
+      ],
+      "id": "1cf60205-04eb-48a2-aace-de78fa99898d",
+      "name": "Merge All Files"
+    },
+    {
+      "parameters": {
+        "fileSelector": "./reports/test-results.md",
+        "options": {
+          "dataPropertyName": "test-results"
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        272,
+        336
+      ],
+      "id": "77c0edb8-9c67-4d65-b49f-5ac00986c78f",
+      "name": "Read Test Results File from Disk"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        944,
+        336
+      ],
+      "id": "e997bd9f-218b-406f-8f1e-157c84df0040",
+      "name": "Merge Files and Summary in HTML"
     }
   ],
   "pinData": {},
@@ -129,12 +264,121 @@
     },
     "Execute Codex Prompt": {
       "main": [
-        []
+        [
+          {
+            "node": "Read Summary File from Disk",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Test Results File from Disk",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Recommendations File from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
-    "Create message": {
+    "Read Summary File from Disk": {
       "main": [
-        []
+        [
+          {
+            "node": "Merge Summary and Test Results",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Recommendations File from Disk": {
+      "main": [
+        [
+          {
+            "node": "Merge All Files",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Markdown": {
+      "main": [
+        [
+          {
+            "node": "Create message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge Files and Summary in HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Summary and Test Results": {
+      "main": [
+        [
+          {
+            "node": "Merge All Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge All Files": {
+      "main": [
+        [
+          {
+            "node": "Merge Files and Summary in HTML",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Read Test Results File from Disk": {
+      "main": [
+        [
+          {
+            "node": "Merge Summary and Test Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Files and Summary in HTML": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
@@ -142,7 +386,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "e3ac2527-b02a-4826-bdd0-35b7d9fbd543",
+  "versionId": "89a1a790-0ece-4f9e-a578-ba7a8dcdc97f",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "d0a98d1883d50ab1fb11f1c2089250d1d7492821be2ab8133be1cc4d824c5a45"

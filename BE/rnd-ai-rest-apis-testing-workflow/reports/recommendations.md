@@ -1,4 +1,4 @@
 # Recommendations
 
-- Return a JSON error payload (and consider HTTP 405) for unsupported methods on `/ping` to keep error handling consistent for clients expecting JSON.
-- Add an automated healthcheck test to CI that asserts `/ping` returns 2xx with the expected JSON body after deployments.
+- Return a JSON error payload for unsupported methods on `/ping` (consider HTTP 405 and an `Allow` header) to keep error handling consistent for API clients.
+- Add a lightweight CI healthcheck that asserts `/ping` responds with 2xx and JSON `{"success":true,"data":"pong"}` after deployments.
