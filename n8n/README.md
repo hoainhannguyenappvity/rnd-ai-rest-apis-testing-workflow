@@ -13,7 +13,7 @@ npm i -g n8n
 Run below command in **Command Prompt**
 
 ```bash
-set NODES_EXCLUDE="[]" && set NODE_FUNCTION_ALLOW_EXTERNAL=uuid && n8n
+set NODES_EXCLUDE="[]" && set NODE_FUNCTION_ALLOW_EXTERNAL=uuid && set N8N_RESTRICT_FILE_ACCESS_TO="" && n8n
 ```
 
 ## Import workflow

@@ -32,7 +32,7 @@
     },
     {
       "parameters": {
-        "command": "=codex exec \"{{ $json.body.prompt }}\""
+        "command": "=codex exec \"$(cat prompt.md)\" --sandbox=danger-full-access"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -129,18 +129,7 @@
     },
     "Execute Codex Prompt": {
       "main": [
-        [
-          {
-            "node": "Create message",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Send a message",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Create message": {
@@ -153,7 +142,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "2235f580-1aac-4b80-a033-64252226dd12",
+  "versionId": "e3ac2527-b02a-4826-bdd0-35b7d9fbd543",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "d0a98d1883d50ab1fb11f1c2089250d1d7492821be2ab8133be1cc4d824c5a45"
