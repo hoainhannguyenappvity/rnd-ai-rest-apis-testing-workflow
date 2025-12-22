@@ -1,0 +1,117 @@
+{
+  "name": "AI REST APIs Testing Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "codex-api-testing",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7526f780-ce26-46cf-ba2f-7e73bfbe5179",
+      "name": "Webhook",
+      "webhookId": "91146eee-cded-4b0b-8fbd-c1cc989e173a"
+    },
+    {
+      "parameters": {
+        "jsCode": "const uuid = require('uuid');\n\n// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.body.id = uuid.v4();\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "2d9d5daf-560f-4abf-93b9-f61434405af6",
+      "name": "UUID"
+    },
+    {
+      "parameters": {
+        "command": "=codex exec \"{{ $json.body.prompt }}\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "f1620739-19f4-4328-ba2c-0d6848162e1f",
+      "name": "Execute Codex Prompt"
+    },
+    {
+      "parameters": {
+        "sendTo": "hoainhaannguyen@gmail.com",
+        "subject": "Codex API Testing Workflow",
+        "message": "={{ $json.stdout }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        0
+      ],
+      "id": "ad946d7b-a697-48bb-a86c-1cbaadf94a35",
+      "name": "Send a message",
+      "webhookId": "733b6fc0-fdfa-411c-8a70-fff2938bfe7a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "tlS2tP7X2B1KvXCg",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "UUID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "UUID": {
+      "main": [
+        [
+          {
+            "node": "Execute Codex Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Codex Prompt": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5f26d6d5-23ec-40f5-9f1e-def3cacae4a3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d0a98d1883d50ab1fb11f1c2089250d1d7492821be2ab8133be1cc4d824c5a45"
+  },
+  "id": "77H2QFH7F4gWo3Yf",
+  "tags": []
+}
