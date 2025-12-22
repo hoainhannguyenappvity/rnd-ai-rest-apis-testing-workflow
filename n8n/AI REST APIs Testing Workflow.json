@@ -11,7 +11,7 @@
       "typeVersion": 2.1,
       "position": [
         0,
-        0
+        48
       ],
       "id": "7526f780-ce26-46cf-ba2f-7e73bfbe5179",
       "name": "Webhook",
@@ -25,7 +25,7 @@
       "typeVersion": 2,
       "position": [
         224,
-        0
+        48
       ],
       "id": "2d9d5daf-560f-4abf-93b9-f61434405af6",
       "name": "UUID"
@@ -38,7 +38,7 @@
       "typeVersion": 1,
       "position": [
         448,
-        0
+        48
       ],
       "id": "f1620739-19f4-4328-ba2c-0d6848162e1f",
       "name": "Execute Codex Prompt"
@@ -54,7 +54,7 @@
       "typeVersion": 2.2,
       "position": [
         672,
-        0
+        -48
       ],
       "id": "ad946d7b-a697-48bb-a86c-1cbaadf94a35",
       "name": "Send a message",
@@ -63,6 +63,42 @@
         "gmailOAuth2": {
           "id": "tlS2tP7X2B1KvXCg",
           "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "channelMessage",
+        "teamId": {
+          "__rl": true,
+          "value": "05432cd9-d2b3-4e44-8212-28405f17eba4",
+          "mode": "list",
+          "cachedResultName": "RnD Discussion"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "19:KhGX9jZOR_wDXqvq-EtbXw4gnvZYSAnr6ZDhQpNiaBw1@thread.tacv2",
+          "mode": "list",
+          "cachedResultName": "General",
+          "cachedResultUrl": "https://teams.cloud.microsoft/l/channel/19%3AKhGX9jZOR_wDXqvq-EtbXw4gnvZYSAnr6ZDhQpNiaBw1%40thread.tacv2/RnD%20Discussion?groupId=05432cd9-d2b3-4e44-8212-28405f17eba4&tenantId=bfe53760-c13f-4271-9e14-60cf6e1727b8&allowXTenantAccess=True&ngc=True"
+        },
+        "contentType": "html",
+        "message": "={{ $json.stdout }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftTeams",
+      "typeVersion": 2,
+      "position": [
+        672,
+        144
+      ],
+      "id": "73a2475c-83bb-4243-bcc6-43ef4323e493",
+      "name": "Create message",
+      "webhookId": "28167806-20d1-4227-ae31-d66352f18997",
+      "credentials": {
+        "microsoftTeamsOAuth2Api": {
+          "id": "x9gWBs65kuWF62zf",
+          "name": "Microsoft Teams account"
         }
       }
     }
@@ -95,11 +131,21 @@
       "main": [
         [
           {
+            "node": "Create message",
+            "type": "main",
+            "index": 0
+          },
+          {
             "node": "Send a message",
             "type": "main",
             "index": 0
           }
         ]
+      ]
+    },
+    "Create message": {
+      "main": [
+        []
       ]
     }
   },
@@ -107,7 +153,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "5f26d6d5-23ec-40f5-9f1e-def3cacae4a3",
+  "versionId": "2235f580-1aac-4b80-a033-64252226dd12",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "d0a98d1883d50ab1fb11f1c2089250d1d7492821be2ab8133be1cc4d824c5a45"
