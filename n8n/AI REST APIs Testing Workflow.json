@@ -4,7 +4,7 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "codex-api-testing",
+        "path": "ai-rest-apis-testing-workflow",
         "options": {}
       },
       "type": "n8n-nodes-base.webhook",
@@ -74,8 +74,7 @@
           "id": "tlS2tP7X2B1KvXCg",
           "name": "Gmail account"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -173,8 +172,7 @@
           "id": "x9gWBs65kuWF62zf",
           "name": "Microsoft Teams account"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -386,7 +384,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "89a1a790-0ece-4f9e-a578-ba7a8dcdc97f",
+  "versionId": "c13c075c-3547-4381-9277-044c0776bc53",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "d0a98d1883d50ab1fb11f1c2089250d1d7492821be2ab8133be1cc4d824c5a45"
