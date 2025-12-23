@@ -43,6 +43,7 @@ app.post('/workflow/execution', (req, res) => {
 });
 
 app.post('/ping', (_req, res) => {
+  console.log(`${new Date().toString()} :: /ping`);
   res.status(200).json({
     success: true,
     data: 'pong',

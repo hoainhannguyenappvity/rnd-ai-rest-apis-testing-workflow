@@ -1,0 +1,100 @@
+{
+	"info": {
+		"_postman_id": "0840b377-117f-4838-b139-3104a56715cb",
+		"name": "KMI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16132979"
+	},
+	"item": [
+		{
+			"name": "Get Users",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{auth_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/v2/web/odata/SEPAOrgs/SE.GetUsers?$top=10",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v2",
+						"web",
+						"odata",
+						"SEPAOrgs",
+						"SE.GetUsers"
+					],
+					"query": [
+						{
+							"key": "$top",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Devices",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{auth_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetDeviceList?$top=10",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v2",
+						"web",
+						"odata",
+						"SEUsers",
+						"SE.GetDeviceList"
+					],
+					"query": [
+						{
+							"key": "$top",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
