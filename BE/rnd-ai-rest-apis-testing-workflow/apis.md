@@ -12,7 +12,7 @@ Note: Variables in format ${VARIABLE_NAME} will be replaced from .env file.
 The following variables are defined in .env:
 
 ${BASE_URL_LOCAL} - Local server URL
-${BASE_URL_REMOTE} - Remote server URL
+${BASE_URL} - Remote server URL
 ${AUTH_TOKEN} - Bearer authentication token
 ${TIMEOUT_MS} - Request timeout in milliseconds
 ${CONTENT_TYPE_JSON} - JSON content type
@@ -65,7 +65,7 @@ Get KMI Users
 ### Request
 
 - **Method:** GET
-- **URL:** ${BASE_URL_REMOTE}/v2/web/odata/SEPAOrgs/SE.GetUsers
+- **URL:** ${BASE_URL}/v2/web/odata/SEPAOrgs/SE.GetUsers
 - **Headers:**
   - Content-Type: ${CONTENT_TYPE_JSON}
   - Authorization: ${AUTH_TOKEN}
@@ -79,11 +79,47 @@ Get KMI Users
 
 ### Test Cases
 
-| ID     | Type     | Description              | Expected                                            |
-| ------ | -------- | ------------------------ | --------------------------------------------------- |
-| TC-001 | Positive | Valid GET                | Status: ${STATUS_SUCCESS_MIN}-${STATUS_SUCCESS_MAX} |
-| TC-002 | Negative | Invalid method (GET)     | Status: ${STATUS_NOT_ALLOWED}                       |
-| TC-003 | Negative | Invalid endpoint (/pong) | Status: ${STATUS_NOT_FOUND}                         |
-| TC-004 | Edge     | Request timeout          | Error after 5000ms                                  |
+| ID     | Type     | Description                                 | Expected                                            |
+| ------ | -------- | ------------------------------------------- | --------------------------------------------------- |
+| TC-001 | Positive | Valid GET                                   | Status: ${STATUS_SUCCESS_MIN}-${STATUS_SUCCESS_MAX} |
+| TC-002 | Negative | Invalid method (GET)                        | Status: ${STATUS_NOT_ALLOWED}                       |
+| TC-003 | Negative | Invalid endpoint (/SEPAOrgs/SE.GetUsersXXX) | Status: ${STATUS_NOT_FOUND}                         |
+| TC-004 | Edge     | Request timeout                             | Error after 5000ms                                  |
+
+---
+
+## API-003: Create Site
+
+### Description
+
+Create Site
+
+### Request
+
+- **Method:** POST
+- **URL:** ${BASE_URL}/v2/web/odata/SESites
+- **Headers:**
+- Content-Type: ${CONTENT_TYPE_JSON}
+- Authorization: ${AUTH_TOKEN}
+- **Authentication:** Bearer Token
+- **Body:**:
+
+```json
+{ "name": "Site", "description": "" }
+```
+
+### Expectations
+
+- **Status Code:** 2xx
+- **Response Body:** Site object
+
+### Test Cases
+
+| ID     | Type     | Description                    | Expected                                            |
+| ------ | -------- | ------------------------------ | --------------------------------------------------- |
+| TC-001 | Positive | Create Site is Successfully    | Status: ${STATUS_SUCCESS_MIN}-${STATUS_SUCCESS_MAX} |
+| TC-002 | Negative | Invalid method (POST)          | Status: ${STATUS_NOT_ALLOWED}                       |
+| TC-003 | Negative | Invalid endpoint (/SESitesXXX) | Status: ${STATUS_NOT_FOUND}                         |
+| TC-004 | Edge     | Request timeout                | Error after 5000ms                                  |
 
 ---
