@@ -35,7 +35,7 @@ Health check endpoint to verify the service is running.
 - **URL:** ${BASE_URL_LOCAL}/ping
 - **Headers:**
   - Content-Type: ${CONTENT_TYPE_JSON}
-- **Authentication:** None
+  <!-- - **Authentication:** None -->
 - **Body:** None
 
 ### Expectations
@@ -56,7 +56,7 @@ Health check endpoint to verify the service is running.
 
 ---
 
-## API-002: Get Users Service
+## API-002: Get List Users
 
 ### Description
 
@@ -69,7 +69,7 @@ Get KMI Users
 - **Headers:**
   - Content-Type: ${CONTENT_TYPE_JSON}
   - Authorization: ${AUTH_TOKEN}
-- **Authentication:** Bearer Token
+  <!-- - **Authentication:** Bearer Token -->
 - **Body:** None
 
 ### Expectations
@@ -101,11 +101,11 @@ Create Site
 - **Headers:**
 - Content-Type: ${CONTENT_TYPE_JSON}
 - Authorization: ${AUTH_TOKEN}
-- **Authentication:** Bearer Token
+<!-- - **Authentication:** Bearer Token -->
 - **Body:**:
 
 ```json
-{ "name": "Site", "description": "" }
+{ "name": "Site - Create By Codex", "description": "" }
 ```
 
 ### Expectations

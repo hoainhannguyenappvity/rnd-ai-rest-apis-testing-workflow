@@ -1,19 +1,28 @@
-# Test Execution Summary
+# Test Summary
 
-- Timestamp: 2025-12-23T11:55:04.4870155+07:00
-- Total APIs tested: 2
-- Total test cases: 8
-- Passed: 7
-- Failed: 1
+Generated: 2025-12-23T08:06:46.172Z
 
-## Key Findings
+APIs tested: 3
+Total test cases: 12
+Passed: 6
+Failed: 6
+Warnings: 0
+Skipped: 0
 
-- Г?O GET /ping returns 404 instead of expected 405; method validation missing on the Ping service.
-- Гs Л,? API-002 spec lists GET as the invalid-method case, but GET is the documented/working verb; exercised POST to validate 405 handling.
-- Гo Get Users positive path succeeded with provided bearer token (masked) `Bearer eyJ`, enabling payload assertions going forward.
-- Гo Timeout scenarios (5s) behaved as expected when targeting unreachable hosts for both services.
+## Key Issues
+- API-001/TC-002: Status 404 (expected 405) | Body: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /ping</pre>
+</body>
+</html>
 
-## Risk Assessment
-
-- **Low:** Ping method handling diverges from contract; could leak method support and trip consumers relying on 405 semantics.
-- **Low:** Documentation/test-matrix ambiguity for API-002 invalid-method case may cause false failures; align expectations with actual contract.
+- API-001/TC-004: Status 200 (response received, timeout expected) | Body: {"success":true,"data":"pong"}
+- API-002/TC-004: Status 200 (response received, timeout expected) | Body: {"@odata.context":"https://autotesting.360awareqa.com/v2/web/odata/$metadata#SEGetUsers","value":[{"id":1063,"username":"ptanh.iuh@gmail.com","isSuper":0,"offset":-5,"lastLogin":"2025-12-23T06:45:20.783Z","mapType":1,"dateFormat":1,"timeFor
+- API-003/TC-002: Status 200 (expected 405) | Body: {"@odata.context":"https://autotesting.360awareqa.com/v2/web/odata/$metadata#SESites","value":[{"id":16817,"name":"Site - Create By Codex","passwordStrength":"VeryStrong","dataExpiry":180,"offset":0,"organizationLogoId":1,"urlExpiration":14
+- API-003/TC-003: Status 405 (expected 404)
+- API-003/TC-004: Status 200 (response received, timeout expected) | Body: {"@odata.context":"https://autotesting.360awareqa.com/v2/web/odata/$metadata#SESites/$entity","id":16819,"name":"Site - Create By Codex 1766477202448-timeout","passwordStrength":"VeryStrong","dataExpiry":180,"offset":0,"organizationLogoId":
