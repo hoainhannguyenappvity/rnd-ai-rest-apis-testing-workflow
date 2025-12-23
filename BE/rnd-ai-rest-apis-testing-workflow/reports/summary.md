@@ -1,7 +1,17 @@
 # Test Execution Summary
 
-- APIs tested: 2 (`API-001: Ping Service`, `API-002: Get Users Service`)
-- Test cases executed: 3 (passed: 3, failed: 0)
-- Environments: Local service at `http://localhost:3000`; external service at `https://autotesting.360awareqa.com`
-- Key outcomes: Ping POST returns 200 with JSON `{"success":true,"data":"pong"}`; GET `/ping` yields 404 for invalid verb (negative case passes); Get Users responds 200 with populated user list using provided bearer token.
-- Risks: Low overall; consider enforcing 405 for unsupported verbs on `/ping` and reviewing exposure of user data and the long-lived bearer token embedded in documentation.
+- Total APIs tested: 2
+- Total test cases: 8
+- Passed: 6
+- Failed: 2
+
+## Key Findings
+
+- `localhost:3000/ping` returns 404 for GET rather than 405, so invalid-method handling does not match spec.
+- `GET https://autotesting.360awareqa.com/v2/web/odata/SEPAOrgs/SE.GetUsers` responds 401 with provided bearer token, blocking positive-path validation.
+- Timeout scenarios for both services triggered expected client-side timeouts at 5s when endpoints were unreachable.
+
+## Risk Assessment
+
+- **Medium:** Authentication path for Get Users is currently unusable with provided credentials; downstream functionality cannot be verified.
+- **Low:** Method validation on Ping endpoint may leak endpoint existence (404 vs 405) and diverges from documented behavior.
