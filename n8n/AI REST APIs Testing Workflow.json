@@ -11,7 +11,7 @@
       "typeVersion": 2.1,
       "position": [
         -400,
-        336
+        648
       ],
       "id": "7526f780-ce26-46cf-ba2f-7e73bfbe5179",
       "name": "Webhook",
@@ -25,35 +25,190 @@
       "typeVersion": 2,
       "position": [
         -176,
-        336
+        648
       ],
       "id": "2d9d5daf-560f-4abf-93b9-f61434405af6",
       "name": "UUID"
     },
     {
       "parameters": {
-        "command": "=codex exec \"$(cat prompt.md)\" --sandbox=danger-full-access"
+        "fileSelector": "./reports/TEST_EXECUTION_SUMMARY.md",
+        "options": {
+          "dataPropertyName": "text_execution_summary"
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        272,
+        192
+      ],
+      "id": "fb85ff97-3b0d-4730-b470-aaf48369e18c",
+      "name": "TEST_EXECUTION_SUMMARY.md"
+    },
+    {
+      "parameters": {
+        "fileSelector": "./reports/TEST_COVERAGE_MATRIX.md",
+        "options": {
+          "dataPropertyName": "test_coverage_matrix"
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        272,
+        480
+      ],
+      "id": "1d802f51-13c8-447b-9ebb-c8d2b45eaa0d",
+      "name": "TEST_COVERAGE_MATRIX.md"
+    },
+    {
+      "parameters": {
+        "fileSelector": "./reports/PERFORMANCE_REPORT.md",
+        "options": {
+          "dataPropertyName": "performance_report"
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        496,
+        648
+      ],
+      "id": "52060798-7201-4771-b004-8d584fc3d1d5",
+      "name": "PERFORMANCE_REPORT.md"
+    },
+    {
+      "parameters": {
+        "fileSelector": "./reports/DETAILED_TEST_RESULTS.md",
+        "options": {
+          "dataPropertyName": "detailed_test_results"
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        720,
+        816
+      ],
+      "id": "17f0ea86-396a-4072-8f9c-8edb776a1fd2",
+      "name": "DETAILED_TEST_RESULTS.md"
+    },
+    {
+      "parameters": {
+        "fileSelector": "./reports/DEFECTS_LOG.md",
+        "options": {
+          "dataPropertyName": "defects_log"
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        944,
+        984
+      ],
+      "id": "2ac22fce-396a-43fe-87ea-fa3abb5abee2",
+      "name": "DEFECTS_LOG.md"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        496,
+        432
+      ],
+      "id": "e7be8dc2-cdea-4194-a109-1c15abe0baee",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        720,
+        528
+      ],
+      "id": "d2c56e30-906f-4552-b553-4f6428eddfdf",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        944,
+        624
+      ],
+      "id": "27e0bb99-d4b7-402c-919a-9cd03e994cf4",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1168,
+        720
+      ],
+      "id": "4062b612-bde8-4385-b53c-546b3935a379",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1392,
+        672
+      ],
+      "id": "dfc25c24-144d-44db-ab98-e433568b323c",
+      "name": "Merge4"
+    },
+    {
+      "parameters": {
+        "command": "=codex exec \"You are a senior frontend engineer and UI designer. Read the file reports/TEST_EXECUTION_SUMMARY.md, then transform its Markdown content into a single, self-contained, production-ready HTML document with polished, visually appealing styling. Your response must contain ONLY the final HTML (no explanations, no comments, no markdown fences)\""
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        48,
-        336
+        1168,
+        144
       ],
-      "id": "f1620739-19f4-4328-ba2c-0d6848162e1f",
-      "name": "Execute Codex Prompt"
+      "id": "b3d2fca3-cfb5-4352-8909-1789f573f2fa",
+      "name": "Codex Markdown to HTML"
     },
     {
       "parameters": {
         "sendTo": "hoainhaannguyen@gmail.com",
         "subject": "=REST APIs Testing {{ $now.format('dd/LL/yyyy h:mm:ss a') }}",
-        "message": "={{ $json.data }}",
+        "message": "={{ $json.stdout }}",
         "options": {
           "appendAttribution": true,
           "attachmentsUi": {
             "attachmentsBinary": [
               {
-                "property": "=summary,test-results,recommendations"
+                "property": "=text_execution_summary,test_coverage_matrix,performance_report,detailed_test_results,defects_log"
               }
             ]
           }
@@ -62,10 +217,10 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        1168,
-        336
+        1616,
+        672
       ],
-      "id": "ad946d7b-a697-48bb-a86c-1cbaadf94a35",
+      "id": "c00344b2-cd6a-4607-a634-40690e0e9524",
       "name": "Send a message",
       "webhookId": "733b6fc0-fdfa-411c-8a70-fff2938bfe7a",
       "executeOnce": false,
@@ -75,68 +230,6 @@
           "name": "Gmail account"
         }
       }
-    },
-    {
-      "parameters": {
-        "fileSelector": "./reports/summary.md",
-        "options": {
-          "dataPropertyName": "summary"
-        }
-      },
-      "type": "n8n-nodes-base.readWriteFile",
-      "typeVersion": 1,
-      "position": [
-        272,
-        48
-      ],
-      "id": "85c70fa8-df52-45d0-9018-4e8fecc5b4b1",
-      "name": "Read Summary File from Disk"
-    },
-    {
-      "parameters": {
-        "fileSelector": "./reports/recommendations.md",
-        "options": {
-          "dataPropertyName": "recommendations"
-        }
-      },
-      "type": "n8n-nodes-base.readWriteFile",
-      "typeVersion": 1,
-      "position": [
-        496,
-        504
-      ],
-      "id": "35240e27-4093-463a-8e89-ef1cfdde8dad",
-      "name": "Read Recommendations File from Disk"
-    },
-    {
-      "parameters": {
-        "operation": "text",
-        "binaryPropertyName": "summary",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1.1,
-      "position": [
-        496,
-        0
-      ],
-      "id": "11457582-5fb8-42cc-a456-6f84f960a89c",
-      "name": "Extract from File"
-    },
-    {
-      "parameters": {
-        "mode": "markdownToHtml",
-        "markdown": "={{ $json.data }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.markdown",
-      "typeVersion": 1,
-      "position": [
-        720,
-        0
-      ],
-      "id": "c43267cf-6e0a-4d51-b251-a701b8f9dea9",
-      "name": "Markdown"
     },
     {
       "parameters": {
@@ -155,16 +248,16 @@
           "cachedResultUrl": "https://teams.cloud.microsoft/l/channel/19%3AKhGX9jZOR_wDXqvq-EtbXw4gnvZYSAnr6ZDhQpNiaBw1%40thread.tacv2/RnD%20Discussion?groupId=05432cd9-d2b3-4e44-8212-28405f17eba4&tenantId=bfe53760-c13f-4271-9e14-60cf6e1727b8&allowXTenantAccess=True&ngc=True"
         },
         "contentType": "html",
-        "message": "={{ $json.data }}",
+        "message": "={{ $json.stdout }}",
         "options": {}
       },
       "type": "n8n-nodes-base.microsoftTeams",
       "typeVersion": 2,
       "position": [
-        944,
-        -48
+        1392,
+        96
       ],
-      "id": "73a2475c-83bb-4243-bcc6-43ef4323e493",
+      "id": "2c6d2cfe-4cd1-4762-b4b4-5c1d1f4fbd1b",
       "name": "Create message",
       "webhookId": "28167806-20d1-4227-ae31-d66352f18997",
       "credentials": {
@@ -176,64 +269,16 @@
     },
     {
       "parameters": {
-        "mode": "combine",
-        "combineBy": "combineAll",
-        "options": {}
+        "command": "=codex exec \"Access the file prompt.md on disk, interpret its contents, and carry out the specified instructions.\" --sandbox=danger-full-access"
       },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        496,
-        288
-      ],
-      "id": "c2ce1f19-6931-45e2-9f50-7ea1bb820bbd",
-      "name": "Merge Summary and Test Results"
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combineBy": "combineAll",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        720,
-        384
-      ],
-      "id": "1cf60205-04eb-48a2-aace-de78fa99898d",
-      "name": "Merge All Files"
-    },
-    {
-      "parameters": {
-        "fileSelector": "./reports/test-results.md",
-        "options": {
-          "dataPropertyName": "test-results"
-        }
-      },
-      "type": "n8n-nodes-base.readWriteFile",
+      "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        272,
-        336
+        48,
+        648
       ],
-      "id": "77c0edb8-9c67-4d65-b49f-5ac00986c78f",
-      "name": "Read Test Results File from Disk"
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combineBy": "combineAll",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        944,
-        336
-      ],
-      "id": "e997bd9f-218b-406f-8f1e-157c84df0040",
-      "name": "Merge Files and Summary in HTML"
+      "id": "ceb2869c-4b72-4d3c-a4d0-1f57333850a5",
+      "name": "Codex Newman Command"
     }
   ],
   "pinData": {},
@@ -253,73 +298,129 @@
       "main": [
         [
           {
-            "node": "Execute Codex Prompt",
+            "node": "Codex Newman Command",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Execute Codex Prompt": {
+    "TEST_EXECUTION_SUMMARY.md": {
       "main": [
         [
           {
-            "node": "Read Summary File from Disk",
+            "node": "Merge",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Read Test Results File from Disk",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Read Recommendations File from Disk",
+            "node": "Codex Markdown to HTML",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Read Summary File from Disk": {
+    "TEST_COVERAGE_MATRIX.md": {
       "main": [
         [
           {
-            "node": "Merge Summary and Test Results",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Extract from File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Read Recommendations File from Disk": {
-      "main": [
-        [
-          {
-            "node": "Merge All Files",
+            "node": "Merge",
             "type": "main",
             "index": 1
           }
         ]
       ]
     },
-    "Extract from File": {
+    "Merge": {
       "main": [
         [
           {
-            "node": "Markdown",
+            "node": "Merge1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Markdown": {
+    "PERFORMANCE_REPORT.md": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DETAILED_TEST_RESULTS.md": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "DEFECTS_LOG.md": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge4": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Codex Markdown to HTML": {
       "main": [
         [
           {
@@ -328,51 +429,38 @@
             "index": 0
           },
           {
-            "node": "Merge Files and Summary in HTML",
+            "node": "Merge4",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Merge Summary and Test Results": {
+    "Codex Newman Command": {
       "main": [
         [
           {
-            "node": "Merge All Files",
+            "node": "TEST_EXECUTION_SUMMARY.md",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge All Files": {
-      "main": [
-        [
+          },
           {
-            "node": "Merge Files and Summary in HTML",
+            "node": "TEST_COVERAGE_MATRIX.md",
             "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Read Test Results File from Disk": {
-      "main": [
-        [
+            "index": 0
+          },
           {
-            "node": "Merge Summary and Test Results",
+            "node": "PERFORMANCE_REPORT.md",
             "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Merge Files and Summary in HTML": {
-      "main": [
-        [
+            "index": 0
+          },
           {
-            "node": "Send a message",
+            "node": "DETAILED_TEST_RESULTS.md",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "DEFECTS_LOG.md",
             "type": "main",
             "index": 0
           }
@@ -384,7 +472,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "c13c075c-3547-4381-9277-044c0776bc53",
+  "versionId": "cc802e46-ca86-4a5d-9eab-4aa4e943b73d",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "d0a98d1883d50ab1fb11f1c2089250d1d7492821be2ab8133be1cc4d824c5a45"

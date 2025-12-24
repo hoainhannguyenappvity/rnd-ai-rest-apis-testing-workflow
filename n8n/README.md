@@ -19,3 +19,19 @@ set NODES_EXCLUDE="[]" && set NODE_FUNCTION_ALLOW_EXTERNAL=uuid && set N8N_RESTR
 ## Import Workflow
 
 Import **AI REST APIs Testing Workflow.json** file to your n8n workflows
+
+## Codex CLI
+
+Run below command in **Windows PowerShell** or **Command Prompt**
+
+```bash
+npm install -g @openai/codex
+```
+
+## Newman (Postman)
+
+Run below command in **Windows PowerShell** or **Command Prompt**
+
+```bash
+npm i -g newman
+```
