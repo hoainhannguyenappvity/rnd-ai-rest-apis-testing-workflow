@@ -16,9 +16,12 @@
               { "key": "Authorization", "value": "{{auth_token}}" }
             ],
             "url": {
-              "raw": "{{base_url}}/v2/web/odata/SEPAOrgs/SE.GetUsers",
+              "raw": "{{base_url}}/v2/web/odata/SEPAOrgs/SE.GetUsers?$top=1",
               "host": ["{{base_url}}"],
-              "path": ["v2", "web", "odata", "SEPAOrgs", "SE.GetUsers"]
+              "path": ["v2", "web", "odata", "SEPAOrgs", "SE.GetUsers"],
+              "query": [
+                { "key": "$top", "value": "1" }
+              ]
             }
           },
           "response": [],
@@ -44,9 +47,12 @@
               { "key": "Authorization", "value": "{{auth_token}}" }
             ],
             "url": {
-              "raw": "{{base_url}}/v2/web/odata/SEPAOrgs/SE.GetUsers",
+              "raw": "{{base_url}}/v2/web/odata/SEPAOrgs/SE.GetUsers?$top=1",
               "host": ["{{base_url}}"],
-              "path": ["v2", "web", "odata", "SEPAOrgs", "SE.GetUsers"]
+              "path": ["v2", "web", "odata", "SEPAOrgs", "SE.GetUsers"],
+              "query": [
+                { "key": "$top", "value": "1" }
+              ]
             }
           },
           "response": [],
@@ -71,9 +77,12 @@
               { "key": "Content-Type", "value": "application/json" }
             ],
             "url": {
-              "raw": "{{base_url}}/v2/web/odata/SEPAOrgs/SE.GetUsers",
+              "raw": "{{base_url}}/v2/web/odata/SEPAOrgs/SE.GetUsers?$top=1",
               "host": ["{{base_url}}"],
-              "path": ["v2", "web", "odata", "SEPAOrgs", "SE.GetUsers"]
+              "path": ["v2", "web", "odata", "SEPAOrgs", "SE.GetUsers"],
+              "query": [
+                { "key": "$top", "value": "1" }
+              ]
             }
           },
           "response": [],
