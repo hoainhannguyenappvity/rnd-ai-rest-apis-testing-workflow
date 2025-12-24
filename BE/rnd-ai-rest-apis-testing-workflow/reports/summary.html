@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Test Summary - KMI</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --accent: #22d3ee;
+      --accent-2: #a855f7;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --success: #22c55e;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      background: radial-gradient(120% 120% at 10% 20%, #1f2937 0%, #0f172a 45%, #0b1120 100%);
+      color: var(--text);
+      padding: 24px;
+      line-height: 1.5;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: 0.4px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #0b1120;
+      font-weight: 700;
+    }
+    h1 { margin: 0; font-size: 24px; }
+    .grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+    .card h2 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .metric {
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .muted { color: var(--muted); font-size: 12px; }
+    .bar {
+      width: 100%;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .bar span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+    .list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .list li {
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .pill.success { background: rgba(34, 197, 94, 0.15); color: var(--success); }
+    .pill.warn { background: rgba(245, 158, 11, 0.15); color: var(--warn); }
+    .pill.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+    nav {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 8px 0 16px 0;
+    }
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      padding: 8px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    nav a:hover { border-color: rgba(255, 255, 255, 0.2); }
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .progress-row span { min-width: 60px; }
+    @media (max-width: 600px) {
+      body { padding: 16px; }
+      h1 { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>API Test Summary</h1>
+      <div class="muted">Environment: https://qaweb360plus.360awareqa.com</div>
+      <div class="muted">Execution: 1m 27s | Date: 2025-12-24</div>
+    </div>
+    <div class="badge">All tests passed</div>
+  </header>
+
+  <nav>
+    <a href="#executive">Executive Summary</a>
+    <a href="#metrics">Metrics</a>
+    <a href="#coverage">Coverage</a>
+    <a href="#risks">Risks</a>
+  </nav>
+
+  <section id="executive" class="card">
+    <h2>Executive Summary</h2>
+    <p>Automated Newman run executed the KMI Users endpoint across positive, negative method, and unauthorized scenarios. Functional behavior matched expectations; primary concern is elevated response time on the valid GET call (~80s peak) despite small payload.</p>
+  </section>
+
+  <section id="metrics" class="grid">
+    <div class="card">
+      <h2>Pass / Fail</h2>
+      <div class="metric">5 / 0</div>
+      <div class="muted">Assertions Passed / Failed</div>
+      <div class="bar"><span style="width: 100%;"></span></div>
+    </div>
+    <div class="card">
+      <h2>Requests</h2>
+      <div class="metric">3</div>
+      <div class="muted">Across 1 API service</div>
+      <div class="progress-row">
+        <span class="muted">Positive</span>
+        <div class="bar"><span style="width: 33%; background: var(--success);"></span></div>
+      </div>
+      <div class="progress-row">
+        <span class="muted">Negative</span>
+        <div class="bar"><span style="width: 67%; background: var(--warn);"></span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Performance</h2>
+      <div class="metric">28.9s</div>
+      <div class="muted">Avg response (min 0.785s | max 80.8s)</div>
+      <div class="bar"><span style="width: 70%; background: var(--warn);"></span></div>
+    </div>
+    <div class="card">
+      <h2>Data</h2>
+      <div class="metric">2.37 kB</div>
+      <div class="muted">Total data received</div>
+    </div>
+  </section>
+
+  <section id="coverage" class="card">
+    <h2>Coverage</h2>
+    <ul class="list">
+      <li>
+        <strong>API-001: KMI Users Service</strong><br>
+        <span class="pill success">Valid</span>
+        <span class="pill warn">Invalid Method</span>
+        <span class="pill danger">Unauthorized</span>
+      </li>
+    </ul>
+  </section>
+
+  <section id="risks" class="card">
+    <h2>Risks & Issues</h2>
+    <ul class="list">
+      <li>Performance: Valid GET call took up to ~80s; monitor and profile backend latency.</li>
+      <li>Tooling: Node deprecation warning (`fs.F_OK`) surfaced during Newman run; update Newman/Node to suppress noise.</li>
+    </ul>
+  </section>
+</body>
+</html>

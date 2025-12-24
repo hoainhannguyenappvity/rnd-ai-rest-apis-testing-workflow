@@ -1,21 +1,19 @@
-# Summary
+# Test Execution Summary
 
-| Metric | Value |
-|--------|-------|
-| APIs tested | 1 (API-001: KMI Users Service) |
-| Requests executed | 3 |
-| Test cases | 3 |
-| Assertions | 4 |
-| Passed | 4 |
-| Failed | 0 |
-| Total duration | 13.7s |
-| Avg response time | 4.5s (min 2.6s, max 8s) |
+- Scope: API-001 KMI Users Service
+- Total APIs: 1
+- Total Requests: 3
+- Total Assertions: 5
+- Passed: 5 | Failed: 0
+- Execution Time: 1m 27s
+- Environment: `https://qaweb360plus.360awareqa.com`
 
 ## Key Findings
-- All planned positive and negative scenarios passed; API enforces method and auth rules (405 for POST, 401 without token).
-- Successful GET returned 200 and JSON content when a body was present.
+- Functional behavior aligned with expectations for valid, invalid method, and unauthorized flows.
+- High latency observed on the valid GET request (up to ~80s) despite small payload size, indicating potential performance bottleneck.
+- Deprecation warning emitted by Node (`fs.F_OK`), likely from local Newman/runner dependencies, not the API itself.
 
-## Risks / Gaps
-- Functional coverage is limited to status and basic content-type checks; no payload schema or data validations due to unspecified expectations.
-- Tests rely on a static bearer token that may expire; runs will fail once the token is invalid.
-- Performance observation: one request took ~8s; if unexpected, consider profiling.
+## Risk Assessment
+- Functional Risk: Low (all assertions passed for the covered scenarios).
+- Performance Risk: Medium due to long response time on primary GET endpoint.
+- Security Risk: Low for tested scope; unauthorized access correctly rejected.

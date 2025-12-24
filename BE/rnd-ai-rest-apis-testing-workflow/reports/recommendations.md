@@ -1,19 +1,7 @@
 # Recommendations
 
-## Suggested fixes or improvements
-- Add schema/body assertions for the GET response once the contract is defined (e.g., ensure user objects include required fields and types).
-- Assert error payload shape for 401/405 responses to guarantee consistent client handling.
-- Track latency thresholds; the 8s response suggests adding performance checks or SLAs.
-
-## Missing validations to add
-- Parameter boundary tests for `$top` (omitted, zero, negative, excessively large) and pagination behavior.
-- Content negotiation checks (e.g., verify `Content-Type` is JSON on success and errors).
-- Data correctness checks (unique user IDs, expected ordering) when requirements are available.
-
-## Security / reliability
-- Replace the static bearer token with a pre-request auth flow (client credentials or refresh) and store secrets in Postman environment variables marked as secret.
-- Add a negative test with an expired/invalid token to confirm consistent 401 responses.
-
-## Postman collection improvements
-- Make `$top` a variable to drive multiple values via iteration data.
-- Emit common test helpers via a collection-level script to reduce duplication once more APIs are added.
+1. Performance profiling: Investigate why `GET /v2/web/odata/SEPAOrgs/SE.GetUsers` takes ~80s for a single record; capture server timing logs and add performance benchmarks to CI.
+2. Additional validations: Extend tests to assert response schema (required fields, data types) once a stable contract is available to detect payload regressions early.
+3. Error coverage: Add negative cases for malformed query parameters (e.g., non-numeric `$top`, missing `$top`) to validate error messaging and status codes.
+4. Security posture: Introduce token expiry/refresh scenarios to ensure consistent 401/403 handling and session management.
+5. Tooling hygiene: Update Newman/Node dependencies to remove the `fs.F_OK` deprecation warning and keep the runner aligned with current Node APIs.

@@ -1,54 +1,49 @@
-# Test Results
+# REST API Test Results
 
-## API-001: KMI Users Service
-Endpoint: `{{base_url}}/v2/web/odata/SEPAOrgs/SE.GetUsers`
+## Execution Overview
+- Collection: `KMI APIs`
+- Environment: `KMI Environment`
+- Date: 2025-12-24
+- Total Requests: 3
+- Total Assertions: 5 (all passed)
+- Total Duration: 1m 27s
 
-| Test Case | Type | Scenario | Expected | Actual | Result |
-|-----------|------|----------|----------|--------|--------|
-| TC-001 | Positive | GET with valid auth and $top=1 | HTTP 2xx; JSON if body returned | 200 OK; JSON body present | Pass |
-| TC-002 | Negative | POST (invalid method) with auth | Status not in 200-299 | 405 Method Not Allowed | Pass |
-| TC-003 | Negative | GET without Authorization header | 401 Unauthorized | 401 Unauthorized | Pass |
+## Detailed Results
 
-- Assertions: 4/4 passed across 3 requests.
-- Response times: min 2.6s, max 8s, avg 4.5s.
+| API | Test Case | Expected | Actual | Status |
+| --- | --- | --- | --- | --- |
+| API-001: KMI Users Service | TC-001: Valid GET | Status code 200-299 | 200 OK, JSON body returned | Pass |
+| API-001: KMI Users Service | TC-002: Invalid method (POST) | Status code not 2xx | 405 Method Not Allowed | Pass |
+| API-001: KMI Users Service | TC-003: Unauthorized request | Status code 401 | 401 Unauthorized | Pass |
 
-### Raw Newman Output
+### Actual vs Expected Notes
+- TC-001 matched the expected 2xx response; content type reported as JSON when body present.
+- TC-002 returned 405, satisfying the expectation that non-GET methods are rejected.
+- TC-003 correctly required authorization and returned 401 without the token.
+
+## Newman Output
 ```
+(node:9568) [DEP0176] DeprecationWarning: fs.F_OK is deprecated, use fs.constants.F_OK instead
 newman
 
-API-001: KMI Users Service
+KMI APIs
 
-□ KMI Users
-└ TC-001 | GET Users | 2xx
-  GET https://qaweb360plus.360awareqa.com/v2/web/odata/SEPAOrgs/SE.GetUsers?$top=1 [200 OK, 4.46kB, 8s]
-  √  TC-001: status is 2xx
-  √  TC-001: JSON response when body present
+API-001: KMI Users Service / Get Users - Valid
+GET https://qaweb360plus.360awareqa.com/v2/web/odata/SEPAOrgs/SE.GetUsers?$top=1 [200 OK, 4.46kB, 1m 20.8s]
+✓ Status code is 2xx
+✓ Response body is JSON when present
 
-└ TC-002 | POST Users | invalid method
-  POST https://qaweb360plus.360awareqa.com/v2/web/odata/SEPAOrgs/SE.GetUsers?$top=1 [405 Method Not Allowed, 2.03kB, 2.9s]
-  √  TC-002: status is NOT 2xx for invalid method
+API-001: KMI Users Service / Get Users - Invalid Method
+POST https://qaweb360plus.360awareqa.com/v2/web/odata/SEPAOrgs/SE.GetUsers?$top=1 [405 Method Not Allowed, 2.03kB, 5.1s]
+✓ Status code is not 2xx
+✓ Should return client/server error
 
-└ TC-003 | GET Users | unauthorized
-  GET https://qaweb360plus.360awareqa.com/v2/web/odata/SEPAOrgs/SE.GetUsers?$top=1 [401 Unauthorized, 1.99kB, 2.6s]
-  √  TC-003: status is 401 without token
+API-001: KMI Users Service / Get Users - Unauthorized
+GET https://qaweb360plus.360awareqa.com/v2/web/odata/SEPAOrgs/SE.GetUsers?$top=1 [401 Unauthorized, 1.99kB, 785ms]
+✓ Status code is 401
 
-┌─────────────────────────┬──────────────────┬─────────────────┐
-│                         │         executed │          failed │
-├─────────────────────────┼──────────────────┼─────────────────┤
-│              iterations │                1 │               0 │
-├─────────────────────────┼──────────────────┼─────────────────┤
-│                requests │                3 │               0 │
-├─────────────────────────┼──────────────────┼─────────────────┤
-│            test-scripts │                3 │               0 │
-├─────────────────────────┼──────────────────┼─────────────────┤
-│      prerequest-scripts │                0 │               0 │
-├─────────────────────────┼──────────────────┼─────────────────┤
-│              assertions │                4 │               0 │
-├─────────────────────────┴──────────────────┴─────────────────┤
-│ total run duration: 13.7s                                    │
-├──────────────────────────────────────────────────────────────┤
-│ total data received: 2.37kB (approx)                         │
-├──────────────────────────────────────────────────────────────┤
-│ average response time: 4.5s [min: 2.6s, max: 8s, s.d.: 2.4s] │
-└──────────────────────────────────────────────────────────────┘
+Iterations: 1 | Requests: 3 | Test-scripts: 6 | Assertions: 5 (0 failed)
+Total run duration: 1m 27s
+Total data received: 2.37kB (approx)
+Average response time: 28.9s (min: 785ms, max: 1m 20.8s, s.d.: 36.7s)
 ```

@@ -75,7 +75,18 @@ All outputs MUST be written to the `reports/` folder using the following files:
    - Key issues found
    - Risk assessment
 
-3. `reports/recommendations.md`
+3. `reports/summary.html`
+   - Professional HTML dashboard version of the summary
+   - Include visual elements (color-coded status indicators, progress bars, charts if applicable)
+   - Executive summary section at the top
+   - Detailed metrics and statistics
+   - Test coverage visualization
+   - Pass/Fail ratio with visual indicators
+   - Quick navigation and responsive design
+   - Embedded CSS for standalone viewing
+   - Professional styling suitable for stakeholder presentation
+
+4. `reports/recommendations.md`
    - Suggested fixes or improvements
    - Missing validations
    - Security or reliability concerns
@@ -84,9 +95,10 @@ All outputs MUST be written to the `reports/` folder using the following files:
 
 ## Reporting Style
 
-- Use clear Markdown formatting
+- Use clear Markdown formatting for .md files
 - Use tables where appropriate
 - Include code blocks for Newman command output
+- For HTML report: Use modern, clean design with proper semantic HTML
 - Be concise but precise
 - Do not invent APIs that are not listed in `apis.md`
 
@@ -100,6 +112,6 @@ Proceed step-by-step:
 4. Generate `KMI.postman_environment.json` with required variables
 5. Execute Newman CLI command
 6. Capture and parse Newman output
-7. Generate comprehensive reports in the `reports/` folder
+7. Generate comprehensive reports in the `reports/` folder (including HTML summary)
 
 Begin testing now.
