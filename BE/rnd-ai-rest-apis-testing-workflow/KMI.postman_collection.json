@@ -1,26 +1,45 @@
-﻿{
+{
   "info": {
-    "name": "KMI Users Service",
+    "name": "API-001: KMI Users Service",
+    "description": "Automated tests for SE.GetUsers endpoint based on apis.md.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
       "name": "KMI Users",
+      "description": "Covers TC-001 to TC-003 for SE.GetUsers.",
       "item": [
         {
-          "name": "Get Users - valid",
+          "name": "TC-001 | GET Users | 2xx",
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "{{auth_token}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
             ],
             "url": {
               "raw": "{{base_url}}/v2/web/odata/SEPAOrgs/SE.GetUsers?$top=1",
-              "host": ["{{base_url}}"],
-              "path": ["v2", "web", "odata", "SEPAOrgs", "SE.GetUsers"],
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEPAOrgs",
+                "SE.GetUsers"
+              ],
               "query": [
-                { "key": "$top", "value": "1" }
+                {
+                  "key": "$top",
+                  "value": "1"
+                }
               ]
             }
           },
@@ -29,9 +48,17 @@
             {
               "listen": "test",
               "script": {
+                "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status is 2xx', function () {",
+                  "pm.test('TC-001: status is 2xx', function () {",
                   "  pm.expect(pm.response.code).to.be.within(200, 299);",
+                  "});",
+                  "",
+                  "pm.test('TC-001: JSON response when body present', function () {",
+                  "  const body = pm.response.text();",
+                  "  if (body && body.trim().length > 0) {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('json');",
+                  "  }",
                   "});"
                 ]
               }
@@ -39,19 +66,36 @@
           ]
         },
         {
-          "name": "Get Users - invalid method",
+          "name": "TC-002 | POST Users | invalid method",
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "{{auth_token}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
             ],
             "url": {
               "raw": "{{base_url}}/v2/web/odata/SEPAOrgs/SE.GetUsers?$top=1",
-              "host": ["{{base_url}}"],
-              "path": ["v2", "web", "odata", "SEPAOrgs", "SE.GetUsers"],
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEPAOrgs",
+                "SE.GetUsers"
+              ],
               "query": [
-                { "key": "$top", "value": "1" }
+                {
+                  "key": "$top",
+                  "value": "1"
+                }
               ]
             }
           },
@@ -60,8 +104,9 @@
             {
               "listen": "test",
               "script": {
+                "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status is NOT 2xx', function () {",
+                  "pm.test('TC-002: status is NOT 2xx for invalid method', function () {",
                   "  pm.expect(pm.response.code).to.not.be.within(200, 299);",
                   "});"
                 ]
@@ -70,18 +115,32 @@
           ]
         },
         {
-          "name": "Get Users - unauthorized",
+          "name": "TC-003 | GET Users | unauthorized",
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "url": {
               "raw": "{{base_url}}/v2/web/odata/SEPAOrgs/SE.GetUsers?$top=1",
-              "host": ["{{base_url}}"],
-              "path": ["v2", "web", "odata", "SEPAOrgs", "SE.GetUsers"],
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEPAOrgs",
+                "SE.GetUsers"
+              ],
               "query": [
-                { "key": "$top", "value": "1" }
+                {
+                  "key": "$top",
+                  "value": "1"
+                }
               ]
             }
           },
@@ -90,8 +149,9 @@
             {
               "listen": "test",
               "script": {
+                "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status is 401', function () {",
+                  "pm.test('TC-003: status is 401 without token', function () {",
                   "  pm.expect(pm.response.code).to.eql(401);",
                   "});"
                 ]

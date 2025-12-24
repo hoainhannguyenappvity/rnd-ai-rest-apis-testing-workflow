@@ -44,16 +44,16 @@ This project has the following structure:
 
 ## Postman Collection Requirements
 
-The `KMI.postman_collection.json` file must include:
-- Properly structured requests for each API
-- Pre-request scripts (if needed for authentication or data setup)
-- Test scripts with assertions for validation
-- Organized folders for logical grouping of APIs
+- The `KMI.postman_collection.json` file must include:
+  - Properly structured requests for each API
+  - Pre-request scripts (if needed for authentication or data setup)
+  - Test scripts with assertions for validation
+  - Organized folders for logical grouping of APIs
 
-The `KMI.postman_environment.json` file must include:
-- Base URL variable
-- Authentication tokens or credentials
-- Any other dynamic variables needed across requests
+- The `KMI.postman_environment.json` file must include:
+  - Base URL variable
+  - Authentication tokens or credentials
+  - Any other dynamic variables needed across requests
 
 ## Output Requirements
 
