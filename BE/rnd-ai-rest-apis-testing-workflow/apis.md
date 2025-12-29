@@ -1,7 +1,7 @@
 # API Test Specifications
 
-This document defines REST APIs to be tested automatically by Codex AI.
-Each API block is independent and includes expectations and test scenarios.
+- This document defines REST APIs to be tested automatically by Codex AI.
+- Each API block is independent and includes expectations and test scenarios.
 
 ---
 
@@ -11,7 +11,7 @@ Each API block is independent and includes expectations and test scenarios.
   - Value: `https://qaweb360plus.360awareqa.com`
 
 - Name: `auth_token`
-  - Value: `Bearer eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE3NjY1NTUyOTksImV4cCI6MTc2NjU1ODg5OSwiaXNzIjoiaHR0cHM6Ly9zZS5rbm93bWFkaWNzLmNvbS8iLCJjbGllbnRfaWQiOiJqcyIsInN1YiI6Im5oYW5uZ3V5ZW5AYXBwdml0eS5jb20iLCJhdXRoX3RpbWUiOjE3NjY1NTUyOTQsImlkcCI6ImxvY2FsIiwiaWQiOiIxMTU1IiwiaHR0cDovL3NjaGVtYXMua25vd21hZGljcy5jb20vU2lsdmVyRXllLzIwMTcvMDEvaWRlbnRpdHkvY2xhaW1zL3NzaWQiOiIyQjYzOTk2Qi05RDhCLTQ5OTgtQTA0OS01QjQ1MEQwQTdGOTYiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL2FjY2Vzc2NvbnRyb2xzZXJ2aWNlLzIwMTAvMDcvY2xhaW1zL2lkZW50aXR5cHJvdmlkZXIiOiJMT0NBTCBBVVRIT1JJVFkiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjExNTUiLCJuYW1laWQiOiIxMTU1IiwiaHR0cDovL3NjaGVtYXMua25vd21hZGljcy5jb20vU2lsdmVyRXllLzIwMTcvMDEvaWRlbnRpdHkvY2xhaW1zL29yZ2FuaXphdGlvbklkIjoiMTQ2NTAiLCJodHRwOi8vc2NoZW1hcy5rbm93bWFkaWNzLmNvbS9TaWx2ZXJFeWUvMjAxNy8wMS9pZGVudGl0eS9jbGFpbXMvdXNlckdyb3VwSWQiOiIwIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvdXBuIjoibmhhbm5ndXllbkBhcHB2aXR5LmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJuaGFubmd1eWVuIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoibmhhbm5ndXllbkBhcHB2aXR5LmNvbSIsImh0dHA6Ly9zY2hlbWFzLmtub3dtYWRpY3MuY29tL1NpbHZlckV5ZS8yMDE3LzAxL2lkZW50aXR5L2NsYWltcy9pc1N1cGVyQWRtaW4iOiJUcnVlIiwiaHR0cDovL3NjaGVtYXMua25vd21hZGljcy5jb20vU2lsdmVyRXllLzIwMTcvMDEvaWRlbnRpdHkvY2xhaW1zL2N1cnJlbnRGdWxsRG9tYWluIjoiaHR0cHM6Ly9xYXdlYjM2MHBsdXMuMzYwYXdhcmVxYS5jb20iLCJodHRwOi8vc2NoZW1hcy5rbm93bWFkaWNzLmNvbS9TaWx2ZXJFeWUvMjAxNy8wMS9pZGVudGl0eS9jbGFpbXMvY3VycmVudE9yZ2FuaXphdGlvbklEIjoiMTQ2NTAiLCJodHRwOi8vc2NoZW1hcy5rbm93bWFkaWNzLmNvbS9TaWx2ZXJFeWUvMjAxNy8wMS9pZGVudGl0eS9jbGFpbXMvYXBwSWQiOiIxIiwiaHR0cDovL3NjaGVtYXMua25vd21hZGljcy5jb20vU2lsdmVyRXllLzIwMTcvMDEvaWRlbnRpdHkvY2xhaW1zL2FwcENvZGUiOiIzNjAtYXdhcmUtd2ViIiwiaHR0cDovL3NjaGVtYXMua25vd21hZGljcy5jb20vU2lsdmVyRXllLzIwMTcvMDEvaWRlbnRpdHkvY2xhaW1zL3pvbmUiOiJFYXN0ZXJuIFN0YW5kYXJkIFRpbWUiLCJodHRwOi8vc2NoZW1hcy5rbm93bWFkaWNzLmNvbS9TaWx2ZXJFeWUvMjAxNy8wMS9pZGVudGl0eS9jbGFpbXMvYXV0b1N5bmMiOiIxIiwiaHR0cDovL3NjaGVtYXMua25vd21hZGljcy5jb20vU2lsdmVyRXllLzIwMTcvMDEvaWRlbnRpdHkvY2xhaW1zL2ZpcnN0VGltZUxvZ2luIjoiZmFsc2UiLCJodHRwOi8vc2NoZW1hcy5rbm93bWFkaWNzLmNvbS9TaWx2ZXJFeWUvMjAxNy8wMS9pZGVudGl0eS9jbGFpbXMvYWxsb3dBZGp1c3QiOiIxIiwiaHR0cDovL3NjaGVtYXMua25vd21hZGljcy5jb20vU2lsdmVyRXllLzIwMTcvMDEvaWRlbnRpdHkvY2xhaW1zL2RhdGVGb3JtYXQiOiJNTS9kZC95eXl5IiwiaHR0cDovL3NjaGVtYXMua25vd21hZGljcy5jb20vU2lsdmVyRXllLzIwMTcvMDEvaWRlbnRpdHkvY2xhaW1zL2RhdGVGb3JtYXRJZCI6IjEiLCJodHRwOi8vc2NoZW1hcy5rbm93bWFkaWNzLmNvbS9TaWx2ZXJFeWUvMjAxNy8wMS9pZGVudGl0eS9jbGFpbXMvdGltZUZvcm1hdCI6Img6bW06c3MgdHQiLCJodHRwOi8vc2NoZW1hcy5rbm93bWFkaWNzLmNvbS9TaWx2ZXJFeWUvMjAxNy8wMS9pZGVudGl0eS9jbGFpbXMvdGltZUZvcm1hdElkIjoiMyIsImh0dHA6Ly9zY2hlbWFzLmtub3dtYWRpY3MuY29tL1NpbHZlckV5ZS8yMDE3LzAxL2lkZW50aXR5L2NsYWltcy9sb2NhdGlvbkZvcm1hdCI6IlVUTSIsImh0dHA6Ly9zY2hlbWFzLmtub3dtYWRpY3MuY29tL1NpbHZlckV5ZS8yMDE3LzAxL2lkZW50aXR5L2NsYWltcy9sb2NhdGlvbkZvcm1hdElkIjoiNCIsImh0dHA6Ly9zY2hlbWFzLmtub3dtYWRpY3MuY29tL1NpbHZlckV5ZS8yMDE3LzAxL2lkZW50aXR5L2NsYWltcy91bml0T2ZNZWFzdXJlbWVudCI6Iktub3RzIiwiaHR0cDovL3NjaGVtYXMua25vd21hZGljcy5jb20vU2lsdmVyRXllLzIwMTcvMDEvaWRlbnRpdHkvY2xhaW1zL3VuaXRPZk1lYXN1cmVtZW50SWQiOiIzIiwiaHR0cDovL3NjaGVtYXMua25vd21hZGljcy5jb20vU2lsdmVyRXllLzIwMTcvMDEvaWRlbnRpdHkvY2xhaW1zL29mZnNldCI6Ii01LjAwIiwibGFuZ3VhZ2VJZCI6IjIzIiwianRpIjoiQjdDRTQ2RjlCODFDRDA5QzUwNTIxMTM0OTMwMkYxOTMiLCJzaWQiOiI3QUU5MzU3NEJEQ0RDNzYxNjNGQkMyMkRDM0RFN0JFMyIsImlhdCI6MTc2NjU1NTI5OSwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsIm9mZmxpbmVfYWNjZXNzIl0sImFtciI6WyJwd2QiXX0.ZyzaWgxY6adaOFRW7ubEn8snMIDu6HozRh84FH5dZjZoVpa7bQMk6ewW3LgKRDGTLXs9BAiyVZc6sLy2dKL7PgPMfyvGYsIC_bX_EHvsUf5MrLH2Mh9Cw6brZ2sToqrj4Ju62mBKffFYHRwp14SDcFA2yUX4oZoFng0hxQL3AVMKgRyGfWk4O4rlJ7-_0C7dxtcAK8FWmddJWz3gCCN7JPSHAw2fJj1baHzoN0mNT23e8OZrBwM67yLBf9hBPbVumu993GUvR7EwBa2wDVGlsIT6FOkqftnzFiPRsnY7x7IDhJJFyoKn96Dm3lgAaTNEOogh2YLQpeZgmQzyIuI1IA`
+  - Value: `Bearer xxx`
 
 ---
 
@@ -32,17 +32,12 @@ KMI Users
   - $top: `1`
 - Body: None
 
-### Expectations
-
-- Status Code: 2xx
-- Response Body: Optional
-
 ### Test Cases
 
 | ID     | Type     | Description                | Expected                        |
 |--------|----------|----------------------------|---------------------------------|
 | TC-001 | Positive | Valid GET request          | Status code is in range 200–299 |
 | TC-002 | Negative | Invalid method (GET)       | Status code is not 2xx          |
-| TC-003 | Negative | Ununauthorized request     | Status code is 401              |
+| TC-003 | Negative | Unauthorized request       | Status code is 401              |
 
 ---
