@@ -11,7 +11,7 @@
       "typeVersion": 2.1,
       "position": [
         -1344,
-        384
+        304
       ],
       "id": "b913230d-5e28-4c2c-8939-37406e002ee4",
       "name": "Webhook",
@@ -25,7 +25,7 @@
       "typeVersion": 2,
       "position": [
         -1120,
-        384
+        304
       ],
       "id": "2ee72d42-105c-44b9-b6fa-321b71eb284e",
       "name": "UUID"
@@ -50,7 +50,7 @@
       "typeVersion": 2.2,
       "position": [
         224,
-        384
+        352
       ],
       "id": "4c7e8672-b84c-48fd-9952-bc9d1617153c",
       "name": "Send a message",
@@ -61,8 +61,7 @@
           "id": "tlS2tP7X2B1KvXCg",
           "name": "Gmail account"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -73,26 +72,11 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1.1,
       "position": [
-        -448,
-        48
+        -224,
+        -16
       ],
       "id": "2d261b87-1600-4c6c-83e6-7353969cab2f",
       "name": "Extract from File"
-    },
-    {
-      "parameters": {
-        "mode": "markdownToHtml",
-        "markdown": "={{ $json.data }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.markdown",
-      "typeVersion": 1,
-      "position": [
-        -224,
-        48
-      ],
-      "id": "66dca722-9b0d-487b-ad83-721dddb9a8c8",
-      "name": "Markdown"
     },
     {
       "parameters": {
@@ -118,7 +102,7 @@
       "typeVersion": 2,
       "position": [
         0,
-        0
+        -64
       ],
       "id": "629ef820-56da-4d6f-91ed-a02be25997fc",
       "name": "Create message",
@@ -128,8 +112,7 @@
           "id": "x9gWBs65kuWF62zf",
           "name": "Microsoft Teams account"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -139,7 +122,7 @@
       "typeVersion": 1,
       "position": [
         -896,
-        384
+        304
       ],
       "id": "b3350f4b-9eee-4059-a053-c0cbca8cfc74",
       "name": "Codex Prompt"
@@ -155,7 +138,7 @@
       "typeVersion": 1,
       "position": [
         -672,
-        96
+        208
       ],
       "id": "fdb90e2f-fda8-4fa2-829c-69f280b6f0f3",
       "name": "summary.md"
@@ -171,7 +154,7 @@
       "typeVersion": 1,
       "position": [
         -672,
-        384
+        400
       ],
       "id": "c4bcc04e-9bf4-4d93-9040-6b288d18b246",
       "name": "test-results.md"
@@ -187,7 +170,7 @@
       "typeVersion": 1,
       "position": [
         -448,
-        552
+        560
       ],
       "id": "5c9a8aec-8ccb-439b-8f7a-8e7814e8d162",
       "name": "recommendations.md"
@@ -202,7 +185,7 @@
       "typeVersion": 3.2,
       "position": [
         -448,
-        336
+        304
       ],
       "id": "08a6e72a-f7b4-41a5-b4e6-12f4e6b751e6",
       "name": "Merge"
@@ -216,11 +199,11 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        -224,
-        432
+        0,
+        352
       ],
-      "id": "cc122adb-c62f-44a2-a536-3f93178eef5a",
-      "name": "Merge 1"
+      "id": "cb3735c2-6fae-4283-857a-b85825516e02",
+      "name": "Merge 2"
     },
     {
       "parameters": {
@@ -231,11 +214,27 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        0,
-        384
+        -224,
+        400
       ],
-      "id": "cb3735c2-6fae-4283-857a-b85825516e02",
-      "name": "Merge 2"
+      "id": "cc122adb-c62f-44a2-a536-3f93178eef5a",
+      "name": "Merge 1"
+    },
+    {
+      "parameters": {
+        "fileSelector": "./reports/summary.html",
+        "options": {
+          "dataPropertyName": "summary"
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        -16
+      ],
+      "id": "2d8e90ec-82c0-47c4-a720-85ecb2982902",
+      "name": "summary.html"
     }
   ],
   "pinData": {},
@@ -263,17 +262,6 @@
       ]
     },
     "Extract from File": {
-      "main": [
-        [
-          {
-            "node": "Markdown",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Markdown": {
       "main": [
         [
           {
@@ -306,6 +294,11 @@
             "node": "recommendations.md",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "summary.html",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -315,11 +308,6 @@
         [
           {
             "node": "Merge",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Extract from File",
             "type": "main",
             "index": 0
           }
@@ -359,6 +347,17 @@
         ]
       ]
     },
+    "Merge 2": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Merge 1": {
       "main": [
         [
@@ -370,11 +369,11 @@
         ]
       ]
     },
-    "Merge 2": {
+    "summary.html": {
       "main": [
         [
           {
-            "node": "Send a message",
+            "node": "Extract from File",
             "type": "main",
             "index": 0
           }
@@ -386,8 +385,9 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "4d784bdd-5c15-46d8-ac48-1afcbe635f50",
+  "versionId": "ed5bb160-6376-4b6f-ac1e-a964f92e546d",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "d0a98d1883d50ab1fb11f1c2089250d1d7492821be2ab8133be1cc4d824c5a45"
   },
   "id": "E0f5cnzVIdBg7CwD",
