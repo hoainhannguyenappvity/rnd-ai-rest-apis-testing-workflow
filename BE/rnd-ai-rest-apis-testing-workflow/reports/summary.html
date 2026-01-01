@@ -1,29 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>API Test Summary - KMI</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KMI API Test Summary</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --panel: #111827;
-      --accent: #22d3ee;
-      --accent-2: #a855f7;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --success: #22c55e;
-      --warn: #f59e0b;
-      --danger: #ef4444;
+      --bg: #0b1f33;
+      --panel: #102a44;
+      --text: #e8f1fa;
+      --muted: #a8bed5;
+      --accent: #2dd4bf;
+      --warn: #f97316;
+      --error: #ef4444;
+      --pass: #22c55e;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-      background: radial-gradient(120% 120% at 10% 20%, #1f2937 0%, #0f172a 45%, #0b1120 100%);
+      background: radial-gradient(circle at 15% 20%, rgba(45, 212, 191, 0.15), transparent 35%),
+                  radial-gradient(circle at 80% 10%, rgba(249, 115, 22, 0.15), transparent 35%),
+                  linear-gradient(135deg, #0b1f33, #0d2640);
       color: var(--text);
-      padding: 24px;
-      line-height: 1.5;
+    }
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
     }
     header {
       display: flex;
@@ -31,175 +35,201 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 12px;
-      margin-bottom: 20px;
+      padding: 18px 20px;
+      background: var(--panel);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
     }
-    .badge {
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      letter-spacing: 0.4px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #0b1120;
+    .title {
+      font-size: 22px;
       font-weight: 700;
+      letter-spacing: 0.3px;
     }
-    h1 { margin: 0; font-size: 24px; }
-    .grid {
+    nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      margin-left: 12px;
+    }
+    nav a:hover { color: #8cf3e6; }
+    .cards {
       display: grid;
-      gap: 16px;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin: 20px 0;
     }
     .card {
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 14px;
-      padding: 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      padding: 14px 16px;
+      min-height: 110px;
     }
-    .card h2 {
-      margin: 0 0 10px 0;
-      font-size: 16px;
+    .card h4 {
+      margin: 0 0 6px;
       color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
-    .metric {
-      font-size: 28px;
-      font-weight: 700;
-    }
-    .muted { color: var(--muted); font-size: 12px; }
-    .bar {
-      width: 100%;
-      height: 10px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 999px;
-      overflow: hidden;
-      margin-top: 8px;
-    }
-    .bar span {
-      display: block;
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-    }
-    .list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .list li {
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
+    .card .value { font-size: 24px; font-weight: 700; }
     .pill {
       display: inline-block;
       padding: 4px 10px;
-      border-radius: 10px;
+      border-radius: 20px;
       font-size: 12px;
       font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
     }
-    .pill.success { background: rgba(34, 197, 94, 0.15); color: var(--success); }
-    .pill.warn { background: rgba(245, 158, 11, 0.15); color: var(--warn); }
-    .pill.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
-    nav {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin: 8px 0 16px 0;
+    .pill.green { background: rgba(34, 197, 94, 0.18); color: var(--pass); }
+    .pill.red { background: rgba(239, 68, 68, 0.18); color: var(--error); }
+    .pill.amber { background: rgba(249, 115, 22, 0.18); color: var(--warn); }
+    .panel {
+      background: var(--panel);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 18px 20px;
+      margin-top: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     }
-    nav a {
+    .panel h3 { margin-top: 0; margin-bottom: 12px; }
+    .progress {
+      width: 100%;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      margin: 8px 0 6px;
+    }
+    .progress .bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--pass));
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+    ul { margin: 8px 0 0 18px; color: var(--muted); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
       color: var(--text);
-      text-decoration: none;
-      padding: 8px 12px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.02);
     }
-    nav a:hover { border-color: rgba(255, 255, 255, 0.2); }
-    .progress-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-top: 8px;
+    th, td {
+      padding: 10px 8px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
-    .progress-row span { min-width: 60px; }
-    @media (max-width: 600px) {
-      body { padding: 16px; }
-      h1 { font-size: 20px; }
+    th { color: var(--muted); font-size: 12px; letter-spacing: 0.3px; }
+    .status-pass { color: var(--pass); font-weight: 700; }
+    .status-fail { color: var(--error); font-weight: 700; }
+    .chip { padding: 4px 8px; border-radius: 10px; font-size: 12px; background: rgba(255,255,255,0.06); }
+    @media (max-width: 640px) {
+      header { flex-direction: column; align-items: flex-start; }
+      nav { margin-top: 6px; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <div>
-      <h1>API Test Summary</h1>
-      <div class="muted">Environment: https://qaweb360plus.360awareqa.com</div>
-      <div class="muted">Execution: 1m 27s | Date: 2025-12-24</div>
-    </div>
-    <div class="badge">All tests passed</div>
-  </header>
-
-  <nav>
-    <a href="#executive">Executive Summary</a>
-    <a href="#metrics">Metrics</a>
-    <a href="#coverage">Coverage</a>
-    <a href="#risks">Risks</a>
-  </nav>
-
-  <section id="executive" class="card">
-    <h2>Executive Summary</h2>
-    <p>Automated Newman run executed the KMI Users endpoint across positive, negative method, and unauthorized scenarios. Functional behavior matched expectations; primary concern is elevated response time on the valid GET call (~80s peak) despite small payload.</p>
-  </section>
-
-  <section id="metrics" class="grid">
-    <div class="card">
-      <h2>Pass / Fail</h2>
-      <div class="metric">5 / 0</div>
-      <div class="muted">Assertions Passed / Failed</div>
-      <div class="bar"><span style="width: 100%;"></span></div>
-    </div>
-    <div class="card">
-      <h2>Requests</h2>
-      <div class="metric">3</div>
-      <div class="muted">Across 1 API service</div>
-      <div class="progress-row">
-        <span class="muted">Positive</span>
-        <div class="bar"><span style="width: 33%; background: var(--success);"></span></div>
+  <div class="page">
+    <header>
+      <div>
+        <div class="title">KMI API Test Summary</div>
+        <div class="pill red">Auth Blocked</div>
       </div>
-      <div class="progress-row">
-        <span class="muted">Negative</span>
-        <div class="bar"><span style="width: 67%; background: var(--warn);"></span></div>
+      <nav>
+        <a href="#exec">Executive</a>
+        <a href="#metrics">Metrics</a>
+        <a href="#coverage">Coverage</a>
+        <a href="#issues">Issues</a>
+      </nav>
+    </header>
+
+    <section id="exec" class="panel">
+      <h3>Executive Summary</h3>
+      <p>Newman run completed against the provided Postman collection and environment. All authenticated flows returned 401 Unauthorized, preventing validation of the intended positive scenarios. Negative checks for unsupported verbs and invalid tokens behaved as expected. A valid bearer token is required before functional confidence can be established.</p>
+    </section>
+
+    <section id="metrics" class="panel">
+      <h3>Run Metrics</h3>
+      <div class="cards">
+        <div class="card"><h4>APIs Tested</h4><div class="value">3</div><div class="pill amber">Limited</div></div>
+        <div class="card"><h4>Test Cases (Requests)</h4><div class="value">20</div><div class="pill red">Pass 7 / Fail 13</div></div>
+        <div class="card"><h4>Assertions</h4><div class="value">30</div><div class="pill red">Pass 13 / Fail 17</div></div>
+        <div class="card"><h4>Duration</h4><div class="value">8.9s</div><div class="pill green">Avg 366ms</div></div>
+        <div class="card"><h4>Command</h4><div class="value" style="font-size:14px;line-height:1.4;">newman run .\\KMI.postman_collection.json -e .\\KMI.postman_environment.json</div></div>
       </div>
-    </div>
-    <div class="card">
-      <h2>Performance</h2>
-      <div class="metric">28.9s</div>
-      <div class="muted">Avg response (min 0.785s | max 80.8s)</div>
-      <div class="bar"><span style="width: 70%; background: var(--warn);"></span></div>
-    </div>
-    <div class="card">
-      <h2>Data</h2>
-      <div class="metric">2.37 kB</div>
-      <div class="muted">Total data received</div>
-    </div>
-  </section>
+      <div class="metrics-grid">
+        <div>
+          <div class="muted">Request Pass Rate</div>
+          <div class="progress"><div class="bar" style="width:35%;"></div></div>
+          <div class="pill red">35% passed</div>
+        </div>
+        <div>
+          <div class="muted">Assertion Pass Rate</div>
+          <div class="progress"><div class="bar" style="width:43%;"></div></div>
+          <div class="pill red">43% passed</div>
+        </div>
+        <div>
+          <div class="muted">Average Response Time</div>
+          <div class="progress"><div class="bar" style="width:50%; background: linear-gradient(90deg, #60a5fa, #2dd4bf);"></div></div>
+          <div class="pill green">366ms (min 257ms / max 1056ms)</div>
+        </div>
+      </div>
+    </section>
 
-  <section id="coverage" class="card">
-    <h2>Coverage</h2>
-    <ul class="list">
-      <li>
-        <strong>API-001: KMI Users Service</strong><br>
-        <span class="pill success">Valid</span>
-        <span class="pill warn">Invalid Method</span>
-        <span class="pill danger">Unauthorized</span>
-      </li>
-    </ul>
-  </section>
+    <section id="coverage" class="panel">
+      <h3>Coverage</h3>
+      <table>
+        <thead>
+          <tr><th>API</th><th>Pass / Total</th><th>Pass Rate</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>KMI - GET USERS</td>
+            <td>3 / 9</td>
+            <td>
+              <div class="progress" style="height:10px;">
+                <div class="bar" style="width:33%;"></div>
+              </div>
+            </td>
+            <td><span class="chip status-fail">Auth blocked</span></td>
+          </tr>
+          <tr>
+            <td>KMI - CREATE TEAM</td>
+            <td>2 / 8</td>
+            <td>
+              <div class="progress" style="height:10px;">
+                <div class="bar" style="width:25%;"></div>
+              </div>
+            </td>
+            <td><span class="chip status-fail">Auth blocked</span></td>
+          </tr>
+          <tr>
+            <td>KMI - CREATE PROJECT</td>
+            <td>2 / 3</td>
+            <td>
+              <div class="progress" style="height:10px;">
+                <div class="bar" style="width:67%;"></div>
+              </div>
+            </td>
+            <td><span class="chip status-fail">Auth blocked</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
-  <section id="risks" class="card">
-    <h2>Risks & Issues</h2>
-    <ul class="list">
-      <li>Performance: Valid GET call took up to ~80s; monitor and profile backend latency.</li>
-      <li>Tooling: Node deprecation warning (`fs.F_OK`) surfaced during Newman run; update Newman/Node to suppress noise.</li>
-    </ul>
-  </section>
+    <section id="issues" class="panel">
+      <h3>Key Issues</h3>
+      <ul>
+        <li>Provided `auth_token` returned HTTP 401 for all authenticated requests, blocking all positive and validation scenarios.</li>
+        <li>Schema/count/pagination assertions failed because responses were empty due to authorization failures.</li>
+        <li>Team/Project creation endpoints could not be validated for business rules (duplicate detection, field validation, etc.).</li>
+      </ul>
+    </section>
+  </div>
 </body>
 </html>
