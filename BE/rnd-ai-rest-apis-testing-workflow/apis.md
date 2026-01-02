@@ -8,10 +8,10 @@
 ## Variables
 
 - Name: `base_url`
-  - Value: `https://autotesting.360awareqa.com`
+  - Value: `https://qaweb360plus.360awareqa.com`
 
 - Name: `auth_token`
-  - Value: `Bearer xxx`
+  - Value: `Bearer <YOUR_AUTH_TOKEN_HERE>`
 
 ---
 
@@ -21,7 +21,7 @@
 
 GET USERS
 
-### Request
+### Request { API-001: KMI - GET USERS }
 
 - Method: GET
 - URL: `{{base_url}}/v2/web/odata/SEPAOrgs/SE.GetUsers`
@@ -32,7 +32,7 @@ GET USERS
   - $top: `1`
 - Body: None
 
-### Test Cases
+### Test Cases { API-001: KMI - GET USERS }
 
 | ID     | Category    | Description                | Request /Method / Params / Validation/ Query | Expected Result                          |
 | ------ | ----------- | -------------------------- | -------------------------------------------- | ---------------------------------------- |
@@ -52,11 +52,11 @@ GET USERS
 
 ## API-002: KMI - CREATE TEAM
 
-### Description
+### Description { API-002: KMI - CREATE TEAM }
 
 CREATE TEAM
 
-### Request
+### Request { API-002: KMI - CREATE TEAM }
 
 - Method: POST
 - URL: `{{base_url}}/v2/web/odata/SETeams`
@@ -72,7 +72,7 @@ CREATE TEAM
 }
 ```
 
-### Test Cases
+### Test Cases { API-002: KMI - CREATE TEAM }
 
 | ID     | Category | Description                   | Request /Method / Params / Validation/ Query | Expected Result                 |
 | ------ | -------- | ----------------------------- | -------------------------------------------- | ------------------------------- |
@@ -91,9 +91,9 @@ CREATE TEAM
 
 ---
 
-## API-002: KMI - CREATE PROJECT
+## API-003: KMI - CREATE PROJECT
 
-### Description
+### Description { API-003: KMI - CREATE PROJECT }
 
 CREATE PROJECT
 
@@ -122,7 +122,7 @@ CREATE PROJECT
 }
 ```
 
-### Test Cases
+### Test Cases { API-003: KMI - CREATE PROJECT }
 
 | ID     | Category | Description          | Request /Method / Params / Validation/ Query | Expected Result                 |
 | ------ | -------- | -------------------- | -------------------------------------------- | ------------------------------- |
