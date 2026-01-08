@@ -1,26 +1,26 @@
 import { readFile, writeFile } from 'fs/promises';
 
-const apiUrl = 'https://qaweb360plus.360awareqa.com/idsrv/connect/token';
+const apiUrl = 'https://autotesting.360awareqa.com/idsrv/connect/token';
 
 async function getAuthToken(username, password) {
-  const body = new URLSearchParams({
-    grant_type: 'password',
-    client_id: 'js',
-    username: username,
-    password: password,
-    scope: 'openid profile offline_access',
-  });
+	const body = new URLSearchParams({
+		grant_type: 'password',
+		client_id: 'js',
+		username: username,
+		password: password,
+		scope: 'openid profile offline_access',
+	});
 
-  return fetch(apiUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body,
-  });
+	return fetch(apiUrl, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+		},
+		body,
+	});
 }
 
-const auth = await getAuthToken('nhannguyen@appvity.com', 'P@ssw0rd');
+const auth = await getAuthToken('ptanh.iuh@gmail.com', 'P@ssword$2025!');
 const authData = await auth.json();
 console.log('Received access token:', authData.access_token);
 
