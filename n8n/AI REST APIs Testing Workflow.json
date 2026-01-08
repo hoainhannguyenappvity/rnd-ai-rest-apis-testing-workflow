@@ -1,385 +1,124 @@
 {
-  "name": "AI REST APIs Testing Workflow",
+  "name": "KMI REST APIs Testing",
   "nodes": [
     {
       "parameters": {
-        "operation": "text",
-        "binaryPropertyName": "summary",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1.1,
-      "position": [
-        -224,
-        -16
-      ],
-      "id": "2d261b87-1600-4c6c-83e6-7353969cab2f",
-      "name": "Extract from File"
-    },
-    {
-      "parameters": {
-        "fileSelector": "./reports/summary.md",
-        "options": {
-          "dataPropertyName": "summary"
-        }
-      },
-      "type": "n8n-nodes-base.readWriteFile",
-      "typeVersion": 1,
-      "position": [
-        -672,
-        200
-      ],
-      "id": "fdb90e2f-fda8-4fa2-829c-69f280b6f0f3",
-      "name": "summary.md"
-    },
-    {
-      "parameters": {
-        "fileSelector": "./reports/test-results.md",
-        "options": {
-          "dataPropertyName": "test-results"
-        }
-      },
-      "type": "n8n-nodes-base.readWriteFile",
-      "typeVersion": 1,
-      "position": [
-        -672,
-        392
-      ],
-      "id": "c4bcc04e-9bf4-4d93-9040-6b288d18b246",
-      "name": "test-results.md"
-    },
-    {
-      "parameters": {
-        "fileSelector": "./reports/recommendations.md",
-        "options": {
-          "dataPropertyName": "recommendations"
-        }
-      },
-      "type": "n8n-nodes-base.readWriteFile",
-      "typeVersion": 1,
-      "position": [
-        -448,
-        560
-      ],
-      "id": "5c9a8aec-8ccb-439b-8f7a-8e7814e8d162",
-      "name": "recommendations.md"
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combineBy": "combineAll",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        -448,
-        296
-      ],
-      "id": "08a6e72a-f7b4-41a5-b4e6-12f4e6b751e6",
-      "name": "Merge"
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combineBy": "combineAll",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        0,
-        344
-      ],
-      "id": "cb3735c2-6fae-4283-857a-b85825516e02",
-      "name": "Merge 2"
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combineBy": "combineAll",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        -224,
-        392
-      ],
-      "id": "cc122adb-c62f-44a2-a536-3f93178eef5a",
-      "name": "Merge 1"
-    },
-    {
-      "parameters": {
-        "fileSelector": "./reports/summary.html",
-        "options": {
-          "dataPropertyName": "summary"
-        }
-      },
-      "type": "n8n-nodes-base.readWriteFile",
-      "typeVersion": 1,
-      "position": [
-        -448,
-        -16
-      ],
-      "id": "2d8e90ec-82c0-47c4-a720-85ecb2982902",
-      "name": "summary.html"
-    },
-    {
-      "parameters": {
         "httpMethod": "POST",
-        "path": "ai-rest-apis-testing-workflow",
+        "path": "kmi-rest-apis-testing",
         "options": {}
       },
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
         -1344,
-        296
+        160
       ],
       "id": "b913230d-5e28-4c2c-8939-37406e002ee4",
-      "name": "AI REST APIs Testing Workflow",
+      "name": "Webhook",
       "webhookId": "91146eee-cded-4b0b-8fbd-c1cc989e173a"
     },
     {
       "parameters": {
-        "jsCode": "const uuid = require('uuid');\n\n// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.body.id = uuid.v4();\n}\n\nreturn $input.all();"
+        "command": "node env.mjs"
       },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
       "position": [
         -1120,
-        296
+        160
       ],
-      "id": "2ee72d42-105c-44b9-b6fa-321b71eb284e",
-      "name": "Workflow UUID"
+      "id": "8414a7bc-cb05-482e-b6c5-c34376d6e9d5",
+      "name": "Compile Environment"
     },
     {
       "parameters": {
-        "command": "=node run-codex.mjs"
+        "command": "node auth.mjs"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        160
+      ],
+      "id": "6377b864-f41a-4ab2-8b81-3609550004a1",
+      "name": "Get Access Token"
+    },
+    {
+      "parameters": {
+        "command": "node api.mjs"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
         -896,
-        296
+        160
       ],
-      "id": "b3350f4b-9eee-4059-a053-c0cbca8cfc74",
-      "name": "Codex"
+      "id": "efffaeb4-fd0a-4dce-9a9a-edeab581cc1b",
+      "name": "Compile Collection"
     },
     {
       "parameters": {
-        "resource": "channelMessage",
-        "teamId": {
-          "__rl": true,
-          "value": "05432cd9-d2b3-4e44-8212-28405f17eba4",
-          "mode": "list",
-          "cachedResultName": "RnD Discussion"
-        },
-        "channelId": {
-          "__rl": true,
-          "value": "19:KhGX9jZOR_wDXqvq-EtbXw4gnvZYSAnr6ZDhQpNiaBw1@thread.tacv2",
-          "mode": "list",
-          "cachedResultName": "General",
-          "cachedResultUrl": "https://teams.cloud.microsoft/l/channel/19%3AKhGX9jZOR_wDXqvq-EtbXw4gnvZYSAnr6ZDhQpNiaBw1%40thread.tacv2/RnD%20Discussion?groupId=05432cd9-d2b3-4e44-8212-28405f17eba4&tenantId=bfe53760-c13f-4271-9e14-60cf6e1727b8&allowXTenantAccess=True&ngc=True"
-        },
-        "contentType": "html",
-        "message": "={{ $json.data }}",
-        "options": {}
+        "command": "node run-test.mjs"
       },
-      "type": "n8n-nodes-base.microsoftTeams",
-      "typeVersion": 2,
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
       "position": [
-        0,
-        -64
+        -448,
+        160
       ],
-      "id": "629ef820-56da-4d6f-91ed-a02be25997fc",
-      "name": "MS Teams Channel Notification",
-      "webhookId": "28167806-20d1-4227-ae31-d66352f18997",
-      "credentials": {
-        "microsoftTeamsOAuth2Api": {
-          "id": "x9gWBs65kuWF62zf",
-          "name": "Microsoft Teams account"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "sendTo": "hoainhaannguyen@gmail.com",
-        "subject": "=REST APIs Testing {{ $now.format('dd/LL/yyyy h:mm:ss a') }}",
-        "message": "={{ $json.data }}",
-        "options": {
-          "appendAttribution": true,
-          "attachmentsUi": {
-            "attachmentsBinary": [
-              {
-                "property": "=summary,test-results,recommendations"
-              }
-            ]
-          }
-        }
-      },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.2,
-      "position": [
-        224,
-        344
-      ],
-      "id": "4c7e8672-b84c-48fd-9952-bc9d1617153c",
-      "name": "Gmail Notification",
-      "webhookId": "733b6fc0-fdfa-411c-8a70-fff2938bfe7a",
-      "executeOnce": false,
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "tlS2tP7X2B1KvXCg",
-          "name": "Gmail account"
-        }
-      },
-      "disabled": true
+      "id": "8e07684e-4f3f-48e4-ab25-a5a13319bd2d",
+      "name": "Run Test"
     }
   ],
   "pinData": {},
   "connections": {
-    "Extract from File": {
+    "Webhook": {
       "main": [
         [
           {
-            "node": "MS Teams Channel Notification",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Merge 2",
+            "node": "Compile Environment",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "summary.md": {
+    "Compile Environment": {
       "main": [
         [
           {
-            "node": "Merge",
+            "node": "Compile Collection",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "test-results.md": {
+    "Get Access Token": {
       "main": [
         [
           {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "recommendations.md": {
-      "main": [
-        [
-          {
-            "node": "Merge 1",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Merge": {
-      "main": [
-        [
-          {
-            "node": "Merge 1",
+            "node": "Run Test",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Merge 2": {
+    "Compile Collection": {
       "main": [
         [
           {
-            "node": "Gmail Notification",
+            "node": "Get Access Token",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Merge 1": {
+    "Run Test": {
       "main": [
-        [
-          {
-            "node": "Merge 2",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "summary.html": {
-      "main": [
-        [
-          {
-            "node": "Extract from File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "AI REST APIs Testing Workflow": {
-      "main": [
-        [
-          {
-            "node": "Workflow UUID",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Workflow UUID": {
-      "main": [
-        [
-          {
-            "node": "Codex",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Codex": {
-      "main": [
-        [
-          {
-            "node": "summary.md",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "test-results.md",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "recommendations.md",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "summary.html",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     }
   },
@@ -387,7 +126,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "ec746996-ccb7-491a-bc20-593b4ac4d4cf",
+  "versionId": "3ed30521-2def-4ce0-971d-a6ebb040be6c",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "d0a98d1883d50ab1fb11f1c2089250d1d7492821be2ab8133be1cc4d824c5a45"
