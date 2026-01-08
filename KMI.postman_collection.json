@@ -1,0 +1,379 @@
+﻿{
+  "info": {
+    "name": "KMI",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "API-001: KMI - GET USERS",
+      "item": [
+        {
+          "name": "TC-001",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEPAOrgs/SE.GetUsers?$top=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEPAOrgs",
+                "SE.GetUsers"
+              ],
+              "query": [
+                {
+                  "key": "$top",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is in range 200ƒ?\\\"299\", function () {",
+                  "  pm.expect(pm.response.code).to.be.within(200, 299);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-002",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "None"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEPAOrgs/SE.GetUsers?$top=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEPAOrgs",
+                "SE.GetUsers"
+              ],
+              "query": [
+                {
+                  "key": "$top",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-003",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEPAOrgs/SE.GetUsers?$top=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEPAOrgs",
+                "SE.GetUsers"
+              ],
+              "query": [
+                {
+                  "key": "$top",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"200 OK, returns exactly 1 user\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  var jsonData = {};",
+                  "  try { jsonData = pm.response.json(); } catch (e) {}",
+                  "  var count = null;",
+                  "  if (Array.isArray(jsonData)) { count = jsonData.length; }",
+                  "  else if (jsonData && Array.isArray(jsonData.value)) { count = jsonData.value.length; }",
+                  "  pm.expect(count, \"user count\").to.eql(1);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-004",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEPAOrgs/SE.GetUsers?$top=1&$count=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEPAOrgs",
+                "SE.GetUsers"
+              ],
+              "query": [
+                {
+                  "key": "$top",
+                  "value": "1"
+                },
+                {
+                  "key": "$count",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"200 OK, includes total count in response\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  var jsonData = {};",
+                  "  try { jsonData = pm.response.json(); } catch (e) {}",
+                  "  var hasCount = false;",
+                  "  if (jsonData && Object.prototype.hasOwnProperty.call(jsonData, \"@odata.count\")) { hasCount = true; }",
+                  "  if (jsonData && Object.prototype.hasOwnProperty.call(jsonData, \"count\")) { hasCount = true; }",
+                  "  pm.expect(hasCount, \"count present\").to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-005",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEPAOrgs/SE.GetUsers?$top=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEPAOrgs",
+                "SE.GetUsers"
+              ],
+              "query": [
+                {
+                  "key": "$top",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"405 Method Not Allowed\", function () {",
+                  "  pm.response.to.have.status(405);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-006",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEPAOrgs/SE.GetUsers?$top=1000&$count=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEPAOrgs",
+                "SE.GetUsers"
+              ],
+              "query": [
+                {
+                  "key": "$top",
+                  "value": "1000"
+                },
+                {
+                  "key": "$count",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"200 OK, response time < 3s\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.responseTime).to.be.below(3000);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-007",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEPAOrgs/SE.GetUsers?$skip=5000&$top=10&$count=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEPAOrgs",
+                "SE.GetUsers"
+              ],
+              "query": [
+                {
+                  "key": "$skip",
+                  "value": "5000"
+                },
+                {
+                  "key": "$top",
+                  "value": "10"
+                },
+                {
+                  "key": "$count",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"200 OK, response time acceptable\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.responseTime).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

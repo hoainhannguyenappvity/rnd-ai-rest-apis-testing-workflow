@@ -1,6 +1,6 @@
 import { spawn } from 'child_process';
 
-const proc = spawn('npx', ['codex', 'exec', 'prompt.md', '--sandbox=danger-full-access'], {
+const proc = spawn('npx', ['codex', 'exec', 'env-prompt.md', '--sandbox=danger-full-access'], {
   stdio: 'inherit',
   shell: true,
 });

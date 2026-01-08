@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KMI API Test Summary</title>
+  <style>
+    :root {
+      --bg: #f6f1e8;
+      --ink: #1f2a33;
+      --muted: #5b6b75;
+      --accent: #0f6c5f;
+      --accent-2: #c27b37;
+      --pass: #1e8e3e;
+      --fail: #c62828;
+      --card: #ffffff;
+      --stroke: #e0d7cc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Georgia", "Times New Roman", serif;
+      background: radial-gradient(800px 400px at 10% 0%, #fff6ea 0%, var(--bg) 60%),
+                  linear-gradient(135deg, #f3eadf 0%, #f6f1e8 100%);
+      color: var(--ink);
+    }
+    header {
+      padding: 32px 24px 16px;
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; }
+    .title {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+    .title h1 {
+      margin: 0;
+      font-size: 32px;
+      letter-spacing: 0.2px;
+    }
+    .badge {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #103c3a;
+      color: #fff;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .subtitle {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    nav {
+      margin-top: 18px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    nav a {
+      text-decoration: none;
+      color: var(--ink);
+      border-bottom: 2px solid transparent;
+      padding-bottom: 2px;
+    }
+    nav a:hover { border-color: var(--accent-2); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+      padding: 16px 24px 32px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(31, 42, 51, 0.08);
+    }
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+    }
+    .metric {
+      border: 1px dashed var(--stroke);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .metric .label { color: var(--muted); font-size: 12px; }
+    .metric .value { font-size: 20px; margin-top: 6px; }
+
+    .progress {
+      height: 14px;
+      background: #efe6db;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress .pass { height: 100%; width: 85.7%; background: var(--pass); }
+
+    .ratio {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      font-size: 14px;
+    }
+    .ratio span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot.pass { background: var(--pass); }
+    .dot.fail { background: var(--fail); }
+
+    .coverage {
+      height: 28px;
+      display: flex;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--stroke);
+    }
+    .coverage .pass { background: #3bb273; width: 85.7%; }
+    .coverage .fail { background: #e06464; width: 14.3%; }
+
+    .issue {
+      border-left: 4px solid var(--fail);
+      padding-left: 12px;
+      margin-top: 10px;
+    }
+    .issue code { font-family: "Courier New", monospace; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      border-bottom: 1px solid var(--stroke);
+      padding: 10px 6px;
+      text-align: left;
+    }
+    th { color: var(--muted); font-weight: normal; }
+
+    footer {
+      padding: 0 24px 40px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 720px) {
+      .grid { grid-template-columns: repeat(1, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="title">
+        <span class="badge">Executive Summary</span>
+        <h1>KMI API Test Report</h1>
+      </div>
+      <p class="subtitle">Collection: KMI | Environment: KMI.postman_environment.json | Duration: 3.9s</p>
+      <nav>
+        <a href="#overview">Overview</a>
+        <a href="#metrics">Metrics</a>
+        <a href="#coverage">Coverage</a>
+        <a href="#issues">Issues</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="grid wrap" id="overview">
+    <div class="card" style="grid-column: span 7;">
+      <h2>Overall Status</h2>
+      <p>1 API tested with 7 assertions. 6 passed and 1 failed. The failure is tied to a large-page request returning a 500 error.</p>
+      <div class="progress" aria-label="Pass rate">
+        <div class="pass"></div>
+      </div>
+      <div class="ratio" style="margin-top: 10px;">
+        <span><i class="dot pass"></i> Pass 85.7%</span>
+        <span><i class="dot fail"></i> Fail 14.3%</span>
+      </div>
+    </div>
+    <div class="card" style="grid-column: span 5;">
+      <h2>Risk Assessment</h2>
+      <p><strong>Medium</strong> risk: High-volume retrieval (`$top=1000` with `$count=true`) triggers server error. This may affect pagination, exports, or integration syncs.</p>
+    </div>
+  </section>
+
+  <section class="grid wrap" id="metrics">
+    <div class="card" style="grid-column: span 12;">
+      <h2>Key Metrics</h2>
+      <div class="metrics">
+        <div class="metric">
+          <div class="label">APIs Tested</div>
+          <div class="value">1</div>
+        </div>
+        <div class="metric">
+          <div class="label">Assertions</div>
+          <div class="value">7</div>
+        </div>
+        <div class="metric">
+          <div class="label">Passed</div>
+          <div class="value" style="color: var(--pass);">6</div>
+        </div>
+        <div class="metric">
+          <div class="label">Failed</div>
+          <div class="value" style="color: var(--fail);">1</div>
+        </div>
+        <div class="metric">
+          <div class="label">Avg Response</div>
+          <div class="value">506ms</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid wrap" id="coverage">
+    <div class="card" style="grid-column: span 12;">
+      <h2>Test Coverage Visualization</h2>
+      <div class="coverage" role="img" aria-label="Pass fail coverage">
+        <div class="pass"></div>
+        <div class="fail"></div>
+      </div>
+      <p style="margin-top: 8px; color: var(--muted);">Pass/Fail ratio across all assertions.</p>
+    </div>
+  </section>
+
+  <section class="grid wrap" id="issues">
+    <div class="card" style="grid-column: span 12;">
+      <h2>Key Issue</h2>
+      <div class="issue">
+        <p><code>API-001 / TC-006</code> expected 200 OK for `?$top=1000&$count=true` but received 500 Internal Server Error.</p>
+      </div>
+      <h2 style="margin-top: 18px;">Detailed Results</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Test Case</th>
+            <th>Method</th>
+            <th>Request</th>
+            <th>Expected</th>
+            <th>Actual</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>TC-001</td>
+            <td>GET</td>
+            <td>?$top=1</td>
+            <td>200-299</td>
+            <td>200 OK, 982ms</td>
+            <td style="color: var(--pass);">Pass</td>
+          </tr>
+          <tr>
+            <td>TC-002</td>
+            <td>GET</td>
+            <td>?$top=1 (unauthorized)</td>
+            <td>401</td>
+            <td>401 Unauthorized, 606ms</td>
+            <td style="color: var(--pass);">Pass</td>
+          </tr>
+          <tr>
+            <td>TC-003</td>
+            <td>GET</td>
+            <td>?$top=1</td>
+            <td>200 OK, 1 user</td>
+            <td>200 OK, 421ms</td>
+            <td style="color: var(--pass);">Pass</td>
+          </tr>
+          <tr>
+            <td>TC-004</td>
+            <td>GET</td>
+            <td>?$top=1&$count=true</td>
+            <td>200 OK, includes count</td>
+            <td>200 OK, 454ms</td>
+            <td style="color: var(--pass);">Pass</td>
+          </tr>
+          <tr>
+            <td>TC-005</td>
+            <td>POST</td>
+            <td>?$top=1</td>
+            <td>405 Method Not Allowed</td>
+            <td>405 Method Not Allowed, 263ms</td>
+            <td style="color: var(--pass);">Pass</td>
+          </tr>
+          <tr>
+            <td>TC-006</td>
+            <td>GET</td>
+            <td>?$top=1000&$count=true</td>
+            <td>200 OK, < 3s</td>
+            <td>500 Internal Server Error, 354ms</td>
+            <td style="color: var(--fail);">Fail</td>
+          </tr>
+          <tr>
+            <td>TC-007</td>
+            <td>GET</td>
+            <td>?$skip=5000&$top=10&$count=true</td>
+            <td>200 OK, response time acceptable</td>
+            <td>200 OK, 463ms</td>
+            <td style="color: var(--pass);">Pass</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="wrap">
+    Generated by Newman run for KMI collection.
+  </footer>
+</body>
+</html>
