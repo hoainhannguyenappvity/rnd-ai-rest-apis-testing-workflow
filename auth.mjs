@@ -1,6 +1,8 @@
 import { readFile, writeFile } from 'fs/promises';
 
 const apiUrl = 'https://autotesting.360awareqa.com/idsrv/connect/token';
+const username = 'ptanh.iuh@gmail.com';
+const password = 'P@ssword$2025!';
 
 async function getAuthToken(username, password) {
 	const body = new URLSearchParams({
@@ -20,12 +22,15 @@ async function getAuthToken(username, password) {
 	});
 }
 
-const auth = await getAuthToken('ptanh.iuh@gmail.com', 'P@ssword$2025!');
+const auth = await getAuthToken(username, password);
 const authData = await auth.json();
 console.log('Received access token:', authData.access_token);
 
-const env = JSON.parse(await readFile('./KMI.postman_environment.json', 'utf8'));
-env.values.find((v) => v.key === 'auth_token').value = 'Bearer ' + authData.access_token;
+// Strip BOM when reading
+const fileContent = await readFile('./KMI.postman_environment.json', 'utf8');
+const env = JSON.parse(fileContent.replace(/^\uFEFF/, ''));
+
+env.values.find((v) => v.key === 'auth_token').value = `Bearer ${authData.access_token}`;
 console.log('Updated auth_token in KMI.postman_environment.json file.');
 
 await writeFile('./KMI.postman_environment.json', JSON.stringify(env, null, 2), 'utf8');

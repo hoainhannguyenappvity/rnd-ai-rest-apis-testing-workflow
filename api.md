@@ -71,5 +71,7 @@ GET USERS API retrieves a list of users from the KMI system. It supports paginat
 | TC-010 | Security    | Injection payload in `name`              | **Method:** POST<br>**Body:** `{ "name": "Teams' OR '1'='1", "description": "test" }`                                     | No 5xx error; request rejected (400/422) or safely handled                                           |
 | TC-011 | Performance | Create team response time                | **Method:** POST<br>**Body:** `{ "name": "Teams Perf", "description": "performance test" }`                               | 200/201; response time < 3 seconds                                                                   |
 | TC-012 | Negative    | Invalid HTTP method on create endpoint   | **Method:** GET<br>**Body:** None                                                                                         | 405 Method Not Allowed (or appropriate 4xx); team is not created                                     |
+| TC-013 | Negative    | Invalid characters in `name`             | **Method:** POST<br>**Body:** `{ "name": "<Team>/?", "description": "invalid chars" }`                                    | 400/422; validation error for `name`; team is not created                                            |
+| TC-014 | Positive    | Description omitted                      | **Method:** POST<br>**Body:** `{ "name": "No Description" }`                                                              | 201 Created (or 200 OK); team is created with default/empty `description`                            |
 
 ---
