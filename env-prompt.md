@@ -1,6 +1,6 @@
 # Environment Prompt
 
-You are given an environment test specification in Markdown. Compile `env.md` into a Postman environment JSON file
+You are given an environment test specification in Markdown. Compile `./env.md` into a Postman environment JSON file
 
 ## Filesystem instructions
 
