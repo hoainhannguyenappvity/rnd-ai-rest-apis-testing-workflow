@@ -4,7 +4,7 @@ You are given an environment test specification in Markdown. Compile `./env.md` 
 
 ## Filesystem instructions
 
-- Output file path: `./KMI.postman_environment.json`
+- Output file path: `./eProduct.postman_environment.json`
 - Overwrite existing file
 
 ## Character Preservation Rules (MANDATORY)

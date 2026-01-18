@@ -2,7 +2,7 @@
 
 ## Step 1: Read Input File
 
-- First, read and parse the file: `./api.md`
+- First, read and parse the file: `./swagger/api.md`
 - Verify the file exists before proceeding
 - If file not found, ask user for the correct path
 
@@ -27,7 +27,7 @@ You will convert the API test specification from api.md into a Postman collectio
 
 ## Output Requirements
 
-- Output file path: `./KMI.postman_collection.json`
+- Output file path: `./eProduct.postman_collection.json`
 - Overwrite existing file if present
 - Write valid Postman collection JSON structure
 - Do NOT print JSON to stdout

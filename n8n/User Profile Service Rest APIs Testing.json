@@ -1,0 +1,158 @@
+{
+  "name": "User Profile Service Rest APIs Testing",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "eProduct-rest-apis-testing",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        7056,
+        -224
+      ],
+      "id": "3a6e6b66-a2f2-4d1f-95f5-e13e46ebe716",
+      "name": "Webhook",
+      "webhookId": "91146eee-cded-4b0b-8fbd-c1cc989e173a"
+    },
+    {
+      "parameters": {
+        "command": "node env.mjs"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        7504,
+        -224
+      ],
+      "id": "49867ea7-d264-406d-bcfc-37b3a26e4b03",
+      "name": "Compile Environment"
+    },
+    {
+      "parameters": {
+        "command": "node api.mjs"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        7728,
+        -224
+      ],
+      "id": "0929ff99-51a4-46e7-9113-0e86a8f08492",
+      "name": "Compile Collection"
+    },
+    {
+      "parameters": {
+        "command": "node run-test.mjs"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        7952,
+        -224
+      ],
+      "id": "276b98bc-b9bc-43dd-8e4c-3f479fee7c48",
+      "name": "Run Test"
+    },
+    {
+      "parameters": {
+        "command": "node swagger-to-markdown.mjs"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        7280,
+        -224
+      ],
+      "id": "72bc9fdc-5d60-4ac7-a9d1-e8c636064d27",
+      "name": "Swagger-Converter"
+    },
+    {
+      "parameters": {
+        "command": "node auth.mjs"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        7056,
+        -448
+      ],
+      "id": "392e1dd4-33d4-4e2b-ba08-770870328491",
+      "name": "Get Access Token",
+      "disabled": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Swagger-Converter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compile Environment": {
+      "main": [
+        [
+          {
+            "node": "Compile Collection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compile Collection": {
+      "main": [
+        [
+          {
+            "node": "Run Test",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Swagger-Converter": {
+      "main": [
+        [
+          {
+            "node": "Compile Environment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "620a286d-c8f9-4277-bba8-ada2c42cb66f",
+  "meta": {
+    "instanceId": "2c6c5c5d5054faa3d924207b750b56f86155bf8571728794386ee16d17e1cabc"
+  },
+  "id": "RW12W5Wt6jEc-nZ1PCUsk",
+  "tags": [
+    {
+      "updatedAt": "2026-01-16T08:38:35.496Z",
+      "createdAt": "2026-01-16T08:38:35.496Z",
+      "id": "k36AQxqkow79Z0Ee",
+      "name": "Swagger"
+    },
+    {
+      "updatedAt": "2026-01-16T08:38:35.495Z",
+      "createdAt": "2026-01-16T08:38:35.495Z",
+      "id": "rpOEnKJbi61uJIVG",
+      "name": "API Testing"
+    }
+  ]
+}

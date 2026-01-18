@@ -1,6 +1,6 @@
 # Run Test
 
-Get the output by running command `newman run KMI.postman_collection.json -e KMI.postman_environment.json`. Capture and analyze the complete output from the Newman execution and summarize findings clearly and professionally.
+Get the output by running command `newman run eProduct.postman_collection.json -e eProduct.postman_environment.json`. Capture and analyze the complete output from the Newman execution and summarize findings clearly and professionally.
 
 All outputs MUST be written to the `./reports/` folder using the following files:
 
