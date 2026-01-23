@@ -1,49 +1,19 @@
-# Run Test (Deterministic Newman-Driven Reports)
+# Run Test
 
-You are running in a non-interactive environment. Your ONLY task is to execute Newman, parse its machine-readable output, and generate reports based on the real results.
+Get the output by running command `newman run KMI.postman_collection.json -e KMI.postman_environment.json`. Capture and analyze the complete output from the Newman execution and summarize findings clearly and professionally.
 
-## Step 1: Preconditions
-
-- Ensure these files exist before running:
-  - `./KMI.postman_collection.json`
-  - `./KMI.postman_environment.json`
-- If any file is missing, print a clear error to stderr and exit non-zero.
-
-## Step 2: Run Newman (machine-readable)
-
-Run this command exactly and save JSON output:
-
-`newman run KMI.postman_collection.json -e KMI.postman_environment.json --reporters json --reporter-json-export ./reports/newman.json`
-
-- Do NOT rely on stdout for result parsing.
-- Exit non-zero if Newman fails to run.
-
-## Step 3: Parse Newman JSON (source of truth)
-
-Use `./reports/newman.json` as the ONLY source of truth for:
-- Pass/Fail status per test case
-- Actual response status/code
-- Execution time
-- Assertion errors
-
-### Pass/Fail rules (strict)
-
-- A test case is **Pass** only if all Newman assertions for that request pass.
-- If no assertions exist for a request, mark it as **Fail** with error: "No assertions found".
-- Do NOT infer pass/fail from response codes alone.
-
-## Step 4: Generate reports
-
-All outputs MUST be written to `./reports/`:
+All outputs MUST be written to the `./reports/` folder using the following files:
 
 1. `./reports/test-results.md`
+
    - List each API tested
-   - Test cases executed
-   - Pass/Fail from Newman assertions
-   - Expected vs Actual (expected from test case description; actual from response)
-   - Raw Newman assertion error excerpts (if failed)
+   - Test cases executed (based on Postman test scripts)
+   - Pass/Fail status from Newman execution
+   - Actual vs expected results
+   - Raw Newman output or relevant excerpts
 
 2. `./reports/summary.md`
+
    Include:
    - Total APIs tested
    - Total test cases
@@ -53,21 +23,51 @@ All outputs MUST be written to `./reports/`:
    - Execution time
    - Key issues found
    - Risk assessment and release recommendation
-   Do NOT mention assertions. Use simple, stakeholder-friendly language.
+
+   Do NOT mention assertions.
+   Use simple, stakeholder-friendly language.
 
 3. `./reports/summary.html`
-   Generate a standalone professional HTML dashboard with embedded CSS only.
+   
+Generate a standalone professional HTML API Test Report dashboard with embedded CSS only (no external libraries).
 
-### HTML Data Integrity Rules
+Include sections:
 
-- The Status column MUST reflect Newman pass/fail.
-- The “Actual” column MUST show the real response status text or code from Newman.
-- If a row is Fail, include a "View" expandable error with the failing assertion summaries.
-
-### UI Requirements
-
+## Header
 - Title: "KMI API Test Summary"
 - Navigation tabs: Executive Summary | Metrics | Coverage | Detailed Results
+
+## Executive Summary
+- Short executive summary paragraph
+- Pass rate badge (%)
+- Dark modern card UI
+
+## Metrics (KPI cards)
+- Total APIs tested
+- Total test cases
+- Passed
+- Failed
+- Execution time
+- Average response time
+- Labels and values bold, large, high contrast
+
+## Test Coverage
+- CSS-only donut chart for pass/fail ratio
+- Coverage progress bar (executed vs planned)
+- Text summary like: "10 passed, 4 failed" and "14 of 14 planned executed"  
+
+## Key Issues
+- Business-friendly bullet list (no raw logs)s
+
+## Detailed Results Table
+- Search box and status filter (All, Pass, Fail)
+- Columns: API, Test Case, Method, Endpoint, Status, Expected, Actual, Time(ms), Error
+- Status as colored badges
+- For failed test cases, render a "View" can expand in the Error column, when expand show a summary error for each assertions in the format: "Expected X, but Actual Y" 
+- Add a bold separator row between endpoint groups in the table.
+
+ 
+UI Requirements:
 - Dark modern dashboard theme
 - Rounded cards, subtle shadows
 - High contrast text
@@ -75,7 +75,11 @@ All outputs MUST be written to `./reports/`:
 - Responsive layout (flex/grid)
 - Embedded CSS only
 
-## Reliability Guardrails
 
-- If `./reports/newman.json` is missing or invalid JSON, exit non-zero.
-- If any required report file is not written, exit non-zero.
+
+
+
+
+
+
+
