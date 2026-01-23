@@ -231,6 +231,8 @@ function buildRequest(baseRequest, testCase) {
     const urlObj = parseUrl(url);
 
     // Build request object
+    const testScript = buildTestScript(testCase);
+
     const request = {
         name: `${testCase.id} - ${testCase.description}`,
         request: {
@@ -243,15 +245,7 @@ function buildRequest(baseRequest, testCase) {
                 listen: 'test',
                 script: {
                     type: 'text/javascript',
-                    exec: [
-                        `// Test Case: ${testCase.id}`,
-                        `// Expected: ${testCase.expectedResult}`,
-                        '',
-                        'pm.test("Status code validation", function () {',
-                        '    // Add your assertions based on expected result',
-                        '    pm.expect(pm.response.code).to.be.oneOf([200, 201, 400, 401, 403, 404, 409, 415, 422]);',
-                        '});'
-                    ]
+                    exec: testScript
                 }
             }
         ]
@@ -271,6 +265,134 @@ function buildRequest(baseRequest, testCase) {
     }
 
     return request;
+}
+
+function buildTestScript(testCase) {
+    const expected = deriveExpectations(testCase.expectedResult);
+    const lines = [];
+
+    lines.push(`// Test Case: ${testCase.id}`);
+    lines.push(`// Expected: ${testCase.expectedResult}`);
+    lines.push('');
+
+    if (expected.statusCodes.length > 0) {
+        lines.push('pm.test("Status code matches expected", function () {');
+        lines.push(`    pm.expect(pm.response.code).to.be.oneOf([${expected.statusCodes.join(', ')}]);`);
+        lines.push('});');
+        lines.push('');
+    }
+
+    if (expected.allowAny4xx) {
+        lines.push('pm.test("Status code is 4xx", function () {');
+        lines.push('    pm.expect(pm.response.code).to.be.within(400, 499);');
+        lines.push('});');
+        lines.push('');
+    }
+
+    if (expected.not5xx) {
+        lines.push('pm.test("No 5xx error", function () {');
+        lines.push('    pm.expect(pm.response.code).to.be.below(500);');
+        lines.push('});');
+        lines.push('');
+    }
+
+    if (expected.maxResponseTimeMs !== null) {
+        lines.push('pm.test("Response time under limit", function () {');
+        lines.push(`    pm.expect(pm.response.responseTime).to.be.below(${expected.maxResponseTimeMs});`);
+        lines.push('});');
+        lines.push('');
+    }
+
+    if (expected.requireIdOrKey || expected.requireId || expected.requireName || expected.requireDescription) {
+        lines.push('pm.test("Response body validation", function () {');
+        lines.push('    let json = null;');
+        lines.push('    try { json = pm.response.json(); } catch (e) { json = null; }');
+        lines.push('    pm.expect(json, "Response JSON must be parseable").to.be.an("object");');
+
+        if (expected.requireIdOrKey) {
+            lines.push('    pm.expect(json.id || json.key, "Response must include id or key").to.exist;');
+        } else if (expected.requireId) {
+            lines.push('    pm.expect(json.id, "Response must include id").to.exist;');
+        }
+
+        if (expected.requireName || expected.requireDescription) {
+            lines.push('    let reqBody = null;');
+            lines.push('    try { reqBody = JSON.parse(pm.request.body.raw); } catch (e) { reqBody = null; }');
+            lines.push('    pm.expect(reqBody, "Request body must be valid JSON").to.be.an("object");');
+            if (expected.requireName) {
+                lines.push('    pm.expect(json.name, "Response must include name").to.equal(reqBody.name);');
+            }
+            if (expected.requireDescription) {
+                lines.push('    pm.expect(json.description, "Response must include description").to.equal(reqBody.description ?? "");');
+            }
+        }
+
+        lines.push('});');
+        lines.push('');
+    }
+
+    if (lines[lines.length - 1] === '') {
+        lines.pop();
+    }
+
+    return lines;
+}
+
+function deriveExpectations(expectedResult) {
+    const text = expectedResult || '';
+    const statusCodes = extractStatusCodes(text);
+    const allowAny4xx = /appropriate 4xx/i.test(text);
+    const not5xx = /No 5xx/i.test(text);
+    const maxResponseTimeMs = extractResponseTime(text);
+
+    const requireId = /contains id\b/i.test(text);
+    const requireIdOrKey = /contains id\/key/i.test(text);
+    const requireName = /correct `name`/i.test(text) || /correct name/i.test(text);
+    const requireDescription = /correct `description`/i.test(text) || /correct description/i.test(text);
+
+    return {
+        statusCodes,
+        allowAny4xx,
+        not5xx,
+        maxResponseTimeMs,
+        requireId,
+        requireIdOrKey,
+        requireName,
+        requireDescription
+    };
+}
+
+function extractStatusCodes(text) {
+    const codes = new Set();
+
+    const slashMatch = text.match(/\b(\d{3})\s*\/\s*(\d{3})\b/g);
+    if (slashMatch) {
+        slashMatch.forEach(group => {
+            group.split('/').forEach(part => {
+                const num = Number(part.trim());
+                if (!Number.isNaN(num)) codes.add(num);
+            });
+        });
+    }
+
+    const orMatch = text.match(/\b(\d{3})\b/g);
+    if (orMatch) {
+        orMatch.forEach(code => {
+            const num = Number(code);
+            if (!Number.isNaN(num)) codes.add(num);
+        });
+    }
+
+    return Array.from(codes);
+}
+
+function extractResponseTime(text) {
+    const msMatch = text.match(/<\s*(\d+)\s*seconds/i);
+    if (msMatch) {
+        const seconds = Number(msMatch[1]);
+        if (!Number.isNaN(seconds)) return seconds * 1000;
+    }
+    return null;
 }
 
 function parseUrl(urlString) {
