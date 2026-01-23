@@ -1,35 +1,43 @@
 # API Prompt
 
-## Step 1: Read Input File
+You are given an environment test specification in Markdown. Compile `./api.md` into a Postman collection JSON file
 
-- First, read and parse the file: `./api.md`
-- Verify the file exists before proceeding
-- If file not found, ask user for the correct path
+## Step 1: Preconditions
+
+- Check that `./api.md` exists. If missing, stop and print a clear error to stderr, then exit with non-zero status.
+- Do NOT ask for user input or wait for confirmation.
 
 ## Step 2: Parse and Convert
 
-You will convert the API test specification from api.md into a Postman collection JSON file.
+Convert the API test specification in `./api.md` into a valid Postman collection JSON file.
 
-## Mapping Rules
+## Mapping Rules (Strict)
 
-- Each "## API-XXX" section MUST become a Postman folder
-- Each "TC-XXX" MUST become a separate Postman request
-- The "Request" section defines the base request
-- "Request Override" MUST override only the specified fields
-- The "Expected Result" section MUST be converted into Postman test scripts
+- Each section with heading `## API-XXX: ...` becomes a Postman folder.
+- The `### Request { ... }` section defines the base request for all test cases in that folder.
+- Each `TC-XXX` row in the Test Cases table becomes a separate Postman request.
+- "Request Override" modifies ONLY the specified fields (method, headers, body). Unspecified fields must inherit from the base request.
+- The "Expected Result" text must be converted into Postman test scripts for that request.
+
+## Output Requirements (Must Pass)
+
+- Write the JSON directly to `./KMI.postman_collection.json` (overwrite if exists).
+- Ensure the JSON is valid and includes:
+  - `info` with `name` and `schema`
+  - `item` array for folders and requests
+  - `request` and `event` (test scripts) for each test case
+- Do NOT print JSON to stdout.
+- Do NOT include markdown, code fences, or commentary in output.
+- Exit with code 0 ONLY if the file was created successfully.
+
+## Reliability Guardrails
+
+- After writing the file, re-open and parse it to confirm valid JSON and that `item.length > 0`.
+- If validation fails, write a concise error to stderr and exit with non-zero status.
 
 ## Character Preservation Rules (MANDATORY)
 
-- Treat all string values as immutable
-- Copy values byte-for-byte
-- No normalization, no escaping, no encoding
-- Preserve Unicode characters exactly
-
-## Output Requirements
-
-- Output file path: `./KMI.postman_collection.json`
-- Overwrite existing file if present
-- Write valid Postman collection JSON structure
-- Do NOT print JSON to stdout
-- Do NOT include markdown code blocks or comments
-- Execute automatically without pausing for user input
+- Treat all string values as immutable.
+- Copy values byte-for-byte.
+- No normalization, no escaping, no encoding.
+- Preserve Unicode characters exactly.
