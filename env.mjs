@@ -1,15 +1,15 @@
 import { spawn } from 'child_process';
 
-const proc = spawn('npx', ['codex', 'exec', 'env-prompt.md', '--sandbox=danger-full-access'], {
+const proc = spawn('node', ['generate-env.mjs'], {
   stdio: 'inherit',
   shell: true,
 });
 
 proc.on('close', (code) => {
-  console.log('Codex exited:', code);
+  console.log('Generator exited:', code);
   process.exit(code);
 });
 
 proc.on('error', (err) => {
-  console.error('Failed to start codex process:', err);
+  console.error('Failed to start generator process:', err);
 });
