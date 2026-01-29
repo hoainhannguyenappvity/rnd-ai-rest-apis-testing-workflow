@@ -1,0 +1,144 @@
+{
+  "name": "Numbering Services Rest APIs Testing",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "eProduct-rest-apis-testing",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        224
+      ],
+      "id": "3cfb75f2-0d1f-41dd-9a37-e246bb459717",
+      "name": "Webhook",
+      "webhookId": "91146eee-cded-4b0b-8fbd-c1cc989e173a"
+    },
+    {
+      "parameters": {
+        "command": "node env.mjs"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        448,
+        224
+      ],
+      "id": "90ad54d5-4044-4872-99cb-a48366481b47",
+      "name": "Compile Environment"
+    },
+    {
+      "parameters": {
+        "command": "node api.mjs"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        672,
+        224
+      ],
+      "id": "d86c04d7-21a3-485e-98c3-968b334b221a",
+      "name": "Compile Collection"
+    },
+    {
+      "parameters": {
+        "command": "node run-test.mjs"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        896,
+        224
+      ],
+      "id": "6336b79a-d37d-4a70-b091-789f38077c4b",
+      "name": "Run Test"
+    },
+    {
+      "parameters": {
+        "command": "node swagger-to-markdown.mjs"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        224,
+        224
+      ],
+      "id": "c494f22d-a040-4f8c-96a1-8c397f0d781d",
+      "name": "Swagger-Converter"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Swagger-Converter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compile Environment": {
+      "main": [
+        [
+          {
+            "node": "Compile Collection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compile Collection": {
+      "main": [
+        [
+          {
+            "node": "Run Test",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Swagger-Converter": {
+      "main": [
+        [
+          {
+            "node": "Compile Environment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "28ae7e38-64c5-451a-8d4f-45d0b49a5340",
+  "meta": {
+    "instanceId": "2c6c5c5d5054faa3d924207b750b56f86155bf8571728794386ee16d17e1cabc"
+  },
+  "id": "bFziHN_MlxZcX003KnZPO",
+  "tags": [
+    {
+      "updatedAt": "2026-01-16T08:38:35.496Z",
+      "createdAt": "2026-01-16T08:38:35.496Z",
+      "id": "k36AQxqkow79Z0Ee",
+      "name": "Swagger"
+    },
+    {
+      "updatedAt": "2026-01-16T08:38:35.495Z",
+      "createdAt": "2026-01-16T08:38:35.495Z",
+      "id": "rpOEnKJbi61uJIVG",
+      "name": "API Testing"
+    }
+  ]
+}

@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto';
 
 const envMdPath = './env.md';
 const authPath = './auth.mjs';
-const outputPath = './KMI.postman_environment.json';
+const outputPath = './eProduct.postman_environment.json';
 
 try {
 	const envMd = readFileSync(envMdPath, 'utf8');
@@ -17,7 +17,7 @@ try {
 
 	const environment = {
 		id: envMeta.id || randomUUID(),
-		name: envMeta.name || 'KMI Automation Environment',
+		name: envMeta.name || 'Automation Environment',
 		values: mergedValues.map((v) => ({
 			key: v.key,
 			value: v.value,

@@ -1,347 +1,258 @@
 # API Test Specifications
 This document defines REST APIs to be tested automatically by Codex AI. Each API block is independent and includes expectations and test scenarios.
-**Service:** User Profile Service
+**Service:** Numbering Service API
 **Version:** 1.0.0
-**Description:** Documentation
-**Base URL:** https://appservices-debug.appvity.com/ups/api/v1
+**Description:** API documentation for the Numbering Service. This service manages numbering configurations, request numbers, code mappings, sequential numbers, and running numbers.
+**Base URL:** http://numservice-qa.appvity.com/numbering-service/api/v1
 ---
-## API-001: GET ROOT
+## API-001: GET PING
 
 ### Description
 
-GET operation for /
+Simple health check endpoint
 
 
-### Request { API-001: GET ROOT }
+### Request { API-001: GET PING }
 
 - Method: GET
-- URL: `https://appservices-debug.appvity.com/ups/api/v1/`
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/ping`
 - Headers:
-  - x-appvity-currentuserid: `{{x-appvity-currentuserid}}`
+  - Content-Type: `application/json`
 - Params: None
 - Body: None
 
-### Test Cases { API-001: GET ROOT }
+### Test Cases { API-001: GET PING }
 
 | ID     | Category    | Description                  | Request Override                        | Expected Result                  |
 | ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
 | TC-001 | Positive    | Valid GET request            | Method: GET                             | 200 OK                           |
-| TC-002 | Negative    | Unauthorized request         | Headers: x-appvity-currentuserid = None | 401 Unauthorized                 |
-| TC-003 | Negative    | Invalid auth token           | Headers: x-appvity-currentuserid = "invalid-token" | 401 Unauthorized                 |
-| TC-004 | Negative    | Invalid HTTP method          | Method: POST                            | 405 Method Not Allowed           |
-| TC-005 | Security    | SQL injection in parameter   | Query: injection test                   | 400 Bad Request or safely handled |
-| TC-006 | Performance | Response time check          | Method: GET                             | 200-299, response time < 3s      |
+| TC-002 | Negative    | Invalid HTTP method          | Method: POST                            | 405 Method Not Allowed           |
+| TC-003 | Security    | SQL injection in parameter   | Query: injection test                   | 400 Bad Request or safely handled |
+| TC-004 | Performance | Response time check          | Method: GET                             | 200-299, response time < 3s      |
 
 ---
 
-## API-002: POST ROOT
+## API-002: GET CONFIG
 
 ### Description
 
-POST operation for /
+Retrieve all numbering configurations with optional OData query parameters
 
 
-### Request { API-002: POST ROOT }
+### Request { API-002: GET CONFIG }
+
+- Method: GET
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/config`
+- Headers:
+  - Content-Type: `application/json`
+- Query Params:
+  - $select: `{{$select}}`
+  - $filter: `{{$filter}}`
+  - $top: `{{$top}}`
+  - $count: `{{$count}}`
+  - $skip: `{{$skip}}`
+  - $orderby: `{{$orderby}}`
+- Body: None
+
+### Test Cases { API-002: GET CONFIG }
+
+| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
+| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
+| TC-001 | Positive    | Valid GET request            | Method: GET                             | 200 OK                           |
+| TC-002 | Negative    | Invalid HTTP method          | Method: POST                            | 405 Method Not Allowed           |
+| TC-003 | Security    | SQL injection in parameter   | Query: injection test                   | 400 Bad Request or safely handled |
+| TC-004 | Performance | Response time check          | Method: GET                             | 200-299, response time < 3s      |
+
+---
+
+## API-003: POST CONFIG
+
+### Description
+
+Create a new numbering configuration
+
+
+### Request { API-003: POST CONFIG }
 
 - Method: POST
-- URL: `https://appservices-debug.appvity.com/ups/api/v1/`
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/config`
 - Headers:
-  - x-appvity-currentuserid: `{{x-appvity-currentuserid}}`
-  - x-ups-connectionid: `{{x-ups-connectionid}}`
+  - Content-Type: `application/json`
 - Params: None
-- Body: None
+- Body: 
 
-### Test Cases { API-002: POST ROOT }
+```json
+{}
+```
+
+### Test Cases { API-003: POST CONFIG }
 
 | ID     | Category    | Description                  | Request Override                        | Expected Result                  |
 | ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
-| TC-001 | Positive    | Valid POST request           | Method: POST                            | 200-299 Success                  |
-| TC-002 | Negative    | Unauthorized request         | Headers: x-appvity-currentuserid = None | 401 Unauthorized                 |
-| TC-003 | Negative    | Invalid auth token           | Headers: x-appvity-currentuserid = "invalid-token" | 401 Unauthorized                 |
-| TC-004 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
-| TC-005 | Security    | SQL injection in parameter   | Query: injection test                   | 400 Bad Request or safely handled |
-| TC-006 | Performance | Response time check          | Method: POST                            | 200-299, response time < 3s      |
+| TC-001 | Positive    | Valid POST request           | Method: POST                            | 201 Created                      |
+| TC-002 | Negative    | Missing request body         | Body: None                              | 400 Bad Request                  |
+| TC-003 | Negative    | Invalid JSON body            | Body: malformed JSON                    | 400 Bad Request                  |
+| TC-004 | Negative    | Invalid Content-Type         | Headers: Content-Type = "text/plain"    | 415 Unsupported Media Type       |
+| TC-005 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
+| TC-006 | Security    | SQL injection in parameter   | Query: injection test                   | 400 Bad Request or safely handled |
+| TC-007 | Performance | Response time check          | Method: POST                            | 200-299, response time < 3s      |
 
 ---
 
-## API-003: GET USERFIELDID
+## API-004: GET CONFIG ID
 
 ### Description
 
-GET operation for /{userFieldId}
+Retrieve a specific numbering configuration by its ID
 
 
-### Request { API-003: GET USERFIELDID }
+### Request { API-004: GET CONFIG ID }
 
 - Method: GET
-- URL: `https://appservices-debug.appvity.com/ups/api/v1/{userFieldId}`
-- Headers:
-  - x-appvity-currentuserid: `{{x-appvity-currentuserid}}`
-- Path Params:
-  - userFieldId: `{{userFieldId}}`
-- Params: None
-- Body: None
-
-### Test Cases { API-003: GET USERFIELDID }
-
-| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
-| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
-| TC-001 | Positive    | Valid GET request            | Method: GET                             | 200-299 Success                  |
-| TC-002 | Negative    | Unauthorized request         | Headers: x-appvity-currentuserid = None | 401 Unauthorized                 |
-| TC-003 | Negative    | Invalid auth token           | Headers: x-appvity-currentuserid = "invalid-token" | 401 Unauthorized                 |
-| TC-004 | Negative    | Invalid userFieldId          | Path: userFieldId = "invalid-id"        | 400 Bad Request or 404 Not Found |
-| TC-005 | Negative    | Missing userFieldId          | Path: userFieldId = None                | 400 Bad Request                  |
-| TC-006 | Negative    | Invalid HTTP method          | Method: POST                            | 405 Method Not Allowed           |
-| TC-007 | Security    | SQL injection in parameter   | Path: userFieldId = "' OR '1'='1"       | 400 Bad Request or safely handled |
-| TC-008 | Performance | Response time check          | Method: GET                             | 200-299, response time < 3s      |
-
----
-
-## API-004: PATCH USERFIELDID
-
-### Description
-
-PATCH operation for /{userFieldId}
-
-
-### Request { API-004: PATCH USERFIELDID }
-
-- Method: PATCH
-- URL: `https://appservices-debug.appvity.com/ups/api/v1/{userFieldId}`
-- Headers:
-  - x-appvity-currentuserid: `{{x-appvity-currentuserid}}`
-- Path Params:
-  - userFieldId: `{{userFieldId}}`
-- Params: None
-- Body: None
-
-### Test Cases { API-004: PATCH USERFIELDID }
-
-| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
-| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
-| TC-001 | Positive    | Valid PATCH request          | Method: PATCH                           | 200-299 Success                  |
-| TC-002 | Negative    | Unauthorized request         | Headers: x-appvity-currentuserid = None | 401 Unauthorized                 |
-| TC-003 | Negative    | Invalid auth token           | Headers: x-appvity-currentuserid = "invalid-token" | 401 Unauthorized                 |
-| TC-004 | Negative    | Invalid userFieldId          | Path: userFieldId = "invalid-id"        | 400 Bad Request or 404 Not Found |
-| TC-005 | Negative    | Missing userFieldId          | Path: userFieldId = None                | 400 Bad Request                  |
-| TC-006 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
-| TC-007 | Security    | SQL injection in parameter   | Path: userFieldId = "' OR '1'='1"       | 400 Bad Request or safely handled |
-| TC-008 | Performance | Response time check          | Method: PATCH                           | 200-299, response time < 3s      |
-
----
-
-## API-005: DELETE USERFIELDID
-
-### Description
-
-DELETE operation for /{userFieldId}
-
-
-### Request { API-005: DELETE USERFIELDID }
-
-- Method: DELETE
-- URL: `https://appservices-debug.appvity.com/ups/api/v1/{userFieldId}`
-- Headers:
-  - x-appvity-currentuserid: `{{x-appvity-currentuserid}}`
-- Path Params:
-  - userFieldId: `{{userFieldId}}`
-- Params: None
-- Body: None
-
-### Test Cases { API-005: DELETE USERFIELDID }
-
-| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
-| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
-| TC-001 | Positive    | Valid DELETE request         | Method: DELETE                          | 200-299 Success                  |
-| TC-002 | Negative    | Unauthorized request         | Headers: x-appvity-currentuserid = None | 401 Unauthorized                 |
-| TC-003 | Negative    | Invalid auth token           | Headers: x-appvity-currentuserid = "invalid-token" | 401 Unauthorized                 |
-| TC-004 | Negative    | Invalid userFieldId          | Path: userFieldId = "invalid-id"        | 400 Bad Request or 404 Not Found |
-| TC-005 | Negative    | Missing userFieldId          | Path: userFieldId = None                | 400 Bad Request                  |
-| TC-006 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
-| TC-007 | Security    | SQL injection in parameter   | Path: userFieldId = "' OR '1'='1"       | 400 Bad Request or safely handled |
-| TC-008 | Performance | Response time check          | Method: DELETE                          | 200-299, response time < 3s      |
-
----
-
-## API-006: PATCH CONNECTIONID
-
-### Description
-
-PATCH operation for /{connectionId}
-
-
-### Request { API-006: PATCH CONNECTIONID }
-
-- Method: PATCH
-- URL: `https://appservices-debug.appvity.com/ups/api/v1/{connectionId}`
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/config/{id}`
 - Headers:
   - Content-Type: `application/json`
 - Path Params:
-  - connectionId: `{{connectionId}}`
+  - id: `{{id}}`
 - Params: None
 - Body: None
 
-### Test Cases { API-006: PATCH CONNECTIONID }
+### Test Cases { API-004: GET CONFIG ID }
 
 | ID     | Category    | Description                  | Request Override                        | Expected Result                  |
 | ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
-| TC-001 | Positive    | Valid PATCH request          | Method: PATCH                           | 200-299 Success                  |
-| TC-002 | Negative    | Invalid connectionId         | Path: connectionId = "invalid-id"       | 400 Bad Request or 404 Not Found |
-| TC-003 | Negative    | Missing connectionId         | Path: connectionId = None               | 400 Bad Request                  |
-| TC-004 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
-| TC-005 | Security    | SQL injection in parameter   | Path: connectionId = "' OR '1'='1"      | 400 Bad Request or safely handled |
-| TC-006 | Performance | Response time check          | Method: PATCH                           | 200-299, response time < 3s      |
-
----
-
-## API-007: GET CONNECTIONID
-
-### Description
-
-GET operation for /{connectionId}
-
-
-### Request { API-007: GET CONNECTIONID }
-
-- Method: GET
-- URL: `https://appservices-debug.appvity.com/ups/api/v1/{connectionId}`
-- Headers:
-  - Content-Type: `application/json`
-- Path Params:
-  - connectionId: `{{connectionId}}`
-- Params: None
-- Body: None
-
-### Test Cases { API-007: GET CONNECTIONID }
-
-| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
-| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
-| TC-001 | Positive    | Valid GET request            | Method: GET                             | 200-299 Success                  |
-| TC-002 | Negative    | Invalid connectionId         | Path: connectionId = "invalid-id"       | 400 Bad Request or 404 Not Found |
-| TC-003 | Negative    | Missing connectionId         | Path: connectionId = None               | 400 Bad Request                  |
+| TC-001 | Positive    | Valid GET request            | Method: GET                             | 200 OK                           |
+| TC-002 | Negative    | Invalid id                   | Path: id = "invalid-id"                 | 400 Bad Request or 404 Not Found |
+| TC-003 | Negative    | Missing id                   | Path: id = None                         | 400 Bad Request                  |
 | TC-004 | Negative    | Invalid HTTP method          | Method: POST                            | 405 Method Not Allowed           |
-| TC-005 | Security    | SQL injection in parameter   | Path: connectionId = "' OR '1'='1"      | 400 Bad Request or safely handled |
+| TC-005 | Security    | SQL injection in parameter   | Path: id = "' OR '1'='1"                | 400 Bad Request or safely handled |
 | TC-006 | Performance | Response time check          | Method: GET                             | 200-299, response time < 3s      |
 
 ---
 
-## API-008: DELETE CONNECTIONID
+## API-005: PATCH CONFIG ID
 
 ### Description
 
-DELETE operation for /{connectionId}
+Update a numbering configuration by ID
 
 
-### Request { API-008: DELETE CONNECTIONID }
+### Request { API-005: PATCH CONFIG ID }
 
-- Method: DELETE
-- URL: `https://appservices-debug.appvity.com/ups/api/v1/{connectionId}`
+- Method: PATCH
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/config/{id}`
 - Headers:
   - Content-Type: `application/json`
 - Path Params:
-  - connectionId: `{{connectionId}}`
+  - id: `{{id}}`
+- Params: None
+- Body: 
+
+```json
+{}
+```
+
+### Test Cases { API-005: PATCH CONFIG ID }
+
+| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
+| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
+| TC-001 | Positive    | Valid PATCH request          | Method: PATCH                           | 200 OK                           |
+| TC-002 | Negative    | Invalid id                   | Path: id = "invalid-id"                 | 400 Bad Request or 404 Not Found |
+| TC-003 | Negative    | Missing id                   | Path: id = None                         | 400 Bad Request                  |
+| TC-004 | Negative    | Missing request body         | Body: None                              | 400 Bad Request                  |
+| TC-005 | Negative    | Invalid JSON body            | Body: malformed JSON                    | 400 Bad Request                  |
+| TC-006 | Negative    | Invalid Content-Type         | Headers: Content-Type = "text/plain"    | 415 Unsupported Media Type       |
+| TC-007 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
+| TC-008 | Security    | SQL injection in parameter   | Path: id = "' OR '1'='1"                | 400 Bad Request or safely handled |
+| TC-009 | Performance | Response time check          | Method: PATCH                           | 200-299, response time < 3s      |
+
+---
+
+## API-006: DELETE CONFIG ID
+
+### Description
+
+Delete a numbering configuration by ID
+
+
+### Request { API-006: DELETE CONFIG ID }
+
+- Method: DELETE
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/config/{id}`
+- Headers:
+  - Content-Type: `application/json`
+- Path Params:
+  - id: `{{id}}`
 - Params: None
 - Body: None
 
-### Test Cases { API-008: DELETE CONNECTIONID }
+### Test Cases { API-006: DELETE CONFIG ID }
 
 | ID     | Category    | Description                  | Request Override                        | Expected Result                  |
 | ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
 | TC-001 | Positive    | Valid DELETE request         | Method: DELETE                          | 200-299 Success                  |
-| TC-002 | Negative    | Invalid connectionId         | Path: connectionId = "invalid-id"       | 400 Bad Request or 404 Not Found |
-| TC-003 | Negative    | Missing connectionId         | Path: connectionId = None               | 400 Bad Request                  |
+| TC-002 | Negative    | Invalid id                   | Path: id = "invalid-id"                 | 400 Bad Request or 404 Not Found |
+| TC-003 | Negative    | Missing id                   | Path: id = None                         | 400 Bad Request                  |
 | TC-004 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
-| TC-005 | Security    | SQL injection in parameter   | Path: connectionId = "' OR '1'='1"      | 400 Bad Request or safely handled |
+| TC-005 | Security    | SQL injection in parameter   | Path: id = "' OR '1'='1"                | 400 Bad Request or safely handled |
 | TC-006 | Performance | Response time check          | Method: DELETE                          | 200-299, response time < 3s      |
 
 ---
 
-## API-009: POST CONNECTIONID
+## API-007: GET CODEMAPPING
 
 ### Description
 
-POST operation for /{connectionId}
+Retrieve all code mappings with optional OData query parameters
 
 
-### Request { API-009: POST CONNECTIONID }
+### Request { API-007: GET CODEMAPPING }
 
-- Method: POST
-- URL: `https://appservices-debug.appvity.com/ups/api/v1/{connectionId}`
-- Headers:
-  - Content-Type: `application/json`
-- Path Params:
-  - connectionId: `{{connectionId}}`
-- Params: None
-- Body: None
-
-### Test Cases { API-009: POST CONNECTIONID }
-
-| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
-| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
-| TC-001 | Positive    | Valid POST request           | Method: POST                            | 200-299 Success                  |
-| TC-002 | Negative    | Invalid connectionId         | Path: connectionId = "invalid-id"       | 400 Bad Request or 404 Not Found |
-| TC-003 | Negative    | Missing connectionId         | Path: connectionId = None               | 400 Bad Request                  |
-| TC-004 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
-| TC-005 | Security    | SQL injection in parameter   | Path: connectionId = "' OR '1'='1"      | 400 Bad Request or safely handled |
-| TC-006 | Performance | Response time check          | Method: POST                            | 200-299, response time < 3s      |
-
----
-
-## API-010: POST CONNECTIONID RUN
-
-### Description
-
-POST operation for /{connectionId}/run
-
-
-### Request { API-010: POST CONNECTIONID RUN }
-
-- Method: POST
-- URL: `https://appservices-debug.appvity.com/ups/api/v1/{connectionId}/run`
-- Headers:
-  - Content-Type: `application/json`
-- Path Params:
-  - connectionId: `{{connectionId}}`
-- Params: None
-- Body: None
-
-### Test Cases { API-010: POST CONNECTIONID RUN }
-
-| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
-| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
-| TC-001 | Positive    | Valid POST request           | Method: POST                            | 200-299 Success                  |
-| TC-002 | Negative    | Invalid connectionId         | Path: connectionId = "invalid-id"       | 400 Bad Request or 404 Not Found |
-| TC-003 | Negative    | Missing connectionId         | Path: connectionId = None               | 400 Bad Request                  |
-| TC-004 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
-| TC-005 | Security    | SQL injection in parameter   | Path: connectionId = "' OR '1'='1"      | 400 Bad Request or safely handled |
-| TC-006 | Performance | Response time check          | Method: POST                            | 200-299, response time < 3s      |
-
----
-
-## API-011: POST CALLBACK
-
-### Description
-
-POST operation for /callback
-
-
-### Request { API-011: POST CALLBACK }
-
-- Method: POST
-- URL: `https://appservices-debug.appvity.com/ups/api/v1/callback`
+- Method: GET
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/codeMapping`
 - Headers:
   - Content-Type: `application/json`
 - Query Params:
-  - validationToken: `{{validationToken}}`
+  - $select: `{{$select}}`
+  - $filter: `{{$filter}}`
+  - $top: `{{$top}}`
+  - $count: `{{$count}}`
+  - $skip: `{{$skip}}`
+  - $orderby: `{{$orderby}}`
+- Body: None
+
+### Test Cases { API-007: GET CODEMAPPING }
+
+| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
+| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
+| TC-001 | Positive    | Valid GET request            | Method: GET                             | 200 OK                           |
+| TC-002 | Negative    | Invalid HTTP method          | Method: POST                            | 405 Method Not Allowed           |
+| TC-003 | Security    | SQL injection in parameter   | Query: injection test                   | 400 Bad Request or safely handled |
+| TC-004 | Performance | Response time check          | Method: GET                             | 200-299, response time < 3s      |
+
+---
+
+## API-008: POST CODEMAPPING
+
+### Description
+
+Create a new code mapping
+
+
+### Request { API-008: POST CODEMAPPING }
+
+- Method: POST
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/codeMapping`
+- Headers:
+  - Content-Type: `application/json`
+- Params: None
 - Body: 
 
 ```json
-{
-  "value": "any"
-}
+{}
 ```
 
-### Test Cases { API-011: POST CALLBACK }
+### Test Cases { API-008: POST CODEMAPPING }
 
 | ID     | Category    | Description                  | Request Override                        | Expected Result                  |
 | ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
@@ -355,95 +266,164 @@ POST operation for /callback
 
 ---
 
-## API-012: PATCH SUBSCRIPTIONID
+## API-009: GET CODEMAPPING ID
 
 ### Description
 
-PATCH operation for /{subscriptionId}
+Retrieve a specific code mapping by its ID
 
 
-### Request { API-012: PATCH SUBSCRIPTIONID }
+### Request { API-009: GET CODEMAPPING ID }
+
+- Method: GET
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/codeMapping/{id}`
+- Headers:
+  - Content-Type: `application/json`
+- Path Params:
+  - id: `{{id}}`
+- Params: None
+- Body: None
+
+### Test Cases { API-009: GET CODEMAPPING ID }
+
+| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
+| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
+| TC-001 | Positive    | Valid GET request            | Method: GET                             | 200 OK                           |
+| TC-002 | Negative    | Invalid id                   | Path: id = "invalid-id"                 | 400 Bad Request or 404 Not Found |
+| TC-003 | Negative    | Missing id                   | Path: id = None                         | 400 Bad Request                  |
+| TC-004 | Negative    | Invalid HTTP method          | Method: POST                            | 405 Method Not Allowed           |
+| TC-005 | Security    | SQL injection in parameter   | Path: id = "' OR '1'='1"                | 400 Bad Request or safely handled |
+| TC-006 | Performance | Response time check          | Method: GET                             | 200-299, response time < 3s      |
+
+---
+
+## API-010: PATCH CODEMAPPING ID
+
+### Description
+
+Update a code mapping by ID
+
+
+### Request { API-010: PATCH CODEMAPPING ID }
 
 - Method: PATCH
-- URL: `https://appservices-debug.appvity.com/ups/api/v1/{subscriptionId}`
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/codeMapping/{id}`
 - Headers:
   - Content-Type: `application/json`
 - Path Params:
-  - subscriptionId: `{{subscriptionId}}`
-- Params: None
-- Body: None
-
-### Test Cases { API-012: PATCH SUBSCRIPTIONID }
-
-| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
-| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
-| TC-001 | Positive    | Valid PATCH request          | Method: PATCH                           | 200-299 Success                  |
-| TC-002 | Negative    | Invalid subscriptionId       | Path: subscriptionId = "invalid-id"     | 400 Bad Request or 404 Not Found |
-| TC-003 | Negative    | Missing subscriptionId       | Path: subscriptionId = None             | 400 Bad Request                  |
-| TC-004 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
-| TC-005 | Security    | SQL injection in parameter   | Path: subscriptionId = "' OR '1'='1"    | 400 Bad Request or safely handled |
-| TC-006 | Performance | Response time check          | Method: PATCH                           | 200-299, response time < 3s      |
-
----
-
-## API-013: DELETE SUBSCRIPTIONID
-
-### Description
-
-DELETE operation for /{subscriptionId}
-
-
-### Request { API-013: DELETE SUBSCRIPTIONID }
-
-- Method: DELETE
-- URL: `https://appservices-debug.appvity.com/ups/api/v1/{subscriptionId}`
-- Headers:
-  - Content-Type: `application/json`
-- Path Params:
-  - subscriptionId: `{{subscriptionId}}`
-- Params: None
-- Body: None
-
-### Test Cases { API-013: DELETE SUBSCRIPTIONID }
-
-| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
-| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
-| TC-001 | Positive    | Valid DELETE request         | Method: DELETE                          | 200-299 Success                  |
-| TC-002 | Negative    | Invalid subscriptionId       | Path: subscriptionId = "invalid-id"     | 400 Bad Request or 404 Not Found |
-| TC-003 | Negative    | Missing subscriptionId       | Path: subscriptionId = None             | 400 Bad Request                  |
-| TC-004 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
-| TC-005 | Security    | SQL injection in parameter   | Path: subscriptionId = "' OR '1'='1"    | 400 Bad Request or safely handled |
-| TC-006 | Performance | Response time check          | Method: DELETE                          | 200-299, response time < 3s      |
-
----
-
-## API-014: POST POPULATE
-
-### Description
-
-POST operation for /populate
-
-
-### Request { API-014: POST POPULATE }
-
-- Method: POST
-- URL: `https://appservices-debug.appvity.com/ups/api/v1/populate`
-- Headers:
-  - Content-Type: `application/json`
+  - id: `{{id}}`
 - Params: None
 - Body: 
 
 ```json
-{
-  "userIds": "any"
-}
+{}
 ```
 
-### Test Cases { API-014: POST POPULATE }
+### Test Cases { API-010: PATCH CODEMAPPING ID }
 
 | ID     | Category    | Description                  | Request Override                        | Expected Result                  |
 | ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
-| TC-001 | Positive    | Valid POST request           | Method: POST                            | 200-299 Success                  |
+| TC-001 | Positive    | Valid PATCH request          | Method: PATCH                           | 200 OK                           |
+| TC-002 | Negative    | Invalid id                   | Path: id = "invalid-id"                 | 400 Bad Request or 404 Not Found |
+| TC-003 | Negative    | Missing id                   | Path: id = None                         | 400 Bad Request                  |
+| TC-004 | Negative    | Missing request body         | Body: None                              | 400 Bad Request                  |
+| TC-005 | Negative    | Invalid JSON body            | Body: malformed JSON                    | 400 Bad Request                  |
+| TC-006 | Negative    | Invalid Content-Type         | Headers: Content-Type = "text/plain"    | 415 Unsupported Media Type       |
+| TC-007 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
+| TC-008 | Security    | SQL injection in parameter   | Path: id = "' OR '1'='1"                | 400 Bad Request or safely handled |
+| TC-009 | Performance | Response time check          | Method: PATCH                           | 200-299, response time < 3s      |
+
+---
+
+## API-011: DELETE CODEMAPPING ID
+
+### Description
+
+Delete a code mapping by ID
+
+
+### Request { API-011: DELETE CODEMAPPING ID }
+
+- Method: DELETE
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/codeMapping/{id}`
+- Headers:
+  - Content-Type: `application/json`
+- Path Params:
+  - id: `{{id}}`
+- Params: None
+- Body: None
+
+### Test Cases { API-011: DELETE CODEMAPPING ID }
+
+| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
+| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
+| TC-001 | Positive    | Valid DELETE request         | Method: DELETE                          | 200 OK                           |
+| TC-002 | Negative    | Invalid id                   | Path: id = "invalid-id"                 | 400 Bad Request or 404 Not Found |
+| TC-003 | Negative    | Missing id                   | Path: id = None                         | 400 Bad Request                  |
+| TC-004 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
+| TC-005 | Security    | SQL injection in parameter   | Path: id = "' OR '1'='1"                | 400 Bad Request or safely handled |
+| TC-006 | Performance | Response time check          | Method: DELETE                          | 200-299, response time < 3s      |
+
+---
+
+## API-012: GET REQUESTNUMBER
+
+### Description
+
+Retrieve all request numbers with optional OData query parameters
+
+
+### Request { API-012: GET REQUESTNUMBER }
+
+- Method: GET
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/requestNumber`
+- Headers:
+  - Content-Type: `application/json`
+- Query Params:
+  - $select: `{{$select}}`
+  - $filter: `{{$filter}}`
+  - $top: `{{$top}}`
+  - $count: `{{$count}}`
+  - $skip: `{{$skip}}`
+  - $orderby: `{{$orderby}}`
+- Body: None
+
+### Test Cases { API-012: GET REQUESTNUMBER }
+
+| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
+| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
+| TC-001 | Positive    | Valid GET request            | Method: GET                             | 200 OK                           |
+| TC-002 | Negative    | Invalid HTTP method          | Method: POST                            | 405 Method Not Allowed           |
+| TC-003 | Security    | SQL injection in parameter   | Query: injection test                   | 400 Bad Request or safely handled |
+| TC-004 | Performance | Response time check          | Method: GET                             | 200-299, response time < 3s      |
+
+---
+
+## API-013: POST REQUESTNUMBER
+
+### Description
+
+Create a new request number
+
+
+### Request { API-013: POST REQUESTNUMBER }
+
+- Method: POST
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/requestNumber`
+- Headers:
+  - x-manual-ref-number: `{{x-manual-ref-number}}`
+- Params: None
+- Body: 
+
+```json
+{}
+```
+
+### Test Cases { API-013: POST REQUESTNUMBER }
+
+| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
+| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
+| TC-001 | Positive    | Valid POST request           | Method: POST                            | 200 OK                           |
 | TC-002 | Negative    | Missing request body         | Body: None                              | 400 Bad Request                  |
 | TC-003 | Negative    | Invalid JSON body            | Body: malformed JSON                    | 400 Bad Request                  |
 | TC-004 | Negative    | Invalid Content-Type         | Headers: Content-Type = "text/plain"    | 415 Unsupported Media Type       |
@@ -453,167 +433,398 @@ POST operation for /populate
 
 ---
 
-## API-015: GET USERID
+## API-014: GET REQUESTNUMBER SEARCH
 
 ### Description
 
-GET operation for /{userId}
+Get all request numbers by search keyword
 
 
-### Request { API-015: GET USERID }
+### Request { API-014: GET REQUESTNUMBER SEARCH }
 
 - Method: GET
-- URL: `https://appservices-debug.appvity.com/ups/api/v1/{userId}`
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/requestNumber/search`
 - Headers:
-  - x-appvity-currentuserid: `{{x-appvity-currentuserid}}`
-- Path Params:
-  - userId: `{{userId}}`
-- Params: None
+  - Content-Type: `application/json`
+- Query Params:
+  - $search: `{{$search}}`
 - Body: None
 
-### Test Cases { API-015: GET USERID }
+### Test Cases { API-014: GET REQUESTNUMBER SEARCH }
 
 | ID     | Category    | Description                  | Request Override                        | Expected Result                  |
 | ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
-| TC-001 | Positive    | Valid GET request            | Method: GET                             | 200-299 Success                  |
-| TC-002 | Negative    | Unauthorized request         | Headers: x-appvity-currentuserid = None | 401 Unauthorized                 |
-| TC-003 | Negative    | Invalid auth token           | Headers: x-appvity-currentuserid = "invalid-token" | 401 Unauthorized                 |
-| TC-004 | Negative    | Invalid userId               | Path: userId = "invalid-id"             | 400 Bad Request or 404 Not Found |
-| TC-005 | Negative    | Missing userId               | Path: userId = None                     | 400 Bad Request                  |
-| TC-006 | Negative    | Invalid HTTP method          | Method: POST                            | 405 Method Not Allowed           |
-| TC-007 | Security    | SQL injection in parameter   | Path: userId = "' OR '1'='1"            | 400 Bad Request or safely handled |
-| TC-008 | Performance | Response time check          | Method: GET                             | 200-299, response time < 3s      |
+| TC-001 | Positive    | Valid GET request            | Method: GET                             | 200 OK                           |
+| TC-002 | Negative    | Invalid HTTP method          | Method: POST                            | 405 Method Not Allowed           |
+| TC-003 | Security    | SQL injection in parameter   | Query: injection test                   | 400 Bad Request or safely handled |
+| TC-004 | Performance | Response time check          | Method: GET                             | 200-299, response time < 3s      |
 
 ---
 
-## API-016: PATCH USERID
+## API-015: POST REQUESTNUMBER BATCH
 
 ### Description
 
-PATCH operation for /{userId}
+Create multiple request numbers in batch
 
 
-### Request { API-016: PATCH USERID }
+### Request { API-015: POST REQUESTNUMBER BATCH }
+
+- Method: POST
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/requestNumber/batch`
+- Headers:
+  - Content-Type: `application/json`
+- Params: None
+- Body: 
+
+```json
+{}
+```
+
+### Test Cases { API-015: POST REQUESTNUMBER BATCH }
+
+| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
+| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
+| TC-001 | Positive    | Valid POST request           | Method: POST                            | 200 OK                           |
+| TC-002 | Negative    | Missing request body         | Body: None                              | 400 Bad Request                  |
+| TC-003 | Negative    | Invalid JSON body            | Body: malformed JSON                    | 400 Bad Request                  |
+| TC-004 | Negative    | Invalid Content-Type         | Headers: Content-Type = "text/plain"    | 415 Unsupported Media Type       |
+| TC-005 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
+| TC-006 | Security    | SQL injection in parameter   | Query: injection test                   | 400 Bad Request or safely handled |
+| TC-007 | Performance | Response time check          | Method: POST                            | 200-299, response time < 3s      |
+
+---
+
+## API-016: GET SEQUENTIALNUMBER
+
+### Description
+
+Retrieve all sequential numbers with optional OData query parameters
+
+
+### Request { API-016: GET SEQUENTIALNUMBER }
+
+- Method: GET
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/sequentialNumber`
+- Headers:
+  - Content-Type: `application/json`
+- Query Params:
+  - $select: `{{$select}}`
+  - $filter: `{{$filter}}`
+  - $top: `{{$top}}`
+  - $count: `{{$count}}`
+  - $skip: `{{$skip}}`
+  - $orderby: `{{$orderby}}`
+- Body: None
+
+### Test Cases { API-016: GET SEQUENTIALNUMBER }
+
+| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
+| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
+| TC-001 | Positive    | Valid GET request            | Method: GET                             | 200 OK                           |
+| TC-002 | Negative    | Invalid HTTP method          | Method: POST                            | 405 Method Not Allowed           |
+| TC-003 | Security    | SQL injection in parameter   | Query: injection test                   | 400 Bad Request or safely handled |
+| TC-004 | Performance | Response time check          | Method: GET                             | 200-299, response time < 3s      |
+
+---
+
+## API-017: POST SEQUENTIALNUMBER
+
+### Description
+
+Create a new sequential number
+
+
+### Request { API-017: POST SEQUENTIALNUMBER }
+
+- Method: POST
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/sequentialNumber`
+- Headers:
+  - Content-Type: `application/json`
+- Params: None
+- Body: 
+
+```json
+{}
+```
+
+### Test Cases { API-017: POST SEQUENTIALNUMBER }
+
+| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
+| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
+| TC-001 | Positive    | Valid POST request           | Method: POST                            | 201 Created                      |
+| TC-002 | Negative    | Missing request body         | Body: None                              | 400 Bad Request                  |
+| TC-003 | Negative    | Invalid JSON body            | Body: malformed JSON                    | 400 Bad Request                  |
+| TC-004 | Negative    | Invalid Content-Type         | Headers: Content-Type = "text/plain"    | 415 Unsupported Media Type       |
+| TC-005 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
+| TC-006 | Security    | SQL injection in parameter   | Query: injection test                   | 400 Bad Request or safely handled |
+| TC-007 | Performance | Response time check          | Method: POST                            | 200-299, response time < 3s      |
+
+---
+
+## API-018: GET SEQUENTIALNUMBER ID
+
+### Description
+
+Retrieve a specific sequential number by its ID
+
+
+### Request { API-018: GET SEQUENTIALNUMBER ID }
+
+- Method: GET
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/sequentialNumber/{id}`
+- Headers:
+  - Content-Type: `application/json`
+- Path Params:
+  - id: `{{id}}`
+- Params: None
+- Body: None
+
+### Test Cases { API-018: GET SEQUENTIALNUMBER ID }
+
+| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
+| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
+| TC-001 | Positive    | Valid GET request            | Method: GET                             | 200 OK                           |
+| TC-002 | Negative    | Invalid id                   | Path: id = "invalid-id"                 | 400 Bad Request or 404 Not Found |
+| TC-003 | Negative    | Missing id                   | Path: id = None                         | 400 Bad Request                  |
+| TC-004 | Negative    | Invalid HTTP method          | Method: POST                            | 405 Method Not Allowed           |
+| TC-005 | Security    | SQL injection in parameter   | Path: id = "' OR '1'='1"                | 400 Bad Request or safely handled |
+| TC-006 | Performance | Response time check          | Method: GET                             | 200-299, response time < 3s      |
+
+---
+
+## API-019: PATCH SEQUENTIALNUMBER ID
+
+### Description
+
+Update a sequential number by ID
+
+
+### Request { API-019: PATCH SEQUENTIALNUMBER ID }
 
 - Method: PATCH
-- URL: `https://appservices-debug.appvity.com/ups/api/v1/{userId}`
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/sequentialNumber/{id}`
 - Headers:
-  - x-appvity-currentuserid: `{{x-appvity-currentuserid}}`
+  - Content-Type: `application/json`
 - Path Params:
-  - userId: `{{userId}}`
+  - id: `{{id}}`
 - Params: None
-- Body: None
+- Body: 
 
-### Test Cases { API-016: PATCH USERID }
+```json
+{}
+```
+
+### Test Cases { API-019: PATCH SEQUENTIALNUMBER ID }
 
 | ID     | Category    | Description                  | Request Override                        | Expected Result                  |
 | ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
-| TC-001 | Positive    | Valid PATCH request          | Method: PATCH                           | 200-299 Success                  |
-| TC-002 | Negative    | Unauthorized request         | Headers: x-appvity-currentuserid = None | 401 Unauthorized                 |
-| TC-003 | Negative    | Invalid auth token           | Headers: x-appvity-currentuserid = "invalid-token" | 401 Unauthorized                 |
-| TC-004 | Negative    | Invalid userId               | Path: userId = "invalid-id"             | 400 Bad Request or 404 Not Found |
-| TC-005 | Negative    | Missing userId               | Path: userId = None                     | 400 Bad Request                  |
-| TC-006 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
-| TC-007 | Security    | SQL injection in parameter   | Path: userId = "' OR '1'='1"            | 400 Bad Request or safely handled |
-| TC-008 | Performance | Response time check          | Method: PATCH                           | 200-299, response time < 3s      |
+| TC-001 | Positive    | Valid PATCH request          | Method: PATCH                           | 200 OK                           |
+| TC-002 | Negative    | Invalid id                   | Path: id = "invalid-id"                 | 400 Bad Request or 404 Not Found |
+| TC-003 | Negative    | Missing id                   | Path: id = None                         | 400 Bad Request                  |
+| TC-004 | Negative    | Missing request body         | Body: None                              | 400 Bad Request                  |
+| TC-005 | Negative    | Invalid JSON body            | Body: malformed JSON                    | 400 Bad Request                  |
+| TC-006 | Negative    | Invalid Content-Type         | Headers: Content-Type = "text/plain"    | 415 Unsupported Media Type       |
+| TC-007 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
+| TC-008 | Security    | SQL injection in parameter   | Path: id = "' OR '1'='1"                | 400 Bad Request or safely handled |
+| TC-009 | Performance | Response time check          | Method: PATCH                           | 200-299, response time < 3s      |
 
 ---
 
-## API-017: DELETE USERID
+## API-020: DELETE SEQUENTIALNUMBER ID
 
 ### Description
 
-DELETE operation for /{userId}
+Delete a sequential number by ID
 
 
-### Request { API-017: DELETE USERID }
+### Request { API-020: DELETE SEQUENTIALNUMBER ID }
 
 - Method: DELETE
-- URL: `https://appservices-debug.appvity.com/ups/api/v1/{userId}`
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/sequentialNumber/{id}`
 - Headers:
-  - x-appvity-currentuserid: `{{x-appvity-currentuserid}}`
+  - Content-Type: `application/json`
 - Path Params:
-  - userId: `{{userId}}`
+  - id: `{{id}}`
 - Params: None
 - Body: None
 
-### Test Cases { API-017: DELETE USERID }
+### Test Cases { API-020: DELETE SEQUENTIALNUMBER ID }
 
 | ID     | Category    | Description                  | Request Override                        | Expected Result                  |
 | ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
 | TC-001 | Positive    | Valid DELETE request         | Method: DELETE                          | 200-299 Success                  |
-| TC-002 | Negative    | Unauthorized request         | Headers: x-appvity-currentuserid = None | 401 Unauthorized                 |
-| TC-003 | Negative    | Invalid auth token           | Headers: x-appvity-currentuserid = "invalid-token" | 401 Unauthorized                 |
-| TC-004 | Negative    | Invalid userId               | Path: userId = "invalid-id"             | 400 Bad Request or 404 Not Found |
-| TC-005 | Negative    | Missing userId               | Path: userId = None                     | 400 Bad Request                  |
-| TC-006 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
-| TC-007 | Security    | SQL injection in parameter   | Path: userId = "' OR '1'='1"            | 400 Bad Request or safely handled |
-| TC-008 | Performance | Response time check          | Method: DELETE                          | 200-299, response time < 3s      |
+| TC-002 | Negative    | Invalid id                   | Path: id = "invalid-id"                 | 400 Bad Request or 404 Not Found |
+| TC-003 | Negative    | Missing id                   | Path: id = None                         | 400 Bad Request                  |
+| TC-004 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
+| TC-005 | Security    | SQL injection in parameter   | Path: id = "' OR '1'='1"                | 400 Bad Request or safely handled |
+| TC-006 | Performance | Response time check          | Method: DELETE                          | 200-299, response time < 3s      |
 
 ---
 
-## API-018: GET USERID PHOTO
+## API-021: GET RUNNINGNUMBER
 
 ### Description
 
-GET operation for /{userId}/photo
+Retrieve all running numbers with optional OData query parameters
 
 
-### Request { API-018: GET USERID PHOTO }
+### Request { API-021: GET RUNNINGNUMBER }
 
 - Method: GET
-- URL: `https://appservices-debug.appvity.com/ups/api/v1/{userId}/photo`
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/runningNumber`
 - Headers:
-  - x-appvity-currentuserid: `{{x-appvity-currentuserid}}`
-- Path Params:
-  - userId: `{{userId}}`
-- Params: None
+  - Content-Type: `application/json`
+- Query Params:
+  - $select: `{{$select}}`
+  - $filter: `{{$filter}}`
+  - $top: `{{$top}}`
+  - $count: `{{$count}}`
+  - $skip: `{{$skip}}`
+  - $orderby: `{{$orderby}}`
 - Body: None
 
-### Test Cases { API-018: GET USERID PHOTO }
+### Test Cases { API-021: GET RUNNINGNUMBER }
 
 | ID     | Category    | Description                  | Request Override                        | Expected Result                  |
 | ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
-| TC-001 | Positive    | Valid GET request            | Method: GET                             | 200-299 Success                  |
-| TC-002 | Negative    | Unauthorized request         | Headers: x-appvity-currentuserid = None | 401 Unauthorized                 |
-| TC-003 | Negative    | Invalid auth token           | Headers: x-appvity-currentuserid = "invalid-token" | 401 Unauthorized                 |
-| TC-004 | Negative    | Invalid userId               | Path: userId = "invalid-id"             | 400 Bad Request or 404 Not Found |
-| TC-005 | Negative    | Missing userId               | Path: userId = None                     | 400 Bad Request                  |
-| TC-006 | Negative    | Invalid HTTP method          | Method: POST                            | 405 Method Not Allowed           |
-| TC-007 | Security    | SQL injection in parameter   | Path: userId = "' OR '1'='1"            | 400 Bad Request or safely handled |
-| TC-008 | Performance | Response time check          | Method: GET                             | 200-299, response time < 3s      |
+| TC-001 | Positive    | Valid GET request            | Method: GET                             | 200 OK                           |
+| TC-002 | Negative    | Invalid HTTP method          | Method: POST                            | 405 Method Not Allowed           |
+| TC-003 | Security    | SQL injection in parameter   | Query: injection test                   | 400 Bad Request or safely handled |
+| TC-004 | Performance | Response time check          | Method: GET                             | 200-299, response time < 3s      |
 
 ---
 
-## API-019: GET USERID PROFILE
+## API-022: POST RUNNINGNUMBER
 
 ### Description
 
-GET operation for /{userId}/profile
+Create a new running number
 
 
-### Request { API-019: GET USERID PROFILE }
+### Request { API-022: POST RUNNINGNUMBER }
 
-- Method: GET
-- URL: `https://appservices-debug.appvity.com/ups/api/v1/{userId}/profile`
+- Method: POST
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/runningNumber`
 - Headers:
-  - x-appvity-currentuserid: `{{x-appvity-currentuserid}}`
-- Path Params:
-  - userId: `{{userId}}`
+  - Content-Type: `application/json`
 - Params: None
-- Body: None
+- Body: 
 
-### Test Cases { API-019: GET USERID PROFILE }
+```json
+{}
+```
+
+### Test Cases { API-022: POST RUNNINGNUMBER }
 
 | ID     | Category    | Description                  | Request Override                        | Expected Result                  |
 | ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
-| TC-001 | Positive    | Valid GET request            | Method: GET                             | 200-299 Success                  |
-| TC-002 | Negative    | Unauthorized request         | Headers: x-appvity-currentuserid = None | 401 Unauthorized                 |
-| TC-003 | Negative    | Invalid auth token           | Headers: x-appvity-currentuserid = "invalid-token" | 401 Unauthorized                 |
-| TC-004 | Negative    | Invalid userId               | Path: userId = "invalid-id"             | 400 Bad Request or 404 Not Found |
-| TC-005 | Negative    | Missing userId               | Path: userId = None                     | 400 Bad Request                  |
-| TC-006 | Negative    | Invalid HTTP method          | Method: POST                            | 405 Method Not Allowed           |
-| TC-007 | Security    | SQL injection in parameter   | Path: userId = "' OR '1'='1"            | 400 Bad Request or safely handled |
-| TC-008 | Performance | Response time check          | Method: GET                             | 200-299, response time < 3s      |
+| TC-001 | Positive    | Valid POST request           | Method: POST                            | 201 Created                      |
+| TC-002 | Negative    | Missing request body         | Body: None                              | 400 Bad Request                  |
+| TC-003 | Negative    | Invalid JSON body            | Body: malformed JSON                    | 400 Bad Request                  |
+| TC-004 | Negative    | Invalid Content-Type         | Headers: Content-Type = "text/plain"    | 415 Unsupported Media Type       |
+| TC-005 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
+| TC-006 | Security    | SQL injection in parameter   | Query: injection test                   | 400 Bad Request or safely handled |
+| TC-007 | Performance | Response time check          | Method: POST                            | 200-299, response time < 3s      |
+
+---
+
+## API-023: GET RUNNINGNUMBER ID
+
+### Description
+
+Retrieve a specific running number by its ID
+
+
+### Request { API-023: GET RUNNINGNUMBER ID }
+
+- Method: GET
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/runningNumber/{id}`
+- Headers:
+  - Content-Type: `application/json`
+- Path Params:
+  - id: `{{id}}`
+- Params: None
+- Body: None
+
+### Test Cases { API-023: GET RUNNINGNUMBER ID }
+
+| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
+| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
+| TC-001 | Positive    | Valid GET request            | Method: GET                             | 200 OK                           |
+| TC-002 | Negative    | Invalid id                   | Path: id = "invalid-id"                 | 400 Bad Request or 404 Not Found |
+| TC-003 | Negative    | Missing id                   | Path: id = None                         | 400 Bad Request                  |
+| TC-004 | Negative    | Invalid HTTP method          | Method: POST                            | 405 Method Not Allowed           |
+| TC-005 | Security    | SQL injection in parameter   | Path: id = "' OR '1'='1"                | 400 Bad Request or safely handled |
+| TC-006 | Performance | Response time check          | Method: GET                             | 200-299, response time < 3s      |
+
+---
+
+## API-024: PATCH RUNNINGNUMBER ID
+
+### Description
+
+Update a running number by ID
+
+
+### Request { API-024: PATCH RUNNINGNUMBER ID }
+
+- Method: PATCH
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/runningNumber/{id}`
+- Headers:
+  - Content-Type: `application/json`
+- Path Params:
+  - id: `{{id}}`
+- Params: None
+- Body: 
+
+```json
+{}
+```
+
+### Test Cases { API-024: PATCH RUNNINGNUMBER ID }
+
+| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
+| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
+| TC-001 | Positive    | Valid PATCH request          | Method: PATCH                           | 200 OK                           |
+| TC-002 | Negative    | Invalid id                   | Path: id = "invalid-id"                 | 400 Bad Request or 404 Not Found |
+| TC-003 | Negative    | Missing id                   | Path: id = None                         | 400 Bad Request                  |
+| TC-004 | Negative    | Missing request body         | Body: None                              | 400 Bad Request                  |
+| TC-005 | Negative    | Invalid JSON body            | Body: malformed JSON                    | 400 Bad Request                  |
+| TC-006 | Negative    | Invalid Content-Type         | Headers: Content-Type = "text/plain"    | 415 Unsupported Media Type       |
+| TC-007 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
+| TC-008 | Security    | SQL injection in parameter   | Path: id = "' OR '1'='1"                | 400 Bad Request or safely handled |
+| TC-009 | Performance | Response time check          | Method: PATCH                           | 200-299, response time < 3s      |
+
+---
+
+## API-025: DELETE RUNNINGNUMBER ID
+
+### Description
+
+Delete a running number by ID
+
+
+### Request { API-025: DELETE RUNNINGNUMBER ID }
+
+- Method: DELETE
+- URL: `http://numservice-qa.appvity.com/numbering-service/api/v1/runningNumber/{id}`
+- Headers:
+  - Content-Type: `application/json`
+- Path Params:
+  - id: `{{id}}`
+- Params: None
+- Body: None
+
+### Test Cases { API-025: DELETE RUNNINGNUMBER ID }
+
+| ID     | Category    | Description                  | Request Override                        | Expected Result                  |
+| ------ | ----------- | ---------------------------- | --------------------------------------- | -------------------------------- |
+| TC-001 | Positive    | Valid DELETE request         | Method: DELETE                          | 200-299 Success                  |
+| TC-002 | Negative    | Invalid id                   | Path: id = "invalid-id"                 | 400 Bad Request or 404 Not Found |
+| TC-003 | Negative    | Missing id                   | Path: id = None                         | 400 Bad Request                  |
+| TC-004 | Negative    | Invalid HTTP method          | Method: GET                             | 405 Method Not Allowed           |
+| TC-005 | Security    | SQL injection in parameter   | Path: id = "' OR '1'='1"                | 400 Bad Request or safely handled |
+| TC-006 | Performance | Response time check          | Method: DELETE                          | 200-299, response time < 3s      |
 
 ---

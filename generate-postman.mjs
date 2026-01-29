@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 
-const apiMdPath = './api.md';
-const outputPath = './KMI.postman_collection.json';
+const apiMdPath = './swagger/api.md';
+const outputPath = './eProduct.postman_collection.json';
 
 try {
     // Read api.md
@@ -15,7 +15,7 @@ try {
     // Generate Postman collection
     const collection = {
         info: {
-            name: 'KMI API Test Collection',
+            name: 'eProduct API Test Collection',
             schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json'
         },
         item: []

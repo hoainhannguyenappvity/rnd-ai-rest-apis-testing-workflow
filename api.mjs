@@ -1,8 +1,8 @@
 import { spawn } from 'child_process';
 import { existsSync, readFileSync } from 'fs';
 
-const apiSpecPath = './api.md';
-const outputPath = './KMI.postman_collection.json';
+const apiSpecPath = './swagger/api.md';
+const outputPath = './eProduct.postman_collection.json';
 
 if (!existsSync(apiSpecPath)) {
   console.error(`Missing required file: ${apiSpecPath}`);

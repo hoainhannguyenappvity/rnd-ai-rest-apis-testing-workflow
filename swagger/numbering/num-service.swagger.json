@@ -1,0 +1,1326 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Numbering Service API",
+    "version": "1.0.0",
+    "description": "API documentation for the Numbering Service. This service manages numbering configurations, request numbers, code mappings, sequential numbers, and running numbers."
+  },
+  "servers": [
+    {
+      "url": "http://numservice-qa.appvity.com/numbering-service/api/v1",
+      "description": "Site QA"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Ping",
+      "description": "API for health check"
+    },
+    {
+      "name": "Numbering Config",
+      "description": "Operations related to numbering configurations"
+    },
+    {
+      "name": "Code Mapping",
+      "description": "Operations related to code mappings"
+    },
+    {
+      "name": "Request Number",
+      "description": "Operations related to request numbers"
+    },
+    {
+      "name": "Sequential Number",
+      "description": "Operations related to sequential numbers"
+    },
+    {
+      "name": "Running Number",
+      "description": "Operations related to running numbers"
+    }
+  ],
+  "paths": {
+    "/ping": {
+      "get": {
+        "tags": ["Ping"],
+        "summary": "Responds with pong",
+        "description": "Simple health check endpoint",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "pong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/config": {
+      "get": {
+        "tags": ["Numbering Config"],
+        "summary": "Get all numbering configurations",
+        "description": "Retrieve all numbering configurations with optional OData query parameters",
+        "parameters": [
+          {
+            "name": "$select",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Select specific fields"
+          },
+          {
+            "name": "$filter",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter results"
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Limit number of results"
+          },
+          {
+            "name": "$count",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            },
+            "description": "Include count in response"
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Skip number of results"
+          },
+          {
+            "name": "$orderby",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sort results"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Numbering Config"],
+        "summary": "Create new numbering configuration",
+        "description": "Create a new numbering configuration",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NumberingConfigCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/config/{id}": {
+      "get": {
+        "tags": ["Numbering Config"],
+        "summary": "Get numbering configuration by ID",
+        "description": "Retrieve a specific numbering configuration by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of config to return"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Numbering Config"],
+        "summary": "Update numbering configuration",
+        "description": "Update a numbering configuration by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NumberingConfigUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Numbering Config"],
+        "summary": "Delete numbering configuration",
+        "description": "Delete a numbering configuration by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "66c83976e38d4fd19ed0aa4b"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/codeMapping": {
+      "get": {
+        "tags": ["Code Mapping"],
+        "summary": "Get all code mappings",
+        "description": "Retrieve all code mappings with optional OData query parameters",
+        "parameters": [
+          {
+            "name": "$select",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$filter",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$count",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$orderby",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Code Mapping"],
+        "summary": "Create new code mapping",
+        "description": "Create a new code mapping",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CodeMappingCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/codeMapping/{id}": {
+      "get": {
+        "tags": ["Code Mapping"],
+        "summary": "Get code mapping by ID",
+        "description": "Retrieve a specific code mapping by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "66c83976e38d4fd19ed0aa4b"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Code Mapping"],
+        "summary": "Update code mapping",
+        "description": "Update a code mapping by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "66c83976e38d4fd19ed0aa4b"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CodeMappingUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Code Mapping"],
+        "summary": "Delete code mapping",
+        "description": "Delete a code mapping by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "66c83976e38d4fd19ed0aa4b"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/requestNumber": {
+      "get": {
+        "tags": ["Request Number"],
+        "summary": "Get all request numbers",
+        "description": "Retrieve all request numbers with optional OData query parameters",
+        "parameters": [
+          {
+            "name": "$select",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$filter",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$count",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$orderby",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Request Number"],
+        "summary": "Create a request number",
+        "description": "Create a new request number",
+        "parameters": [
+          {
+            "name": "x-manual-ref-number",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Manual reference number override"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestNumberCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request number success"
+          },
+          "203": {
+            "description": "Item has already request number"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/requestNumber/search": {
+      "get": {
+        "tags": ["Request Number"],
+        "summary": "Search request numbers",
+        "description": "Get all request numbers by search keyword",
+        "parameters": [
+          {
+            "name": "$search",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "search keyword"
+            },
+            "description": "Search keyword for request number, tenantId, application, object, teamId, channelId, etc..."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/requestNumber/batch": {
+      "post": {
+        "tags": ["Request Number"],
+        "summary": "Batch create request numbers",
+        "description": "Create multiple request numbers in batch",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestNumberBatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Batch request numbers success"
+          },
+          "203": {
+            "description": "Some items have already request numbers"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/sequentialNumber": {
+      "get": {
+        "tags": ["Sequential Number"],
+        "summary": "Get all sequential numbers",
+        "description": "Retrieve all sequential numbers with optional OData query parameters",
+        "parameters": [
+          {
+            "name": "$select",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$filter",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$count",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$orderby",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Sequential Number"],
+        "summary": "Create new sequential number",
+        "description": "Create a new sequential number",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SequentialNumberCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/sequentialNumber/{id}": {
+      "get": {
+        "tags": ["Sequential Number"],
+        "summary": "Get sequential number by ID",
+        "description": "Retrieve a specific sequential number by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of config to return"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Sequential Number"],
+        "summary": "Update sequential number",
+        "description": "Update a sequential number by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SequentialNumberUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Sequential Number"],
+        "summary": "Delete sequential number",
+        "description": "Delete a sequential number by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "66c83976e38d4fd19ed0aa4b"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/runningNumber": {
+      "get": {
+        "tags": ["Running Number"],
+        "summary": "Get all running numbers",
+        "description": "Retrieve all running numbers with optional OData query parameters",
+        "parameters": [
+          {
+            "name": "$select",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$filter",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$count",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$orderby",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Running Number"],
+        "summary": "Create new running number",
+        "description": "Create a new running number",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunningNumberCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/runningNumber/{id}": {
+      "get": {
+        "tags": ["Running Number"],
+        "summary": "Get running number by ID",
+        "description": "Retrieve a specific running number by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of config to return"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Running Number"],
+        "summary": "Update running number",
+        "description": "Update a running number by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunningNumberUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Running Number"],
+        "summary": "Delete running number",
+        "description": "Delete a running number by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "66c83976e38d4fd19ed0aa4b"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "NumberingConfigCreate": {
+        "type": "object",
+        "required": [
+          "tenantId",
+          "object",
+          "application",
+          "integerDigit",
+          "numberingPattern",
+          "numberingPatternHTML",
+          "sequentialNumberDef"
+        ],
+        "properties": {
+          "tenantId": {
+            "type": "string",
+            "example": "tenantId"
+          },
+          "teamId": {
+            "type": "string",
+            "example": "teamId"
+          },
+          "channelId": {
+            "type": "string",
+            "example": "channelId"
+          },
+          "object": {
+            "type": "string",
+            "example": "eFiles"
+          },
+          "application": {
+            "type": "string",
+            "example": "eFiles"
+          },
+          "code": {
+            "type": "string",
+            "example": "FNL"
+          },
+          "integerDigit": {
+            "type": "string",
+            "example": "D5"
+          },
+          "numberingPattern": {
+            "type": "string"
+          },
+          "numberingPatternHTML": {
+            "type": "string"
+          },
+          "sequentialNumberDef": {
+            "type": "string"
+          }
+        }
+      },
+      "NumberingConfigUpdate": {
+        "type": "object",
+        "properties": {
+          "sequentialNumberDef": {
+            "type": "string",
+            "example": "test"
+          },
+          "integerDigit": {
+            "type": "string",
+            "example": "test"
+          },
+          "numberingPattern": {
+            "type": "string",
+            "example": "test"
+          },
+          "numberingPatternHTML": {
+            "type": "string",
+            "example": "test"
+          },
+          "code": {
+            "type": "string",
+            "example": "test"
+          }
+        }
+      },
+      "CodeMappingCreate": {
+        "type": "object",
+        "required": [
+          "propertyName",
+          "value",
+          "code",
+          "tenantId",
+          "application",
+          "object"
+        ],
+        "properties": {
+          "propertyName": {
+            "type": "string",
+            "example": "tenantId"
+          },
+          "value": {
+            "type": "string",
+            "example": "bfe53760-c13f-4271-9e14-60cf6e1727b8"
+          },
+          "code": {
+            "type": "string",
+            "example": "APP"
+          },
+          "tenantId": {
+            "type": "string"
+          },
+          "application": {
+            "type": "string"
+          },
+          "object": {
+            "type": "string"
+          },
+          "teamId": {
+            "type": "string"
+          },
+          "channelId": {
+            "type": "string"
+          }
+        }
+      },
+      "CodeMappingUpdate": {
+        "type": "object",
+        "required": ["code"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "APP"
+          }
+        }
+      },
+      "RequestNumberCreate": {
+        "type": "object",
+        "required": [
+          "_id",
+          "tenantId",
+          "application",
+          "object",
+          "createdBy"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "tenantId": {
+            "type": "string"
+          },
+          "application": {
+            "type": "string"
+          },
+          "object": {
+            "type": "string"
+          },
+          "teamId": {
+            "type": "string"
+          },
+          "channelId": {
+            "type": "string"
+          },
+          "createdBy": {
+            "type": "object",
+            "required": ["_id", "username"],
+            "properties": {
+              "_id": {
+                "type": "string"
+              },
+              "username": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "RequestNumberBatch": {
+        "type": "object",
+        "required": ["targets"],
+        "properties": {
+          "targets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "_id",
+                "tenantId",
+                "application",
+                "object",
+                "createdBy"
+              ],
+              "properties": {
+                "_id": {
+                  "type": "string"
+                },
+                "tenantId": {
+                  "type": "string"
+                },
+                "application": {
+                  "type": "string"
+                },
+                "object": {
+                  "type": "string"
+                },
+                "teamId": {
+                  "type": "string"
+                },
+                "channelId": {
+                  "type": "string"
+                },
+                "createdBy": {
+                  "type": "object",
+                  "required": ["_id", "username"],
+                  "properties": {
+                    "_id": {
+                      "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "method": {
+            "type": "string",
+            "enum": ["sequential", "parallel"],
+            "default": "sequential",
+            "description": "Execution method, can be 'sequential' or 'parallel'. Default is 'sequential'."
+          },
+          "execItem": {
+            "type": "number",
+            "default": 20,
+            "description": "Number of items to process in parallel when method is 'parallel'. Default is 20."
+          }
+        }
+      },
+      "SequentialNumberCreate": {
+        "type": "object",
+        "required": [
+          "sequentialNumberDef",
+          "sequentialNumber"
+        ],
+        "properties": {
+          "sequentialNumberDef": {
+            "type": "string",
+            "example": "AVT-AAA-BBB"
+          },
+          "sequentialNumber": {
+            "type": "number",
+            "example": 1
+          }
+        }
+      },
+      "SequentialNumberUpdate": {
+        "type": "object",
+        "properties": {
+          "sequentialNumber": {
+            "type": "number",
+            "example": 1
+          }
+        }
+      },
+      "RunningNumberCreate": {
+        "type": "object",
+        "required": [
+          "runningNumberDef",
+          "runningNumber"
+        ],
+        "properties": {
+          "runningNumberDef": {
+            "type": "string",
+            "example": "AVT-AAA-BBB"
+          },
+          "runningNumber": {
+            "type": "number",
+            "example": 1
+          }
+        }
+      },
+      "RunningNumberUpdate": {
+        "type": "object",
+        "properties": {
+          "runningNumber": {
+            "type": "number",
+            "example": 1
+          }
+        }
+      }
+    }
+  }
+}

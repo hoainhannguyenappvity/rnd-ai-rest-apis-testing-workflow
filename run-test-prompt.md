@@ -34,7 +34,7 @@ Generate a standalone professional HTML API Test Report dashboard with embedded 
 Include sections:
 
 ## Header
-- Title: "KMI API Test Summary"
+- Title: "eProduct API Test Summary"
 - Navigation tabs: Executive Summary | Metrics | Coverage | Detailed Results
 
 ## Executive Summary

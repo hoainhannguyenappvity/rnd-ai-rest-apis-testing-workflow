@@ -4,7 +4,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 const CONFIG = {
-    swaggerUrl: 'http://localhost:8000/swagger/swagger-output.json',
+    swaggerUrl: 'http://localhost:8000/swagger/numbering/num-service.swagger.json',
     outputDir: /*'C:/Source/KMI/rnd-ai-rest-apis-testing-workflow/swagger'*/ './swagger',
     outputFilename: 'api.md',
     baseUrl: 'http://localhost:8000'
