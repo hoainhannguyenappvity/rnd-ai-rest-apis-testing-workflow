@@ -3,9 +3,9 @@ import { existsSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
-const apiUrl = 'https://ltplusapi.360awareqa.com/idsrv/connect/token';
-const username = 'lelinhtrang17999@gmail.com';
-const password = 'P@ssword170999';
+const apiUrl = 'https://selidasitetestapi.360awareqa.com/idsrv/connect/token';
+const username = 'thuytrangle2205@gmail.com';
+const password = 'P@ssword220595';
 
 function findProjectRoot(startDir) {
 	let current = startDir;

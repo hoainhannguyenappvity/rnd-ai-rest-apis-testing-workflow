@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from 'fs';
 
-const apiMdPath = './api.md';
+const apiMdPath = './TASK154947.md';
 const outputPath = './KMI.postman_collection.json';
 
 try {
@@ -160,36 +160,49 @@ function parseTestCases(section) {
 function parseOverrides(overrideText) {
     const overrides = {};
 
-    // Parse method
-    const methodMatch = overrideText.match(/\*\*Method:\*\*\s*(\w+)/);
+    // Method
+    const methodMatch = overrideText.match(/\*\*Method:\*\*\s*(\w+)/i);
     if (methodMatch) {
-        overrides.method = methodMatch[1];
+        overrides.method = methodMatch[1].toUpperCase();
     }
 
-    // Parse headers
+    // ✅ URL override (must be inside backticks)
+    // Example: **URL:** `{{base_url}}/v2/web/odata/SETeams(999)`
+    // Example: **URL:** `/SETeams(999)`
+    // Example: **URL:** `(ruleID=19979)`
+    const urlMatch = overrideText.match(/\*\*URL:\*\*\s*`([^`]+)`/i);
+    if (urlMatch) {
+        overrides.url = urlMatch[1].trim();
+    }
+
+    // Headers override
     if (overrideText.includes('**Headers:**')) {
         overrides.headers = {};
 
-        // Look for "Authorization: None" or "Authorization = None"
-        const authMatch = overrideText.match(/Authorization[:=]\s*(None|null)/i);
-        if (authMatch) {
-            overrides.headers['Authorization'] = null;
-        }
+        // Authorization=None
+        const authMatch = overrideText.match(/Authorization\s*[:=]\s*(None|null)/i);
+        if (authMatch) overrides.headers['Authorization'] = null;
 
-        // Look for "Content-Type: text/plain"
-        const ctMatch = overrideText.match(/Content-Type:\s*([^\n<*]+)/);
-        if (ctMatch) {
-            overrides.headers['Content-Type'] = ctMatch[1].trim();
-        }
+        // Content-Type=text/plain
+        const ctMatch = overrideText.match(/Content-Type\s*[:=]\s*([^\n<*]+)/i);
+        if (ctMatch) overrides.headers['Content-Type'] = ctMatch[1].trim();
+
+        // Accept
+        const acceptMatch = overrideText.match(/Accept\s*[:=]\s*([^\n<*]+)/i);
+        if (acceptMatch) overrides.headers['Accept'] = acceptMatch[1].trim();
+
+        // If-Match
+        const ifMatchMatch = overrideText.match(/If-Match\s*[:=]\s*([^\n<*]+)/i);
+        if (ifMatchMatch) overrides.headers['If-Match'] = ifMatchMatch[1].trim();
     }
 
-    // Parse body
-    const bodyMatch = overrideText.match(/\*\*Body:\*\*\s*`([^`]+)`/);
+    // Body override (✅ requires backticks)
+    const bodyMatch = overrideText.match(/\*\*Body:\*\*\s*`([\s\S]*?)`/i);
     if (bodyMatch) {
-        overrides.body = bodyMatch[1];
+        overrides.body = bodyMatch[1].trim();
     } else if (overrideText.toLowerCase().includes('malformed json')) {
         overrides.body = '{ invalid json';
-    } else if (overrideText.match(/\*\*Body:\*\*\s*None/)) {
+    } else if (overrideText.match(/\*\*Body:\*\*\s*None/i)) {
         overrides.body = null;
     }
 
@@ -197,9 +210,27 @@ function parseOverrides(overrideText) {
 }
 
 function buildRequest(baseRequest, testCase) {
-    // Merge base request with overrides
     const method = testCase.overrides.method || baseRequest.method;
-    const url = baseRequest.url;
+
+    // ✅ Apply URL override if present
+    // If override is relative like `/SETeams(999)` or `(ruleID=19979)` => append to base_url path style
+    let url = baseRequest.url;
+    if (testCase.overrides.url) {
+        const o = testCase.overrides.url;
+
+        if (o.startsWith('http') || o.includes('{{base_url}}')) {
+            url = o;
+        } else if (o.startsWith('/')) {
+            // relative to base_url
+            url = '{{base_url}}' + o;
+        } else if (o.startsWith('(')) {
+            // append (ruleID=...) to base URL path
+            url = baseRequest.url + o;
+        } else {
+            // fallback: treat as raw
+            url = o;
+        }
+    }
 
     // Clone headers
     const headers = { ...baseRequest.headers };
@@ -207,16 +238,13 @@ function buildRequest(baseRequest, testCase) {
     // Apply header overrides
     if (testCase.overrides.headers) {
         Object.entries(testCase.overrides.headers).forEach(([key, value]) => {
-            if (value === null) {
-                delete headers[key];
-            } else {
-                headers[key] = value;
-            }
+            if (value === null) delete headers[key];
+            else headers[key] = value;
         });
     }
 
     // Apply body override
-    let body = testCase.overrides.body !== undefined
+    const body = testCase.overrides.body !== undefined
         ? testCase.overrides.body
         : baseRequest.body;
 
@@ -236,7 +264,7 @@ function buildRequest(baseRequest, testCase) {
     const request = {
         name: `${testCase.id} - ${testCase.description}`,
         request: {
-            method: method,
+            method,
             header: headerArray,
             url: urlObj
         },
@@ -257,15 +285,14 @@ function buildRequest(baseRequest, testCase) {
             mode: 'raw',
             raw: body,
             options: {
-                raw: {
-                    language: 'json'
-                }
+                raw: { language: 'json' }
             }
         };
     }
 
     return request;
 }
+
 
 function buildTestScript(testCase) {
     const expected = deriveExpectations(testCase.expectedResult);
@@ -284,14 +311,14 @@ function buildTestScript(testCase) {
 
     if (expected.allowAny4xx) {
         lines.push('pm.test("Status code is 4xx", function () {');
-        lines.push('    pm.expect(pm.response.code).to.be.within(400, 499);');
+        lines.push('    pm.expect(pm.response.code).to.be.within(400, 499, 415, 403, 404);');
         lines.push('});');
         lines.push('');
     }
 
     if (expected.not5xx) {
         lines.push('pm.test("No 5xx error", function () {');
-        lines.push('    pm.expect(pm.response.code).to.be.below(500);');
+        lines.push('    pm.expect(pm.response.code).to.be.below(500, 504);');
         lines.push('});');
         lines.push('');
     }
