@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import { existsSync, readFileSync } from 'fs';
 
-const apiSpecPath = './swagger/api.md';
+const apiSpecPath = './swagger/api-test-specs.md';
 const outputPath = './eProduct.postman_collection.json';
 
 if (!existsSync(apiSpecPath)) {

@@ -2,18 +2,16 @@ import { readFileSync, writeFileSync } from 'fs';
 import { randomUUID } from 'crypto';
 
 const envMdPath = './env.md';
-const authPath = './auth.mjs';
+
 const outputPath = './eProduct.postman_environment.json';
 
 try {
 	const envMd = readFileSync(envMdPath, 'utf8');
-	const authSrc = readFileSync(authPath, 'utf8');
 
 	const envMeta = parseEnvironmentMeta(envMd);
 	const valuesFromEnv = parseEnvVariables(envMd);
-	const valuesFromAuth = parseAuthValues(authSrc);
 
-	const mergedValues = mergeValues(valuesFromEnv, valuesFromAuth);
+	const mergedValues = mergeValues(valuesFromEnv);
 
 	const environment = {
 		id: envMeta.id || randomUUID(),
@@ -49,14 +47,22 @@ function parseEnvVariables(content) {
 	sections.forEach((section) => {
 		if (!section.trim().startsWith('### ')) return;
 
+		const headingMatch = section.match(/^###\s+(.+)$/m);
 		const keyMatch = section.match(/- key:\s*([^\n]+)/i);
-		const valueMatch = section.match(/- value:\s*`([^`]+)`/i);
+		const valueMatch =
+			section.match(/- value:\s*`([^`]+)`/i) ||
+			section.match(/- value:\s*([^\n]+)/i);
 		const enabledMatch = section.match(/- enabled:\s*(true|false)/i);
 
-		if (!keyMatch) return;
+		const headingKey = headingMatch ? headingMatch[1].trim() : '';
+		let key = keyMatch ? keyMatch[1].trim() : headingKey;
 
-		const key = keyMatch[1].trim();
-		let value = valueMatch ? valueMatch[1] : '';
+		if (!key) return;
+		if (headingKey.toLowerCase() === 'base_url' && key !== 'base_url') {
+			key = 'base_url';
+		}
+
+		let value = valueMatch ? valueMatch[1].trim() : '';
 		const enabled = enabledMatch ? enabledMatch[1].toLowerCase() === 'true' : true;
 
 		if (isPlaceholder(value, key)) {
@@ -69,31 +75,7 @@ function parseEnvVariables(content) {
 	return vars;
 }
 
-function parseAuthValues(source) {
-	const values = [];
-
-	const apiUrl = matchStringConst(source, 'apiUrl');
-	if (apiUrl) values.push({ key: 'apiUrl', value: apiUrl, enabled: true });
-
-	const username = matchStringConst(source, 'username');
-	if (username) values.push({ key: 'username', value: username, enabled: true });
-
-	const password = matchStringConst(source, 'password');
-	if (password) values.push({ key: 'password', value: password, enabled: true });
-
-	const clientId = matchStringLiteral(source, /client_id:\s*'([^']+)'/);
-	if (clientId) values.push({ key: 'client_id', value: clientId, enabled: true });
-
-	const grantType = matchStringLiteral(source, /grant_type:\s*'([^']+)'/);
-	if (grantType) values.push({ key: 'grant_type', value: grantType, enabled: true });
-
-	const scope = matchStringLiteral(source, /scope:\s*'([^']+)'/);
-	if (scope) values.push({ key: 'scope', value: scope, enabled: true });
-
-	return values;
-}
-
-function mergeValues(baseValues, overrideValues) {
+function mergeValues(baseValues = [], overrideValues = []) {
 	const merged = new Map();
 
 	baseValues.forEach((v) => merged.set(v.key, { ...v }));

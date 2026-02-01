@@ -1,11 +1,14 @@
 import { readFileSync, writeFileSync } from 'fs';
 
-const apiMdPath = './swagger/api.md';
+const apiMdPath = './swagger/api-test-specs.md';
+const envMdPath = './env.md';
 const outputPath = './eProduct.postman_collection.json';
 
 try {
     // Read api.md
     const content = readFileSync(apiMdPath, 'utf8');
+    const envContent = readFileSync(envMdPath, 'utf8');
+    const baseUrl = extractBaseUrl(envContent);
 
     // Parse API blocks
     const apiBlocks = parseApiBlocks(content);
@@ -32,7 +35,7 @@ try {
 
         // Create request for each test case
         block.testCases.forEach(tc => {
-            const request = buildRequest(block.baseRequest, tc);
+            const request = buildRequest(block.baseRequest, tc, baseUrl);
             folder.item.push(request);
         });
 
@@ -196,7 +199,7 @@ function parseOverrides(overrideText) {
     return overrides;
 }
 
-function buildRequest(baseRequest, testCase) {
+function buildRequest(baseRequest, testCase, baseUrl) {
     // Merge base request with overrides
     const method = testCase.overrides.method || baseRequest.method;
     const url = baseRequest.url;
@@ -228,7 +231,7 @@ function buildRequest(baseRequest, testCase) {
     }));
 
     // Parse URL for Postman format
-    const urlObj = parseUrl(url);
+    const urlObj = parseUrl(url, baseUrl);
 
     // Build request object
     const testScript = buildTestScript(testCase);
@@ -395,12 +398,43 @@ function extractResponseTime(text) {
     return null;
 }
 
-function parseUrl(urlString) {
-    // Simple URL parser for Postman format
-    return {
-        raw: urlString,
-        protocol: '',
-        host: ['{{base_url}}'],
-        path: urlString.split('/').filter(p => p && !p.includes('{{'))
-    };
+function parseUrl(urlString, baseUrl) {
+    const raw = urlString;
+    if (/\{\{\s*base_url\s*\}\}/i.test(raw)) return raw;
+
+    if (baseUrl) {
+        const normalizedBase = baseUrl.replace(/\/+$/, '');
+        if (raw.startsWith(normalizedBase)) {
+            return `{{base_url}}${raw.slice(normalizedBase.length)}`;
+        }
+
+        try {
+            const base = new URL(normalizedBase);
+            const baseFull = `${base.origin}${base.pathname.replace(/\/+$/, '')}`;
+            if (raw.startsWith(baseFull)) {
+                return `{{base_url}}${raw.slice(baseFull.length)}`;
+            }
+        } catch {
+            // ignore invalid base URL
+        }
+    }
+
+    try {
+        const url = new URL(raw);
+        return `{{base_url}}${url.pathname}${url.search || ''}`;
+    } catch {
+        if (raw.startsWith('/')) return `{{base_url}}${raw}`;
+        return `{{base_url}}/${raw}`;
+    }
+}
+
+function extractBaseUrl(content) {
+    const sectionMatch = content.match(/###\s*base_url[\s\S]*?(?=^###\s|\Z)/im);
+    if (!sectionMatch) return null;
+
+    const section = sectionMatch[0];
+    const valueMatch =
+        section.match(/- value:\s*`([^`]+)`/i) ||
+        section.match(/- value:\s*([^\n]+)/i);
+    return valueMatch ? valueMatch[1].trim() : null;
 }

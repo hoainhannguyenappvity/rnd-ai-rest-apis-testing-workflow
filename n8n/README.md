@@ -69,3 +69,7 @@ Run below command in **Windows PowerShell** or **Command Prompt**
 ```bash
 npm i -g newman
 ```
+
+```bash
+npm i -g openapi-to-postmanv2
+```

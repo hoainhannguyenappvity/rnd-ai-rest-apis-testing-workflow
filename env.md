@@ -18,15 +18,7 @@ Generation rules:
 ### base_url
 
 - key: base_url
-- value: `https://appservices-debug.appvity.com/ups/api/v1`
+- value: `http://numservice-qa.appvity.com`
 - type: text
 - enabled: true
 - description: Base URL for API requests
-
-<!-- ### auth_token
-
-- key: auth_token
-- value: `Bearer <YOUR_AUTH_TOKEN_HERE>`
-- type: text
-- enabled: true
-- description: Authentication token for API requests -->

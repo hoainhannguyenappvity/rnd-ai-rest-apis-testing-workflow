@@ -24,7 +24,7 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        448,
+        672,
         224
       ],
       "id": "90ad54d5-4044-4872-99cb-a48366481b47",
@@ -37,7 +37,7 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        672,
+        896,
         224
       ],
       "id": "d86c04d7-21a3-485e-98c3-968b334b221a",
@@ -50,7 +50,7 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        896,
+        1120,
         224
       ],
       "id": "6336b79a-d37d-4a70-b091-789f38077c4b",
@@ -58,7 +58,7 @@
     },
     {
       "parameters": {
-        "command": "node swagger-to-markdown.mjs"
+        "command": "openapi2postmanv2 -s swagger/numbering/num-service.swagger.json -o eProduct.postman_collection.json"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -67,7 +67,20 @@
         224
       ],
       "id": "c494f22d-a040-4f8c-96a1-8c397f0d781d",
-      "name": "Swagger-Converter"
+      "name": "openapi-to-postmanv2"
+    },
+    {
+      "parameters": {
+        "command": "node postman-to-markdown.mjs"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        448,
+        224
+      ],
+      "id": "d664f37e-8d75-494e-88c2-5b53c836f00d",
+      "name": "postman-to-api-markdown"
     }
   ],
   "pinData": {},
@@ -76,7 +89,7 @@
       "main": [
         [
           {
-            "node": "Swagger-Converter",
+            "node": "openapi-to-postmanv2",
             "type": "main",
             "index": 0
           }
@@ -105,7 +118,18 @@
         ]
       ]
     },
-    "Swagger-Converter": {
+    "openapi-to-postmanv2": {
+      "main": [
+        [
+          {
+            "node": "postman-to-api-markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "postman-to-api-markdown": {
       "main": [
         [
           {
@@ -122,7 +146,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "28ae7e38-64c5-451a-8d4f-45d0b49a5340",
+  "versionId": "4340bcb5-e8c9-4390-9d77-937a105219fd",
   "meta": {
     "instanceId": "2c6c5c5d5054faa3d924207b750b56f86155bf8571728794386ee16d17e1cabc"
   },
