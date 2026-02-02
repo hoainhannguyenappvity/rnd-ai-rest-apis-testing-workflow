@@ -6,7 +6,8 @@
 /* =======================
  * CONFIG
  * ======================= */
-const config = require('./config/app.config');
+import config from "./config/app.config.mjs";
+
 const CONFIG = {
   postmanUrl: config.postmanCollectionOutput,    // Path to Postman Collection
   outputDir: config.swaggerOutput,                       // folder output

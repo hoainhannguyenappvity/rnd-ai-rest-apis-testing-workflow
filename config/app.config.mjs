@@ -1,4 +1,4 @@
-const config = {
+export default {
     port: 3000,
     env: 'development',
     envMd: './env.md',
@@ -7,5 +7,3 @@ const config = {
     postmanCollectionOutput: './eProduct.postman_collection.json',
     postmanEnvironmentOutput: './eProduct.postman_environment.json'
 };
-
-module.exports = config;

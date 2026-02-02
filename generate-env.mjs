@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { randomUUID } from 'crypto';
+import config from "./config/app.config.mjs";
 
-const config = require('./config/app.config');
 const envMdPath = config.envMd;
 const outputPath = config.postmanEnvironmentOutput;
 

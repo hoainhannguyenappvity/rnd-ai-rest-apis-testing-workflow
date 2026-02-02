@@ -1,7 +1,6 @@
 import { spawn } from 'child_process';
 import { existsSync, readFileSync } from 'fs';
-
-const config = require('./config/app.config');
+import config from "./config/app.config.mjs";
 
 const apiSpecPath = config.apiSpec;
 const outputPath = config.postmanCollectionOutput;

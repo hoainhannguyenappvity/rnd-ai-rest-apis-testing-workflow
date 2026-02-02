@@ -1,10 +1,9 @@
 import { readFileSync, writeFileSync } from 'fs';
-
-const config = require('./config/app.config');
+import config from "./config/app.config.mjs";
 
 const apiMdPath = config.apiSpec;
 const envMdPath = config.envMd;
-const outputPath = config.postmanCollectionOutput
+const outputPath = config.postmanCollectionOutput;
 
 try {
     // Read api.md
