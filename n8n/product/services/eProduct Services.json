@@ -1,5 +1,5 @@
 {
-  "name": "Numbering Services Rest APIs Testing",
+  "name": "eProduct Services",
   "nodes": [
     {
       "parameters": {
@@ -58,7 +58,7 @@
     },
     {
       "parameters": {
-        "command": "openapi2postmanv2 -s swagger/numbering/num-service.swagger.json -o eProduct.postman_collection.json"
+        "command": "node run-openapi.mjs"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -146,7 +146,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "4340bcb5-e8c9-4390-9d77-937a105219fd",
+  "versionId": "a14e0c96-661c-4d07-a054-116816598026",
   "meta": {
     "instanceId": "2c6c5c5d5054faa3d924207b750b56f86155bf8571728794386ee16d17e1cabc"
   },
