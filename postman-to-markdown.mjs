@@ -9,9 +9,9 @@
 import config from "./config/app.config.mjs";
 
 const CONFIG = {
-  postmanUrl: config.postmanCollectionOutput,    // Path to Postman Collection
-  outputDir: config.swaggerOutput,                       // folder output
-  outputFilename: config.apiSpec       // output file markdown
+  postmanUrl: config.postmanCollectionOutput, // Path to Postman Collection
+  outputDir: config.swaggerOutput, // folder output
+  outputFilename: config.apiSpecOutput // output file markdown
 };
 
 /* =======================
