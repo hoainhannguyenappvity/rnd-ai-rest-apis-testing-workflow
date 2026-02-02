@@ -6,10 +6,11 @@
 /* =======================
  * CONFIG
  * ======================= */
-const config = {
-  postmanUrl: "./eProduct.postman_collection.json",     // Path to Postman Collection
-  outputDir: "./swagger",                       // folder output
-  outputFilename: "api-test-specs.md"          // output file markdown
+const config = require('./config/app.config');
+const CONFIG = {
+  postmanUrl: config.postmanCollectionOutput,    // Path to Postman Collection
+  outputDir: config.swaggerOutput,                       // folder output
+  outputFilename: config.apiSpec       // output file markdown
 };
 
 /* =======================
@@ -174,14 +175,14 @@ function generateMarkdown(collection) {
  * RUN
  * ======================= */
 (function run() {
-  const collection = readJson(config.postmanUrl);
+  const collection = readJson(CONFIG.postmanUrl);
   const markdown = generateMarkdown(collection);
 
-  if (!fs.existsSync(config.outputDir)) {
-    fs.mkdirSync(config.outputDir, { recursive: true });
+  if (!fs.existsSync(CONFIG.outputDir)) {
+    fs.mkdirSync(CONFIG.outputDir, { recursive: true });
   }
 
-  const outputPath = path.join(config.outputDir, config.outputFilename);
+  const outputPath = path.join(CONFIG.outputDir, CONFIG.outputFilename);
   fs.writeFileSync(outputPath, markdown, "utf8");
 
   console.log(`✅ Test specs generated: ${outputPath}`);

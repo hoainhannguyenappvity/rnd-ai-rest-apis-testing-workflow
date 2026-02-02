@@ -1,8 +1,10 @@
 import { readFileSync, writeFileSync } from 'fs';
 
-const apiMdPath = './swagger/api-test-specs.md';
-const envMdPath = './env.md';
-const outputPath = './eProduct.postman_collection.json';
+const config = require('./config/app.config');
+
+const apiMdPath = config.apiSpec;
+const envMdPath = config.envMd;
+const outputPath = config.postmanCollectionOutput
 
 try {
     // Read api.md

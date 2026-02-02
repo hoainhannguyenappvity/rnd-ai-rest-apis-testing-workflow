@@ -1,9 +1,9 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { randomUUID } from 'crypto';
 
-const envMdPath = './env.md';
-
-const outputPath = './eProduct.postman_environment.json';
+const config = require('./config/app.config');
+const envMdPath = config.envMd;
+const outputPath = config.postmanEnvironmentOutput;
 
 try {
 	const envMd = readFileSync(envMdPath, 'utf8');

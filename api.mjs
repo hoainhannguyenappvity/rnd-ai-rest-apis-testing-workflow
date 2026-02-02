@@ -1,8 +1,10 @@
 import { spawn } from 'child_process';
 import { existsSync, readFileSync } from 'fs';
 
-const apiSpecPath = './swagger/api-test-specs.md';
-const outputPath = './eProduct.postman_collection.json';
+const config = require('./config/app.config');
+
+const apiSpecPath = config.apiSpec;
+const outputPath = config.postmanCollectionOutput;
 
 if (!existsSync(apiSpecPath)) {
   console.error(`Missing required file: ${apiSpecPath}`);
