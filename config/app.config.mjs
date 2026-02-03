@@ -11,6 +11,6 @@ export default {
     swaggerOutput: './swagger', // folder output
     apiSpec: './swagger/api-test-specs.md', // path to api-test-specs.md
     apiSpecOutput: 'api-test-specs.md', // output file api-test-specs markdown
-    postmanCollectionOutput: './eProduct.postman_collection.json', // path to postman_collection.json
-    postmanEnvironmentOutput: './eProduct.postman_environment.json', // path to postman_environment.json
+    postmanCollectionOutput: 'postman/eProduct.postman_collection.json', // path to postman_collection.json
+    postmanEnvironmentOutput: 'postman/eProduct.postman_environment.json', // path to postman_environment.json
 };
