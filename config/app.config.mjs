@@ -5,8 +5,14 @@
  * unless there is a specific change in project structure or requirements.
 */
 export default {
-    base_url: 'http://numservice-qa.appvity.com',
-    swaggerOpenApi: 'swagger/numbering/num-service.swagger.json', // path swagger Open AI
+    base_url: {
+        ups: 'https://appservices-debug.appvity.com',
+        numbering: 'http://numservice-qa.appvity.com',
+    },
+    swaggerOpenApi: {
+        ups: 'swagger/ups/swagger-output.json', // path swagger Open AI
+        numbering: 'swagger/numbering/num-service.swagger.json', // path swagger Open AI
+    },
     envMd: './env.md', // path to env.md
     swaggerOutput: './swagger', // folder output
     apiSpec: './swagger/api-test-specs.md', // path to api-test-specs.md

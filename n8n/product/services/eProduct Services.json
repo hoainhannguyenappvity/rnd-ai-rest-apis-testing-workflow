@@ -10,25 +10,12 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        0,
-        224
+        1056,
+        400
       ],
-      "id": "3cfb75f2-0d1f-41dd-9a37-e246bb459717",
+      "id": "9c593b8c-00dd-4acc-8402-82aa78c356ff",
       "name": "Webhook",
       "webhookId": "91146eee-cded-4b0b-8fbd-c1cc989e173a"
-    },
-    {
-      "parameters": {
-        "command": "node env.mjs"
-      },
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [
-        672,
-        224
-      ],
-      "id": "90ad54d5-4044-4872-99cb-a48366481b47",
-      "name": "Compile Environment"
     },
     {
       "parameters": {
@@ -37,11 +24,129 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        896,
-        224
+        2400,
+        400
       ],
-      "id": "d86c04d7-21a3-485e-98c3-968b334b221a",
+      "id": "e6268639-2d28-4c8a-beba-170d505745ee",
       "name": "Compile Collection"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.appID }}",
+                    "rightValue": "ups",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "aa8a12a6-462f-4ef9-88a6-58ca498d87f1"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "ups"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "031b623b-8318-48d5-9d5e-502308bbde3c",
+                    "leftValue": "={{ $json.body.appID }}",
+                    "rightValue": "numbering",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "numbering"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1280,
+        400
+      ],
+      "id": "14230834-6966-4326-bed5-7fcd9832add3",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "command": "node run-numbering-openapi.mjs"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1504,
+        496
+      ],
+      "id": "ff9c90f5-bb8a-4612-9348-d60d79d8336f",
+      "name": "numbering-openapi-to-postmanv2"
+    },
+    {
+      "parameters": {
+        "command": "=node run-ups-openapi.mjs"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1504,
+        304
+      ],
+      "id": "242575a0-b751-4740-b51d-51eeb8b53a1c",
+      "name": "ups-openapi-to-postmanv2"
+    },
+    {
+      "parameters": {
+        "command": "node generate-env-ups.mjs"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2176,
+        304
+      ],
+      "id": "a32b554b-2870-49a1-b4c4-ddfbeed99bba",
+      "name": "ups-compile-environment"
+    },
+    {
+      "parameters": {
+        "command": "node env-numbering.mjs"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2176,
+        496
+      ],
+      "id": "cc7091e5-9e44-425d-8d7f-81c3e1bb0e55",
+      "name": "numbering-compile-environment"
     },
     {
       "parameters": {
@@ -50,24 +155,11 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        1120,
-        224
+        2624,
+        400
       ],
-      "id": "6336b79a-d37d-4a70-b091-789f38077c4b",
+      "id": "aa01cd8b-7f53-4e37-b7f5-e4ff576d552f",
       "name": "Run Test"
-    },
-    {
-      "parameters": {
-        "command": "node run-openapi.mjs"
-      },
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [
-        224,
-        224
-      ],
-      "id": "c494f22d-a040-4f8c-96a1-8c397f0d781d",
-      "name": "openapi-to-postmanv2"
     },
     {
       "parameters": {
@@ -76,11 +168,77 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        448,
-        224
+        1728,
+        400
       ],
-      "id": "d664f37e-8d75-494e-88c2-5b53c836f00d",
+      "id": "96fc6867-810c-4a25-a31b-3957a8c9b042",
       "name": "postman-to-api-markdown"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Webhook').item.json.body.appID }}",
+                    "rightValue": "ups",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "57cee444-75f2-4776-910c-521017009849"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "ups"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "e94998a0-703e-4ab2-8c29-c477c4036fe6",
+                    "leftValue": "={{ $('Webhook').item.json.body.appID }}",
+                    "rightValue": "numbering",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "numbering"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1952,
+        400
+      ],
+      "id": "fb9d9272-0738-40b1-aba9-2d854da32ce9",
+      "name": "Switch1"
     }
   ],
   "pinData": {},
@@ -89,18 +247,7 @@
       "main": [
         [
           {
-            "node": "openapi-to-postmanv2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Compile Environment": {
-      "main": [
-        [
-          {
-            "node": "Compile Collection",
+            "node": "Switch",
             "type": "main",
             "index": 0
           }
@@ -118,7 +265,25 @@
         ]
       ]
     },
-    "openapi-to-postmanv2": {
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "ups-openapi-to-postmanv2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "numbering-openapi-to-postmanv2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "numbering-openapi-to-postmanv2": {
       "main": [
         [
           {
@@ -129,11 +294,62 @@
         ]
       ]
     },
+    "ups-openapi-to-postmanv2": {
+      "main": [
+        [
+          {
+            "node": "postman-to-api-markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ups-compile-environment": {
+      "main": [
+        [
+          {
+            "node": "Compile Collection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "numbering-compile-environment": {
+      "main": [
+        [
+          {
+            "node": "Compile Collection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "postman-to-api-markdown": {
       "main": [
         [
           {
-            "node": "Compile Environment",
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "ups-compile-environment",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "numbering-compile-environment",
             "type": "main",
             "index": 0
           }
@@ -146,7 +362,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "a14e0c96-661c-4d07-a054-116816598026",
+  "versionId": "e7e797a4-310e-4518-9ef7-d3c1e5ef7b00",
   "meta": {
     "instanceId": "2c6c5c5d5054faa3d924207b750b56f86155bf8571728794386ee16d17e1cabc"
   },

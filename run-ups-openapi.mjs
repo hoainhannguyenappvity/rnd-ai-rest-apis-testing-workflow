@@ -1,7 +1,8 @@
 import { spawn } from "node:child_process";
-import config from "./config/openapi.config.mjs";
+import { openapi2ups } from "./config/openapi.config.mjs";
 
-const { command, args } = config;
+const { command, args } = openapi2ups;
+console.log(openapi2ups)
 
 const child = spawn("npx", [command, ...args],
     {

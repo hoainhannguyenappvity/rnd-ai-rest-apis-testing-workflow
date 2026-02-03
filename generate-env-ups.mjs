@@ -88,8 +88,8 @@ function mergeValues(baseValues = [], overrideValues = []) {
 function buildOverridesFromConfig(appConfig = {}) {
 	const overrides = [];
 	// Add base URL
-	if (appConfig.base_url) {
-		overrides.push({ key: 'base_url', value: appConfig.base_url, enabled: true });
+	if (appConfig.base_url.ups) {
+		overrides.push({ key: 'base_url', value: appConfig.base_url.ups, enabled: true });
 	}
 
 	return overrides;

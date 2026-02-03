@@ -1,6 +1,6 @@
 import { spawn } from 'child_process';
 
-const proc = spawn('node', ['generate-env.mjs'], {
+const proc = spawn('node', ['generate-env-numbering.mjs'], {
   stdio: 'inherit',
   shell: true,
 });
