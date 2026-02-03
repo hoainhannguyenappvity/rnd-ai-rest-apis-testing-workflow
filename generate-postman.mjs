@@ -1,7 +1,8 @@
 import { readFileSync, writeFileSync } from 'fs';
+import config from './config/app.config.mjs';
 
-const apiMdPath = './TASK156869.md';
-const outputPath = './KMI.postman_collection.json';
+const apiMdPath = config.apiSpecPathTask;
+const outputPath = config.postmanCollectionOutput;
 
 try {
     // Read api.md

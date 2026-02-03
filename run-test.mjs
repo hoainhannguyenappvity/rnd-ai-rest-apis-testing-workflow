@@ -1,4 +1,4 @@
-import { spawn } from 'child_process';
+import { spawn } from 'node:child_process';
 
 const proc = spawn('npx', ['codex', 'exec', '--sandbox=danger-full-access', '--json', 'run-test-prompt.md'], {
   stdio: 'inherit',

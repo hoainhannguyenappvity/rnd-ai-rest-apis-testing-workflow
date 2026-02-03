@@ -1,9 +1,10 @@
-import { readFileSync, writeFileSync } from 'fs';
-import { randomUUID } from 'crypto';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { randomUUID } from 'node:crypto';
+import config from './config/app.config.mjs';
 
-const envMdPath = './env.md';
-const authPath = './auth.mjs';
-const outputPath = './KMI.postman_environment.json';
+const envMdPath = config.envMdPath;
+const authPath = config.authPath;
+const outputPath = config.postmanEnvironmentOutput;
 
 try {
 	const envMd = readFileSync(envMdPath, 'utf8');

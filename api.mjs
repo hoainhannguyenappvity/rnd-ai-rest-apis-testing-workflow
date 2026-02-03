@@ -1,8 +1,9 @@
-import { spawn } from 'child_process';
-import { existsSync, readFileSync } from 'fs';
+import { spawn } from 'node:child_process';
+import { existsSync, readFileSync } from 'node:fs';
+import config from './config/app.config.mjs';
 
-const apiSpecPath = './TASK156869.md';
-const outputPath = './KMI.postman_collection.json';
+const apiSpecPath = config.apiSpecPathTask;
+const outputPath = config.postmanCollectionOutput;
 
 if (!existsSync(apiSpecPath)) {
   console.error(`Missing required file: ${apiSpecPath}`);

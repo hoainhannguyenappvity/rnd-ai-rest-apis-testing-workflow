@@ -1,11 +1,12 @@
-import { readFile, writeFile } from 'fs/promises';
-import { existsSync } from 'fs';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
+import { readFile, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import config from './config/app.config.mjs';
 
-const apiUrl = 'https://selidasitetestapi.360awareqa.com/idsrv/connect/token';
-const username = 'thuytrangle2205@gmail.com';
-const password = 'P@ssword220595';
+const apiUrl = config.env.apiUrl;
+const username = config.env.username;
+const password = config.env.password;
 
 function findProjectRoot(startDir) {
 	let current = startDir;
@@ -22,7 +23,7 @@ const scriptDir = dirname(fileURLToPath(import.meta.url));
 const rootFromCwd = findProjectRoot(process.cwd());
 const rootFromScript = findProjectRoot(scriptDir);
 const projectRoot = rootFromCwd || rootFromScript || process.cwd();
-const envPath = join(projectRoot, 'KMI.postman_environment.json');
+const envPath = join(projectRoot, 'postman/KMI.postman_environment.json');
 
 async function getAuthToken(username, password) {
 	const body = new URLSearchParams({
