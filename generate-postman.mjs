@@ -159,73 +159,98 @@ function parseTestCases(section) {
 }
 
 function parseOverrides(overrideText) {
-  const overrides = {};
+    const overrides = {};
 
-  // Method
-  const methodMatch = overrideText.match(/\*\*Method:\*\*\s*(\w+)/i);
-  if (methodMatch) overrides.method = methodMatch[1].toUpperCase();
+    // Method
+    const methodMatch = overrideText.match(/\*\*Method:\*\*\s*(\w+)/i);
+    if (methodMatch) overrides.method = methodMatch[1].toUpperCase();
 
-  // URL override (must be inside backticks)
-  const urlMatch = overrideText.match(/\*\*URL:\*\*\s*`([^`]+)`/i);
-  if (urlMatch) overrides.url = urlMatch[1].trim();
+    // URL override (must be inside backticks)
+    const urlMatch = overrideText.match(/\*\*URL:\*\*\s*`([^`]+)`/i);
+    if (urlMatch) overrides.url = urlMatch[1].trim();
 
-  // Headers override (generic)
-  if (overrideText.includes('**Headers:**')) {
-    overrides.headers = overrides.headers || {};
+    // Headers override (generic)
+    if (overrideText.includes('**Headers:**')) {
+        overrides.headers = overrides.headers || {};
 
-    // Extract the headers section only (stop at **Body:** if present)
-    const headerSectionMatch = overrideText.match(/\*\*Headers:\*\*([\s\S]*?)(?=\*\*Body:\*\*|$)/i);
-    const headerSection = headerSectionMatch ? headerSectionMatch[1] : '';
+        // Extract the headers section only (stop at **Body:** if present)
+        const headerSectionMatch = overrideText.match(/\*\*Headers:\*\*([\s\S]*?)(?=\*\*Body:\*\*|$)/i);
+        const headerSection = headerSectionMatch ? headerSectionMatch[1] : '';
 
-    // Normalize separators: <br> and commas => newlines
-    const normalized = headerSection
-      .replace(/<br\s*\/?>/gi, '\n')
-      .replace(/,/g, '\n');
+        // Normalize separators: <br> and commas => newlines
+        const normalized = headerSection
+            .replace(/<br\s*\/?>/gi, '\n')
+            .replace(/,/g, '\n');
 
-    // Each line can be:
-    // - X-Sev2-FileType=JSON
-    // - X-Sev2-FileType: JSON
-    // - Authorization=None
-    // - Content-Type=text/plain
-    normalized
-      .split('\n')
-      .map(s => s.trim())
-      .filter(Boolean)
-      .forEach(line => {
-        // Strip wrapping backticks if user used them inside Headers block
-        line = line.replace(/^`|`$/g, '').trim();
+        // Each line can be:
+        // - X-Sev2-FileType=JSON
+        // - X-Sev2-FileType: JSON
+        // - Authorization=None
+        // - Content-Type=text/plain
+        normalized
+            .split('\n')
+            .map(s => s.trim())
+            .filter(Boolean)
+            .forEach(line => {
+                // Strip wrapping backticks if user used them inside Headers block
+                line = line.replace(/^`|`$/g, '').trim();
 
-        const m = line.match(/^([\w-]+)\s*[:=]\s*(.+)$/);
-        if (!m) return;
+                const m = line.match(/^([\w-]+)\s*[:=]\s*(.+)$/);
+                if (!m) return;
 
-        const key = m[1].trim();
-        let value = m[2].trim();
+                const key = m[1].trim();
+                let value = m[2].trim();
 
-        // Treat None/null as remove header
-        if (/^(None|null)$/i.test(value)) {
-          overrides.headers[key] = null;
-          return;
-        }
+                // Treat None/null as remove header
+                if (/^(None|null)$/i.test(value)) {
+                    overrides.headers[key] = null;
+                    return;
+                }
 
-        // Remove quotes/backticks around value if any
-        value = value.replace(/^["'`]|["'`]$/g, '').trim();
+                // Remove quotes/backticks around value if any
+                value = value.replace(/^["'`]|["'`]$/g, '').trim();
 
-        overrides.headers[key] = value;
-      });
-  }
+                overrides.headers[key] = value;
+            });
+    }
 
-  // Body override (requires backticks)
-  const bodyMatch = overrideText.match(/\*\*Body:\*\*\s*`([\s\S]*?)`/i);
-  if (bodyMatch) {
-    overrides.body = bodyMatch[1].trim();
-  } else if (overrideText.toLowerCase().includes('malformed json')) {
-    overrides.body = '{ invalid json';
-  } else if (overrideText.match(/\*\*Body:\*\*\s*None/i)) {
-    overrides.body = null;
-  }
 
-  return overrides;
+    // Params override
+    const paramsMatch = overrideText.match(/\*\*Params:\*\*([\s\S]*?)(?=\*\*Body:\*\*|$)/i);
+    if (paramsMatch) {
+        overrides.params = {};
+
+        const normalized = paramsMatch[1]
+            .replace(/<br\s*\/?>/gi, '\n')
+            .replace(/,/g, '\n');
+
+        normalized
+            .split('\n')
+            .map(s => s.trim())
+            .filter(Boolean)
+            .forEach(line => {
+                line = line.replace(/^`|`$/g, '').trim();
+
+                const m = line.match(/^([\w$]+)\s*[:=]\s*(.+)$/);
+                if (!m) return;
+
+                overrides.params[m[1]] = m[2].replace(/^["'`]|["'`]$/g, '').trim();
+            });
+    }
+
+    // Body override (requires backticks)
+    const bodyMatch = overrideText.match(/\*\*Body:\*\*\s*`([\s\S]*?)`/i);
+    if (bodyMatch) {
+        overrides.body = bodyMatch[1].trim();
+    } else if (overrideText.toLowerCase().includes('malformed json')) {
+        overrides.body = '{ invalid json';
+    } else if (overrideText.match(/\*\*Body:\*\*\s*None/i)) {
+        overrides.body = null;
+    }
+
+    return overrides;
 }
+
 
 
 function buildRequest(baseRequest, testCase) {
@@ -249,6 +274,15 @@ function buildRequest(baseRequest, testCase) {
             // fallback: treat as raw
             url = o;
         }
+    }
+
+    // Apply params override
+    if (testCase.overrides.params) {
+        const query = Object.entries(testCase.overrides.params)
+            .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+            .join('&');
+
+        url += (url.includes('?') ? '&' : '?') + query;
     }
 
     // Clone headers

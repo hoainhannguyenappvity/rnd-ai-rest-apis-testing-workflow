@@ -11,7 +11,7 @@ export default {
         username: 'thuytrangle2205@gmail.com',
         password: 'P@ssword220595'
     },
-    apiSpecPathTask: './TASK156331.md', // path to api.md
+    apiSpecPathTask: './TASK156957.md', // path to api.md
     envMdPath: './env.md', // path to env.md
     authPath: './auth.mjs', // path to auth.mjs
     postmanCollectionOutput: 'postman/KMI.postman_collection.json', // path to postman_collection.json
