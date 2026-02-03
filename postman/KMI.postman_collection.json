@@ -1,0 +1,221 @@
+{
+  "info": {
+    "name": "KMI API Test Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "API-001: REST API > PLUS-3978 Manage > Devices > Create Camera > Stream Source Type",
+      "item": [
+        {
+          "name": "TC-001 - GetRTMPUrl - Happy path",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{baseUrl}}/v2/web/odata/SEVMSCameras/SE.GetRTMPUrl(serial='123123')",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v2/web/odata/SEVMSCameras/SE.GetRTMPUrl(serial='123123')",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEVMSCameras",
+                "SE.GetRTMPUrl(serial='123123')"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-001",
+                  "// Expected: 200; request successful; response contains RtmpUrl (string, starts with rtmp/rtmps)",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-002 - GetRTMPUrl - Serial missing",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{baseUrl}}/v2/web/odata/SEVMSCameras/SE.GetRTMPUrl(serial='123123')",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/odata/SEVMSCameras/SE.GetRTMPUrl",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "odata",
+                "SEVMSCameras",
+                "SE.GetRTMPUrl"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-002",
+                  "// Expected: 400/403/404; client error; error mentions serial",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 403, 404]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-003 - GetRTMPUrl - Serial whitespace",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{baseUrl}}/v2/web/odata/SEVMSCameras/SE.GetRTMPUrl(serial='123123')",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/odata/SEVMSCameras/SE.GetRTMPUrl(serial='1234 wret')",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "odata",
+                "SEVMSCameras",
+                "SE.GetRTMPUrl(serial='1234 wret')"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-003",
+                  "// Expected: 400/403/404; client error; error mentions serial",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 403, 404]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-004 - GetRTMPUrl - Permission denied",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{baseUrl}}/v2/web/odata/SEVMSCameras/SE.GetRTMPUrl(serial='123123')",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_no_permission}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v2/web/odata/SEVMSCameras/SE.GetRTMPUrl(serial='123123')",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEVMSCameras",
+                "SE.GetRTMPUrl(serial='123123')"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-004",
+                  "// Expected: 400/403/404; client error",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 403, 404]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
