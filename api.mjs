@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import { existsSync, readFileSync } from 'fs';
 
-const apiSpecPath = './TASK154947.md';
+const apiSpecPath = './TASK156869.md';
 const outputPath = './KMI.postman_collection.json';
 
 if (!existsSync(apiSpecPath)) {

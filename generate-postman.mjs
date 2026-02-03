@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from 'fs';
 
-const apiMdPath = './TASK154947.md';
+const apiMdPath = './TASK156869.md';
 const outputPath = './KMI.postman_collection.json';
 
 try {
@@ -158,56 +158,74 @@ function parseTestCases(section) {
 }
 
 function parseOverrides(overrideText) {
-    const overrides = {};
+  const overrides = {};
 
-    // Method
-    const methodMatch = overrideText.match(/\*\*Method:\*\*\s*(\w+)/i);
-    if (methodMatch) {
-        overrides.method = methodMatch[1].toUpperCase();
-    }
+  // Method
+  const methodMatch = overrideText.match(/\*\*Method:\*\*\s*(\w+)/i);
+  if (methodMatch) overrides.method = methodMatch[1].toUpperCase();
 
-    // ✅ URL override (must be inside backticks)
-    // Example: **URL:** `{{base_url}}/v2/web/odata/SETeams(999)`
-    // Example: **URL:** `/SETeams(999)`
-    // Example: **URL:** `(ruleID=19979)`
-    const urlMatch = overrideText.match(/\*\*URL:\*\*\s*`([^`]+)`/i);
-    if (urlMatch) {
-        overrides.url = urlMatch[1].trim();
-    }
+  // URL override (must be inside backticks)
+  const urlMatch = overrideText.match(/\*\*URL:\*\*\s*`([^`]+)`/i);
+  if (urlMatch) overrides.url = urlMatch[1].trim();
 
-    // Headers override
-    if (overrideText.includes('**Headers:**')) {
-        overrides.headers = {};
+  // Headers override (generic)
+  if (overrideText.includes('**Headers:**')) {
+    overrides.headers = overrides.headers || {};
 
-        // Authorization=None
-        const authMatch = overrideText.match(/Authorization\s*[:=]\s*(None|null)/i);
-        if (authMatch) overrides.headers['Authorization'] = null;
+    // Extract the headers section only (stop at **Body:** if present)
+    const headerSectionMatch = overrideText.match(/\*\*Headers:\*\*([\s\S]*?)(?=\*\*Body:\*\*|$)/i);
+    const headerSection = headerSectionMatch ? headerSectionMatch[1] : '';
 
-        // Content-Type=text/plain
-        const ctMatch = overrideText.match(/Content-Type\s*[:=]\s*([^\n<*]+)/i);
-        if (ctMatch) overrides.headers['Content-Type'] = ctMatch[1].trim();
+    // Normalize separators: <br> and commas => newlines
+    const normalized = headerSection
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/,/g, '\n');
 
-        // Accept
-        const acceptMatch = overrideText.match(/Accept\s*[:=]\s*([^\n<*]+)/i);
-        if (acceptMatch) overrides.headers['Accept'] = acceptMatch[1].trim();
+    // Each line can be:
+    // - X-Sev2-FileType=JSON
+    // - X-Sev2-FileType: JSON
+    // - Authorization=None
+    // - Content-Type=text/plain
+    normalized
+      .split('\n')
+      .map(s => s.trim())
+      .filter(Boolean)
+      .forEach(line => {
+        // Strip wrapping backticks if user used them inside Headers block
+        line = line.replace(/^`|`$/g, '').trim();
 
-        // If-Match
-        const ifMatchMatch = overrideText.match(/If-Match\s*[:=]\s*([^\n<*]+)/i);
-        if (ifMatchMatch) overrides.headers['If-Match'] = ifMatchMatch[1].trim();
-    }
+        const m = line.match(/^([\w-]+)\s*[:=]\s*(.+)$/);
+        if (!m) return;
 
-    // Body override (✅ requires backticks)
-    const bodyMatch = overrideText.match(/\*\*Body:\*\*\s*`([\s\S]*?)`/i);
-    if (bodyMatch) {
-        overrides.body = bodyMatch[1].trim();
-    } else if (overrideText.toLowerCase().includes('malformed json')) {
-        overrides.body = '{ invalid json';
-    } else if (overrideText.match(/\*\*Body:\*\*\s*None/i)) {
-        overrides.body = null;
-    }
+        const key = m[1].trim();
+        let value = m[2].trim();
 
-    return overrides;
+        // Treat None/null as remove header
+        if (/^(None|null)$/i.test(value)) {
+          overrides.headers[key] = null;
+          return;
+        }
+
+        // Remove quotes/backticks around value if any
+        value = value.replace(/^["'`]|["'`]$/g, '').trim();
+
+        overrides.headers[key] = value;
+      });
+  }
+
+  // Body override (requires backticks)
+  const bodyMatch = overrideText.match(/\*\*Body:\*\*\s*`([\s\S]*?)`/i);
+  if (bodyMatch) {
+    overrides.body = bodyMatch[1].trim();
+  } else if (overrideText.toLowerCase().includes('malformed json')) {
+    overrides.body = '{ invalid json';
+  } else if (overrideText.match(/\*\*Body:\*\*\s*None/i)) {
+    overrides.body = null;
+  }
+
+  return overrides;
 }
+
 
 function buildRequest(baseRequest, testCase) {
     const method = testCase.overrides.method || baseRequest.method;
