@@ -18,7 +18,6 @@ Generation rules:
 ### base_url
 
 - key: base_url
-- value: `http://numservice-qa.appvity.com`
 - type: text
 - enabled: true
 - description: Base URL for API requests

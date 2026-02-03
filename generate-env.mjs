@@ -11,7 +11,8 @@ try {
 	const envMeta = parseEnvironmentMeta(envMd);
 	const valuesFromEnv = parseEnvVariables(envMd);
 
-	const mergedValues = mergeValues(valuesFromEnv);
+	const overridesFromConfig = buildOverridesFromConfig(config);
+	const mergedValues = mergeValues(valuesFromEnv, overridesFromConfig);
 
 	const environment = {
 		id: envMeta.id || randomUUID(),
@@ -82,6 +83,16 @@ function mergeValues(baseValues = [], overrideValues = []) {
 	overrideValues.forEach((v) => merged.set(v.key, { ...v }));
 
 	return Array.from(merged.values());
+}
+
+function buildOverridesFromConfig(appConfig = {}) {
+	const overrides = [];
+
+	if (appConfig.base_url) {
+		overrides.push({ key: 'base_url', value: appConfig.base_url, enabled: true });
+	}
+
+	return overrides;
 }
 
 function matchStringConst(source, constName) {
