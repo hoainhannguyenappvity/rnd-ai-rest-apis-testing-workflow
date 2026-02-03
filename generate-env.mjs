@@ -73,6 +73,10 @@ function parseEnvVariables(content) {
 function parseAuthValues(source) {
 	const values = [];
 
+	if (config.base_url) {
+		values.push({ key: 'base_url', value: config.base_url, enabled: true });
+	}
+
 	const apiUrl = matchStringConst(source, 'apiUrl');
 	if (apiUrl) values.push({ key: 'apiUrl', value: apiUrl, enabled: true });
 
