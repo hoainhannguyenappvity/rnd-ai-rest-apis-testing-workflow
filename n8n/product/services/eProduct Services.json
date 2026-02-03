@@ -10,24 +10,24 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        1056,
-        400
+        2336,
+        1072
       ],
-      "id": "9c593b8c-00dd-4acc-8402-82aa78c356ff",
+      "id": "bbcfce2f-7e6b-423f-b0b2-ecf359a94bc7",
       "name": "Webhook",
       "webhookId": "91146eee-cded-4b0b-8fbd-c1cc989e173a"
     },
     {
       "parameters": {
-        "command": "node api.mjs"
+        "command": "node generate-postman.mjs"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        2400,
-        400
+        3680,
+        1072
       ],
-      "id": "e6268639-2d28-4c8a-beba-170d505745ee",
+      "id": "346f0991-4768-4b28-90b2-302634dc322e",
       "name": "Compile Collection"
     },
     {
@@ -90,62 +90,62 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        1280,
-        400
+        2560,
+        1072
       ],
-      "id": "14230834-6966-4326-bed5-7fcd9832add3",
+      "id": "16d22d5c-ecea-40c1-9274-8d6dbbc78859",
       "name": "Switch"
     },
     {
       "parameters": {
-        "command": "node run-numbering-openapi.mjs"
+        "command": "node src/components/numbering/run-numbering-openapi.mjs"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        1504,
-        496
+        2784,
+        1168
       ],
-      "id": "ff9c90f5-bb8a-4612-9348-d60d79d8336f",
+      "id": "90df211d-bfdf-4425-8219-1484e10c5f7a",
       "name": "numbering-openapi-to-postmanv2"
     },
     {
       "parameters": {
-        "command": "=node run-ups-openapi.mjs"
+        "command": "=node src/components/ups/run-ups-openapi.mjs"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        1504,
-        304
+        2784,
+        976
       ],
-      "id": "242575a0-b751-4740-b51d-51eeb8b53a1c",
+      "id": "5881dca6-a3bf-4c50-a82e-d077ecd56e35",
       "name": "ups-openapi-to-postmanv2"
     },
     {
       "parameters": {
-        "command": "node generate-env-ups.mjs"
+        "command": "node src/components/ups/generate-env-ups.mjs"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        2176,
-        304
+        3456,
+        976
       ],
-      "id": "a32b554b-2870-49a1-b4c4-ddfbeed99bba",
+      "id": "87d6ff60-1a6f-4fd6-969a-d4f2fbcacea2",
       "name": "ups-compile-environment"
     },
     {
       "parameters": {
-        "command": "node env-numbering.mjs"
+        "command": "node src/components/numbering/generate-env-numbering.mjs"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        2176,
-        496
+        3456,
+        1168
       ],
-      "id": "cc7091e5-9e44-425d-8d7f-81c3e1bb0e55",
+      "id": "dcf8499c-3067-456c-aba6-b80e2cbd5b09",
       "name": "numbering-compile-environment"
     },
     {
@@ -155,23 +155,24 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        2624,
-        400
+        3904,
+        1072
       ],
-      "id": "aa01cd8b-7f53-4e37-b7f5-e4ff576d552f",
-      "name": "Run Test"
+      "id": "d9dc2718-7ba9-47fb-8f46-fd326a9a0523",
+      "name": "Run Test",
+      "disabled": true
     },
     {
       "parameters": {
-        "command": "node postman-to-markdown.mjs"
+        "command": "node postman-to-api-markdown.mjs"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        1728,
-        400
+        3008,
+        1072
       ],
-      "id": "96fc6867-810c-4a25-a31b-3957a8c9b042",
+      "id": "38391588-c67f-40ad-bca2-c35ce90a93a4",
       "name": "postman-to-api-markdown"
     },
     {
@@ -234,10 +235,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        1952,
-        400
+        3232,
+        1072
       ],
-      "id": "fb9d9272-0738-40b1-aba9-2d854da32ce9",
+      "id": "c78d5ca3-8717-47c1-8665-c128801e1cf1",
       "name": "Switch1"
     }
   ],
@@ -362,7 +363,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "e7e797a4-310e-4518-9ef7-d3c1e5ef7b00",
+  "versionId": "e244870b-0b9e-40d3-a14a-6feb19a01d67",
   "meta": {
     "instanceId": "2c6c5c5d5054faa3d924207b750b56f86155bf8571728794386ee16d17e1cabc"
   },
