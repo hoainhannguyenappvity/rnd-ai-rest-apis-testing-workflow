@@ -364,14 +364,14 @@ function buildTestScript(testCase) {
 
     if (expected.allowAny4xx) {
         lines.push('pm.test("Status code is 4xx", function () {');
-        lines.push('    pm.expect(pm.response.code).to.be.within(400, 499, 415, 403, 404);');
+        lines.push('    pm.expect(pm.response.code).to.be.within(400, 499);');
         lines.push('});');
         lines.push('');
     }
 
     if (expected.not5xx) {
         lines.push('pm.test("No 5xx error", function () {');
-        lines.push('    pm.expect(pm.response.code).to.be.below(500, 504);');
+        lines.push('    pm.expect(pm.response.code).to.be.below(500);');
         lines.push('});');
         lines.push('');
     }
