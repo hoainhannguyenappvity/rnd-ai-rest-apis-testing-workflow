@@ -73,3 +73,9 @@ npm i -g newman
 ```bash
 npm i -g openapi-to-postmanv2
 ```
+
+## XLSX
+
+```bash
+npm i -g xlsx
+```

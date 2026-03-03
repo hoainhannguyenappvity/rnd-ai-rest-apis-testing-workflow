@@ -164,19 +164,6 @@
     },
     {
       "parameters": {
-        "command": "node postman-to-api-markdown.mjs"
-      },
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [
-        3008,
-        1072
-      ],
-      "id": "38391588-c67f-40ad-bca2-c35ce90a93a4",
-      "name": "postman-to-api-markdown"
-    },
-    {
-      "parameters": {
         "rules": {
           "values": [
             {
@@ -240,6 +227,19 @@
       ],
       "id": "c78d5ca3-8717-47c1-8665-c128801e1cf1",
       "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "command": "node postman-to-csv-converter.mjs"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        3008,
+        1072
+      ],
+      "id": "38391588-c67f-40ad-bca2-c35ce90a93a4",
+      "name": "postman-to-csv-converter"
     }
   ],
   "pinData": {},
@@ -288,7 +288,7 @@
       "main": [
         [
           {
-            "node": "postman-to-api-markdown",
+            "node": "postman-to-csv-converter",
             "type": "main",
             "index": 0
           }
@@ -299,7 +299,7 @@
       "main": [
         [
           {
-            "node": "postman-to-api-markdown",
+            "node": "postman-to-csv-converter",
             "type": "main",
             "index": 0
           }
@@ -328,17 +328,6 @@
         ]
       ]
     },
-    "postman-to-api-markdown": {
-      "main": [
-        [
-          {
-            "node": "Switch1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Switch1": {
       "main": [
         [
@@ -356,6 +345,17 @@
           }
         ]
       ]
+    },
+    "postman-to-csv-converter": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -363,7 +363,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "e244870b-0b9e-40d3-a14a-6feb19a01d67",
+  "versionId": "c2a6755d-79bd-44c4-9e06-e27bc57fe4e0",
   "meta": {
     "instanceId": "2c6c5c5d5054faa3d924207b750b56f86155bf8571728794386ee16d17e1cabc"
   },
