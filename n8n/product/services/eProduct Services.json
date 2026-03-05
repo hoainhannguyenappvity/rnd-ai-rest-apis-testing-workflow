@@ -44,7 +44,7 @@
                 },
                 "conditions": [
                   {
-                    "leftValue": "={{ $json.body.appID }}",
+                    "leftValue": "={{ $json.body.service_mode }}",
                     "rightValue": "ups",
                     "operator": {
                       "type": "string",
@@ -69,7 +69,7 @@
                 "conditions": [
                   {
                     "id": "031b623b-8318-48d5-9d5e-502308bbde3c",
-                    "leftValue": "={{ $json.body.appID }}",
+                    "leftValue": "={{ $json.body.service_mode }}",
                     "rightValue": "numbering",
                     "operator": {
                       "type": "string",
@@ -159,8 +159,7 @@
         1072
       ],
       "id": "d9dc2718-7ba9-47fb-8f46-fd326a9a0523",
-      "name": "Run Test",
-      "disabled": true
+      "name": "Run Test"
     },
     {
       "parameters": {
@@ -176,7 +175,7 @@
                 },
                 "conditions": [
                   {
-                    "leftValue": "={{ $('Webhook').item.json.body.appID }}",
+                    "leftValue": "={{ $('Webhook').item.json.body.service_mode }}",
                     "rightValue": "ups",
                     "operator": {
                       "type": "string",
@@ -201,7 +200,7 @@
                 "conditions": [
                   {
                     "id": "e94998a0-703e-4ab2-8c29-c477c4036fe6",
-                    "leftValue": "={{ $('Webhook').item.json.body.appID }}",
+                    "leftValue": "={{ $('Webhook').item.json.body.service_mode }}",
                     "rightValue": "numbering",
                     "operator": {
                       "type": "string",
@@ -363,7 +362,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "c2a6755d-79bd-44c4-9e06-e27bc57fe4e0",
+  "versionId": "42a5214a-ed8d-4378-a387-0e3615841c9d",
   "meta": {
     "instanceId": "2c6c5c5d5054faa3d924207b750b56f86155bf8571728794386ee16d17e1cabc"
   },

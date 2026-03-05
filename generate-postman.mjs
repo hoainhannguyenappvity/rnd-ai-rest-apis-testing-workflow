@@ -1,18 +1,19 @@
 import { readFileSync, writeFileSync } from 'fs';
 import config from "./config/app.config.mjs";
 
-const apiMdPath = config.apiSpec;
+const apiXlsxPath = 'output.xlsx';
 const envMdPath = config.envMd;
 const outputPath = config.postmanCollectionOutput;
 
 try {
-    // Read api.md
-    const content = readFileSync(apiMdPath, 'utf8');
+    const XLSXModule = await import('xlsx');
+    const XLSX = XLSXModule.default || XLSXModule;
+    const workbook = XLSX.readFile(apiXlsxPath);
     const envContent = readFileSync(envMdPath, 'utf8');
     const baseUrl = extractBaseUrl(envContent);
 
-    // Parse API blocks
-    const apiBlocks = parseApiBlocks(content);
+    // Parse API blocks from workbook
+    const apiBlocks = parseApiBlocksFromWorkbook(XLSX, workbook);
 
     console.log(`Found ${apiBlocks.length} API blocks`);
 
@@ -52,27 +53,27 @@ try {
     process.exit(1);
 }
 
-function parseApiBlocks(content) {
+function parseApiBlocksFromWorkbook(XLSX, workbook) {
     const blocks = [];
 
-    // Split by API sections
-    const sections = content.split(/(?=## API-\d+:)/);
+    for (const sheetName of workbook.SheetNames) {
+        const sheet = workbook.Sheets[sheetName];
+        if (!sheet) continue;
 
-    sections.forEach(section => {
-        if (!section.trim() || !section.startsWith('## API-')) return;
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+        const section = rows.map(r => String(r[0] ?? '').trim());
+        const headerLine = section.find(line => /^##\s*API-\d+:/i.test(line));
+        if (!headerLine) continue;
 
-        // Extract API ID and Name
-        const headerMatch = section.match(/## (API-\d+): (.+)/);
-        if (!headerMatch) return;
+        const headerMatch = headerLine.match(/^##\s*(API-\d+):\s*(.+)$/i);
+        if (!headerMatch) continue;
 
         const apiId = headerMatch[1];
         const apiName = headerMatch[2];
 
-        // Parse base request
-        const baseRequest = parseBaseRequest(section);
+        const baseRequest = parseBaseRequestFromRows(rows);
 
-        // Parse test cases
-        const testCases = parseTestCases(section);
+        const testCases = parseTestCasesFromRows(rows);
 
         if (testCases.length > 0) {
             blocks.push({
@@ -82,12 +83,12 @@ function parseApiBlocks(content) {
                 testCases
             });
         }
-    });
+    }
 
     return blocks;
 }
 
-function parseBaseRequest(section) {
+function parseBaseRequestFromRows(rows) {
     const request = {
         method: 'POST',
         url: '',
@@ -95,68 +96,81 @@ function parseBaseRequest(section) {
         body: ''
     };
 
-    // Extract method
-    const methodMatch = section.match(/- Method:\s*(\w+)/);
-    if (methodMatch) request.method = methodMatch[1];
+    let inRequest = false;
+    for (const row of rows) {
+        const c0 = String(row[0] ?? '').trim();
+        const c1 = String(row[1] ?? '').trim();
+        if (/^###\s*Request\b/i.test(c0)) {
+            inRequest = true;
+            continue;
+        }
+        if (inRequest && /^###\s*/.test(c0)) break;
 
-    // Extract URL
-    const urlMatch = section.match(/- URL:\s*`([^`]+)`/);
-    if (urlMatch) request.url = urlMatch[1];
+        if (!inRequest) continue;
 
-    // Extract headers
-    const headerMatches = section.matchAll(/\s+- ([\w-]+):\s*`([^`]+)`/g);
-    for (const match of headerMatches) {
-        request.headers[match[1]] = match[2];
-    }
+        let m = c0.match(/^-+\s*Method:\s*(\w+)/i);
+        if (!m && /^Method$/i.test(c0) && c1) m = [null, c1];
+        if (m) {
+            request.method = String(m[1]).toUpperCase();
+            continue;
+        }
 
-    // Extract body - look for json code block
-    const bodyMatch = section.match(/```json\n([\s\S]+?)\n```/);
-    if (bodyMatch) {
-        request.body = bodyMatch[1].trim();
+        let u = c0.match(/^-+\s*URL:\s*`?([^`]+)`?/i);
+        if (!u && /^URL$/i.test(c0) && c1) u = [null, c1];
+        if (u) {
+            request.url = String(u[1]).trim();
+            continue;
+        }
+
+        let b = c0.match(/^-+\s*Body:\s*(.+)$/i);
+        if (!b && /^Body$/i.test(c0) && c1) b = [null, c1];
+        if (b) {
+            const bodyText = String(b[1]).trim();
+            if (/^none$/i.test(bodyText)) {
+                request.body = '';
+            } else {
+                request.body = cleanupBodyText(bodyText);
+            }
+            continue;
+        }
     }
 
     return request;
 }
 
-function parseTestCases(section) {
+function parseTestCasesFromRows(rows) {
     const testCases = [];
 
-    // Find the test cases table
-    const tableStart = section.indexOf('| ID');
-    if (tableStart === -1) return testCases;
+    const headerIndex = rows.findIndex(row =>
+        String(row[0] ?? '').trim().toLowerCase() === 'id' &&
+        String(row[1] ?? '').trim().toLowerCase() === 'category' &&
+        String(row[2] ?? '').trim().toLowerCase() === 'description' &&
+        String(row[3] ?? '').trim().toLowerCase() === 'request override' &&
+        String(row[4] ?? '').trim().toLowerCase() === 'expected result'
+    );
+    if (headerIndex === -1) return testCases;
 
-    const tableContent = section.substring(tableStart);
-    const lines = tableContent.split('\n');
+    for (let i = headerIndex + 1; i < rows.length; i++) {
+        const row = rows[i] || [];
+        const tcId = String(row[0] ?? '').trim();
+        const category = String(row[1] ?? '').trim();
+        const description = String(row[2] ?? '').trim();
+        const overrideText = String(row[3] ?? '').trim();
+        const expectedResult = String(row[4] ?? '').trim();
 
-    // Skip header and separator lines
-    let inTable = false;
-    lines.forEach(line => {
-        if (line.includes('| ID') || line.includes('---')) {
-            inTable = true;
-            return;
+        if (!tcId || !/^TC-\d+/i.test(tcId)) {
+            if (!tcId && !category && !description && !overrideText && !expectedResult) break;
+            continue;
         }
 
-        if (!inTable || !line.trim().startsWith('|')) return;
-
-        // Parse table row
-        const cells = line.split('|').map(c => c.trim()).filter(c => c);
-
-        if (cells.length >= 5) {
-            const tcId = cells[0];
-            const category = cells[1];
-            const description = cells[2];
-            const overrides = cells[3];
-            const expectedResult = cells[4];
-
-            testCases.push({
-                id: tcId,
-                category,
-                description,
-                overrides: parseOverrides(overrides),
-                expectedResult
-            });
-        }
-    });
+        testCases.push({
+            id: tcId.toUpperCase(),
+            category,
+            description,
+            overrides: parseOverrides(overrideText),
+            expectedResult
+        });
+    }
 
     return testCases;
 }
@@ -164,46 +178,63 @@ function parseTestCases(section) {
 function parseOverrides(overrideText) {
     const overrides = {};
 
-    // Parse method
-    const methodMatch = overrideText.match(/\*\*Method:\*\*\s*(\w+)/);
+    const methodMatch = overrideText.match(/Method:\s*(\w+)/i);
     if (methodMatch) {
-        overrides.method = methodMatch[1];
+        overrides.method = methodMatch[1].toUpperCase();
     }
 
-    // Parse headers
-    if (overrideText.includes('**Headers:**')) {
-        overrides.headers = {};
-
-        // Look for "Authorization: None" or "Authorization = None"
-        const authMatch = overrideText.match(/Authorization[:=]\s*(None|null)/i);
-        if (authMatch) {
-            overrides.headers['Authorization'] = null;
-        }
-
-        // Look for "Content-Type: text/plain"
-        const ctMatch = overrideText.match(/Content-Type:\s*([^\n<*]+)/);
-        if (ctMatch) {
-            overrides.headers['Content-Type'] = ctMatch[1].trim();
-        }
+    if (/Content-Type:\s*/i.test(overrideText)) {
+        overrides.headers = overrides.headers || {};
+        const ctMatch = overrideText.match(/Content-Type:\s*([^|]+)/i);
+        if (ctMatch) overrides.headers['Content-Type'] = ctMatch[1].trim();
     }
 
-    // Parse body
-    const bodyMatch = overrideText.match(/\*\*Body:\*\*\s*`([^`]+)`/);
-    if (bodyMatch) {
-        overrides.body = bodyMatch[1];
-    } else if (overrideText.toLowerCase().includes('malformed json')) {
-        overrides.body = '{ invalid json';
-    } else if (overrideText.match(/\*\*Body:\*\*\s*None/)) {
+    const authMatch = overrideText.match(/Authorization[:=]\s*(None|null)/i);
+    if (authMatch) {
+        overrides.headers = overrides.headers || {};
+        overrides.headers['Authorization'] = null;
+    }
+
+    if (/Body:\s*None/i.test(overrideText)) {
         overrides.body = null;
+    } else if (/Body:\s*malformed JSON/i.test(overrideText)) {
+        overrides.body = '{ invalid json';
+    } else {
+        const bodyMatch = overrideText.match(/Body:\s*`([^`]+)`/i) || overrideText.match(/Body:\s*([^|]+)$/i);
+        if (bodyMatch && !/^none$/i.test(bodyMatch[1].trim())) {
+            overrides.body = bodyMatch[1].trim();
+        }
+    }
+
+    const pathIdMatch = overrideText.match(/Path:\s*([A-Za-z0-9_]+)\s*=\s*([^|]+)/i);
+    if (pathIdMatch) {
+        overrides.pathParam = {
+            key: pathIdMatch[1],
+            value: pathIdMatch[2].trim()
+        };
     }
 
     return overrides;
 }
 
+function cleanupBodyText(text) {
+    const trimmed = text.trim();
+    const fenced = trimmed.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
+    if (fenced) return fenced[1].trim();
+    return trimmed;
+}
+
 function buildRequest(baseRequest, testCase, baseUrl) {
     // Merge base request with overrides
     const method = testCase.overrides.method || baseRequest.method;
-    const url = baseRequest.url;
+    let url = baseRequest.url;
+    if (testCase.overrides.pathParam) {
+        const { key, value } = testCase.overrides.pathParam;
+        const safeValue = encodeURIComponent(value);
+        url = url
+            .replace(new RegExp(`\\{${key}\\}`, 'g'), safeValue)
+            .replace(new RegExp(`:${key}(?=/|$)`, 'g'), safeValue);
+    }
 
     // Clone headers
     const headers = { ...baseRequest.headers };
@@ -400,7 +431,10 @@ function extractResponseTime(text) {
 }
 
 function parseUrl(urlString, baseUrl) {
-    const raw = urlString;
+    let raw = urlString;
+    if (raw?.includes('{{baseUrl}}')) {
+        raw = raw.replace(/{{baseUrl}}/g, '');
+    }
     if (/\{\{\s*base_url\s*\}\}/i.test(raw)) return raw;
 
     if (baseUrl) {
