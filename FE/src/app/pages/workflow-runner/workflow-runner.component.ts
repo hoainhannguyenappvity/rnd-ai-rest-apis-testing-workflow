@@ -29,7 +29,7 @@ export class WorkflowRunnerComponent implements OnDestroy {
 
 	readonly canExecute = computed(() => this.status() !== 'running');
 
-	readonly canViewReport = computed(() => this.status() === 'completed' && !!this.report());
+	readonly canViewReport = computed(() => this.status() === 'completed' && this.progressPercent() === 100);
 
 	onServiceChange(event: Event): void {
 		const target = event.target as HTMLSelectElement;
@@ -51,13 +51,16 @@ export class WorkflowRunnerComponent implements OnDestroy {
 
 		this.executionSub = this.workflowService.executeWorkflow(this.selectedService()).subscribe({
 			next: (entry) => {
+				console.log('entry..........::', entry);
 				this.logs.update((prev) => [...prev, entry]);
 			},
 			error: (error: Error) => {
+				console.log('error..........::', error);
 				this.progressSub?.unsubscribe();
 				this.executionError.set(error.message);
 			},
 			complete: () => {
+				console.log('complete..........::');
 				this.progressSub?.unsubscribe();
 				this.progressPercent.set(100);
 			},
@@ -65,15 +68,11 @@ export class WorkflowRunnerComponent implements OnDestroy {
 	}
 
 	openReport(): void {
-		// if (!this.canViewReport()) {
-		//   return;
-		// }
+		if (!this.canViewReport()) {
+		  return;
+		}
 		const reportUrl = 'reports/summary.html';
 		window.open(reportUrl, '_blank', 'noopener,noreferrer');
-		// const openedWindow = window.open(reportUrl, '_blank', 'noopener,noreferrer');
-		// if (!openedWindow) {
-		//   window.location.href = reportUrl;
-		// }
 	}
 
 	reset(): void {
