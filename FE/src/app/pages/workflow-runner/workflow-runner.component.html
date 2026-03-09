@@ -64,7 +64,7 @@
       <button
         type="button"
         class="rounded-xl border border-cyan-500/40 px-5 py-2.5 text-sm font-semibold text-cyan-200 transition hover:border-cyan-300 hover:text-cyan-100 disabled:cursor-not-allowed disabled:opacity-40"
-        [disabled]="!canViewReport()"
+        [disabled]="canViewReport()"
         (click)="openReport()"
       >
         View Report
@@ -88,5 +88,3 @@
     }
   </article>
 </section>
-
-<app-report-modal [isOpen]="isReportOpen()" [report]="report()" (closeModal)="closeReport()" />

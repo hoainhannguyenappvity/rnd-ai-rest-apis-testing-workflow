@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>eProduct API Test Summary</title>
+<style>
+:root{--bg:#0b1220;--panel:#121a2b;--panel2:#172238;--text:#f3f6ff;--muted:#9aa9c2;--pass:#21c27a;--fail:#ff5c74;--accent:#4fa4ff;--shadow:0 8px 24px rgba(0,0,0,.35)}
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:radial-gradient(circle at top right,#1a2440, #0b1220 60%);color:var(--text)}
+.container{max-width:1300px;margin:24px auto;padding:0 16px}.card{background:linear-gradient(160deg,var(--panel),var(--panel2));border-radius:14px;box-shadow:var(--shadow);padding:16px}
+h1{margin:0 0 12px 0}.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}.tab{background:#233150;color:#dbe7ff;padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.kpi{padding:14px;border-radius:12px;background:#0f1730}.kpi .label{color:var(--muted);font-weight:700}.kpi .value{font-size:28px;font-weight:800;margin-top:6px}
+.badge{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:800}.badge.pass{background:rgba(33,194,122,.22);color:#9ef2cb}.badge.fail{background:rgba(255,92,116,.22);color:#ffc5ce}
+.summary{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}.summary p{margin:0;color:#dce6ff;line-height:1.5}
+.donut-wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.donut{width:140px;height:140px;border-radius:50%;background:conic-gradient(var(--pass) 33.33%, var(--fail) 0)}
+.progress{height:12px;background:#263251;border-radius:999px;overflow:hidden}.progress > span{display:block;height:100%;width:100.00%;background:linear-gradient(90deg,#4fa4ff,#21c27a)}
+.section{margin-top:16px}.issues li{margin:6px 0;color:#ffd4dc}.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}.controls input,.controls select{background:#0f1730;color:#fff;border:1px solid #334566;padding:8px 10px;border-radius:8px}
+table{width:100%;border-collapse:collapse;min-width:1100px}th,td{padding:10px;border-bottom:1px solid #2b3d63;text-align:left;vertical-align:top}th{background:#172544;position:sticky;top:0}.table-wrap{overflow:auto;max-height:70vh}
+.group-sep td{background:#1b2948;font-weight:800;border-top:2px solid #3f5f95;border-bottom:2px solid #3f5f95}.view-btn{background:#334f88;color:#fff;border:none;border-radius:6px;padding:5px 9px;cursor:pointer;font-weight:700}
+.error-detail{display:none;margin-top:6px;padding:8px;border-left:3px solid var(--fail);background:rgba(255,92,116,.08);color:#ffcfd7}.muted{color:var(--muted)}
+@media(max-width:700px){.donut{width:110px;height:110px}.kpi .value{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <h1>eProduct API Test Summary</h1>
+    <div class="tabs">
+      <a class="tab" href="#executive">Executive Summary</a>
+      <a class="tab" href="#metrics">Metrics</a>
+      <a class="tab" href="#coverage">Coverage</a>
+      <a class="tab" href="#details">Detailed Results</a>
+    </div>
+    <section id="executive" class="summary">
+      <p>Automated API testing completed across 19 endpoints. Results show a high number of status-code mismatches, indicating the API behavior is not aligned with expected contract outcomes and should be corrected before release.</p>
+      <span class="badge fail">Pass rate: 33.33%</span>
+    </section>
+  </div>
+
+  <section id="metrics" class="section card">
+    <div class="grid">
+      <div class="kpi"><div class="label">Total APIs tested</div><div class="value">19</div></div>
+      <div class="kpi"><div class="label">Total test cases</div><div class="value">129</div></div>
+      <div class="kpi"><div class="label">Passed</div><div class="value" style="color:var(--pass)">43</div></div>
+      <div class="kpi"><div class="label">Failed</div><div class="value" style="color:var(--fail)">86</div></div>
+      <div class="kpi"><div class="label">Execution time</div><div class="value">17.82s</div></div>
+      <div class="kpi"><div class="label">Average response time</div><div class="value">63.57ms</div></div>
+    </div>
+  </section>
+
+  <section id="coverage" class="section card">
+    <div class="donut-wrap">
+      <div class="donut" aria-label="Pass fail ratio"></div>
+      <div>
+        <p><strong>43 passed, 86 failed</strong></p>
+        <p>129 of 129 planned executed</p>
+      </div>
+    </div>
+    <div class="progress" title="Coverage progress"><span></span></div>
+  </section>
+
+  <section class="section card">
+    <h2>Key Issues</h2>
+    <ul class="issues"><li>PATCH https://appservices-debug.appvity.com/invalid-id returned 405 instead of 400 or 404 <strong>(4)</strong></li><li>PATCH https://appservices-debug.appvity.com/None returned 405 instead of 400 <strong>(4)</strong></li><li>DELETE https://appservices-debug.appvity.com/invalid-id returned 405 instead of 400 or 404 <strong>(4)</strong></li><li>DELETE https://appservices-debug.appvity.com/None returned 405 instead of 400 <strong>(4)</strong></li><li>GET https://appservices-debug.appvity.com/None returned 404 instead of 400 <strong>(3)</strong></li><li>GET https://appservices-debug.appvity.com/%7BconnectionId%7D returned 404 instead of 405 <strong>(3)</strong></li><li>POST https://appservices-debug.appvity.com/ returned 405 instead of 400 <strong>(2)</strong></li><li>GET https://appservices-debug.appvity.com/%7BuserFieldId%7D returned 404 instead of 405 <strong>(2)</strong></li></ul>
+  </section>
+
+  <section id="details" class="section card">
+    <h2>Detailed Results</h2>
+    <div class="controls">
+      <input type="text" id="search" placeholder="Search API, test case, endpoint..." />
+      <select id="statusFilter">
+        <option value="all">All</option>
+        <option value="pass">Pass</option>
+        <option value="fail">Fail</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>API</th><th>Test Case</th><th>Method</th><th>Endpoint</th><th>Status</th><th>Expected</th><th>Actual</th><th>Time(ms)</th><th>Error</th></tr>
+        </thead>
+        <tbody id="resultsBody">
+          <tr class="group-sep" data-api="API-001-GET-baseUrl"><td colspan="10"><strong>API-001: GET {{baseUrl}}/</strong></td></tr>
+<tr data-status="pass" data-api="API-001-GET-baseUrl" data-search="api-001-get-baseurl-tc-001---valid-get-request-get-httpsappservices-debugappvitycom-pass">
+      <td>API-001: GET {{baseUrl}}/</td>
+      <td>TC-001 - Valid GET request</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 200</td>
+      <td>200</td>
+      <td>207</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="pass" data-api="API-001-GET-baseUrl" data-search="api-001-get-baseurl-tc-002---invalid-http-method-post-httpsappservices-debugappvitycom-pass">
+      <td>API-001: GET {{baseUrl}}/</td>
+      <td>TC-002 - Invalid HTTP method</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 405</td>
+      <td>405</td>
+      <td>58</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="pass" data-api="API-001-GET-baseUrl" data-search="api-001-get-baseurl-tc-003---response-time-check-get-httpsappservices-debugappvitycom-pass">
+      <td>API-001: GET {{baseUrl}}/</td>
+      <td>TC-003 - Response time check</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 200</td>
+      <td>200</td>
+      <td>58</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr class="group-sep" data-api="API-002-POST-baseUrl"><td colspan="10"><strong>API-002: POST {{baseUrl}}/</strong></td></tr>
+<tr data-status="fail" data-api="API-002-POST-baseUrl" data-search="api-002-post-baseurl-tc-001---valid-post-request-post-httpsappservices-debugappvitycom-fail">
+      <td>API-002: POST {{baseUrl}}/</td>
+      <td>TC-001 - Valid POST request</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>200 or 299</td>
+      <td>405</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-002-POST-baseUrl-0">View</button><div id="err-API-002-POST-baseUrl-0" class="error-detail">Expected 200 or 299, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-002-POST-baseUrl" data-search="api-002-post-baseurl-tc-002---invalid-http-method-get-httpsappservices-debugappvitycom-fail">
+      <td>API-002: POST {{baseUrl}}/</td>
+      <td>TC-002 - Invalid HTTP method</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>405</td>
+      <td>200</td>
+      <td>60</td>
+      <td><button class="view-btn" data-target="err-API-002-POST-baseUrl-1">View</button><div id="err-API-002-POST-baseUrl-1" class="error-detail">Expected 405, but Actual 200</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-002-POST-baseUrl" data-search="api-002-post-baseurl-tc-003---missing-request-body-post-httpsappservices-debugappvitycom-fail">
+      <td>API-002: POST {{baseUrl}}/</td>
+      <td>TC-003 - Missing request body</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>405</td>
+      <td>58</td>
+      <td><button class="view-btn" data-target="err-API-002-POST-baseUrl-2">View</button><div id="err-API-002-POST-baseUrl-2" class="error-detail">Expected 400, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-002-POST-baseUrl" data-search="api-002-post-baseurl-tc-004---invalid-json-body-post-httpsappservices-debugappvitycom-fail">
+      <td>API-002: POST {{baseUrl}}/</td>
+      <td>TC-004 - Invalid JSON body</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>405</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-002-POST-baseUrl-3">View</button><div id="err-API-002-POST-baseUrl-3" class="error-detail">Expected 400, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-002-POST-baseUrl" data-search="api-002-post-baseurl-tc-005---invalid-content-type-post-httpsappservices-debugappvitycom-fail">
+      <td>API-002: POST {{baseUrl}}/</td>
+      <td>TC-005 - Invalid Content-Type</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>415</td>
+      <td>405</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-002-POST-baseUrl-4">View</button><div id="err-API-002-POST-baseUrl-4" class="error-detail">Expected 415, but Actual 405</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-002-POST-baseUrl" data-search="api-002-post-baseurl-tc-006---response-time-check-post-httpsappservices-debugappvitycom-pass">
+      <td>API-002: POST {{baseUrl}}/</td>
+      <td>TC-006 - Response time check</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 405</td>
+      <td>405</td>
+      <td>59</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr class="group-sep" data-api="API-003-GET-baseUrluserFieldId"><td colspan="10"><strong>API-003: GET {{baseUrl}}/{userFieldId}</strong></td></tr>
+<tr data-status="fail" data-api="API-003-GET-baseUrluserFieldId" data-search="api-003-get-baseurluserfieldid-tc-001---valid-get-request-get-httpsappservices-debugappvitycom7buserfieldid7d-fail">
+      <td>API-003: GET {{baseUrl}}/{userFieldId}</td>
+      <td>TC-001 - Valid GET request</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BuserFieldId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>200 or 299</td>
+      <td>404</td>
+      <td>58</td>
+      <td><button class="view-btn" data-target="err-API-003-GET-baseUrluserFieldId-0">View</button><div id="err-API-003-GET-baseUrluserFieldId-0" class="error-detail">Expected 200 or 299, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-003-GET-baseUrluserFieldId" data-search="api-003-get-baseurluserfieldid-tc-002---invalid-http-method-post-httpsappservices-debugappvitycom7buserfieldid7d-fail">
+      <td>API-003: GET {{baseUrl}}/{userFieldId}</td>
+      <td>TC-002 - Invalid HTTP method</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/%7BuserFieldId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>405</td>
+      <td>404</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-003-GET-baseUrluserFieldId-1">View</button><div id="err-API-003-GET-baseUrluserFieldId-1" class="error-detail">Expected 405, but Actual 404</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-003-GET-baseUrluserFieldId" data-search="api-003-get-baseurluserfieldid-tc-003---invalid-userfieldid-get-httpsappservices-debugappvitycominvalid-id-pass">
+      <td>API-003: GET {{baseUrl}}/{userFieldId}</td>
+      <td>TC-003 - Invalid userFieldId</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/invalid-id</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>58</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="fail" data-api="API-003-GET-baseUrluserFieldId" data-search="api-003-get-baseurluserfieldid-tc-004---missing-userfieldid-get-httpsappservices-debugappvitycomnone-fail">
+      <td>API-003: GET {{baseUrl}}/{userFieldId}</td>
+      <td>TC-004 - Missing userFieldId</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/None</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>404</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-003-GET-baseUrluserFieldId-3">View</button><div id="err-API-003-GET-baseUrluserFieldId-3" class="error-detail">Expected 400, but Actual 404</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-003-GET-baseUrluserFieldId" data-search="api-003-get-baseurluserfieldid-tc-005---sql-injection-in-path-param-get-httpsappservices-debugappvitycom3920or2013d1-pass">
+      <td>API-003: GET {{baseUrl}}/{userFieldId}</td>
+      <td>TC-005 - SQL injection in path param</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/&#39;%20OR%201%3D1</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>58</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="pass" data-api="API-003-GET-baseUrluserFieldId" data-search="api-003-get-baseurluserfieldid-tc-006---response-time-check-get-httpsappservices-debugappvitycom7buserfieldid7d-pass">
+      <td>API-003: GET {{baseUrl}}/{userFieldId}</td>
+      <td>TC-006 - Response time check</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BuserFieldId%7D</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>57</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr class="group-sep" data-api="API-004-PATCH-baseUrluserFieldId"><td colspan="10"><strong>API-004: PATCH {{baseUrl}}/{userFieldId}</strong></td></tr>
+<tr data-status="fail" data-api="API-004-PATCH-baseUrluserFieldId" data-search="api-004-patch-baseurluserfieldid-tc-001---valid-patch-request-patch-httpsappservices-debugappvitycom7buserfieldid7d-fail">
+      <td>API-004: PATCH {{baseUrl}}/{userFieldId}</td>
+      <td>TC-001 - Valid PATCH request</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BuserFieldId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>200 or 299</td>
+      <td>405</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-004-PATCH-baseUrluserFieldId-0">View</button><div id="err-API-004-PATCH-baseUrluserFieldId-0" class="error-detail">Expected 200 or 299, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-004-PATCH-baseUrluserFieldId" data-search="api-004-patch-baseurluserfieldid-tc-002---invalid-http-method-get-httpsappservices-debugappvitycom7buserfieldid7d-fail">
+      <td>API-004: PATCH {{baseUrl}}/{userFieldId}</td>
+      <td>TC-002 - Invalid HTTP method</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BuserFieldId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>405</td>
+      <td>404</td>
+      <td>58</td>
+      <td><button class="view-btn" data-target="err-API-004-PATCH-baseUrluserFieldId-1">View</button><div id="err-API-004-PATCH-baseUrluserFieldId-1" class="error-detail">Expected 405, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-004-PATCH-baseUrluserFieldId" data-search="api-004-patch-baseurluserfieldid-tc-003---invalid-userfieldid-patch-httpsappservices-debugappvitycominvalid-id-fail">
+      <td>API-004: PATCH {{baseUrl}}/{userFieldId}</td>
+      <td>TC-003 - Invalid userFieldId</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/invalid-id</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400 or 404</td>
+      <td>405</td>
+      <td>63</td>
+      <td><button class="view-btn" data-target="err-API-004-PATCH-baseUrluserFieldId-2">View</button><div id="err-API-004-PATCH-baseUrluserFieldId-2" class="error-detail">Expected 400 or 404, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-004-PATCH-baseUrluserFieldId" data-search="api-004-patch-baseurluserfieldid-tc-004---missing-userfieldid-patch-httpsappservices-debugappvitycomnone-fail">
+      <td>API-004: PATCH {{baseUrl}}/{userFieldId}</td>
+      <td>TC-004 - Missing userFieldId</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/None</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>405</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-004-PATCH-baseUrluserFieldId-3">View</button><div id="err-API-004-PATCH-baseUrluserFieldId-3" class="error-detail">Expected 400, but Actual 405</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-004-PATCH-baseUrluserFieldId" data-search="api-004-patch-baseurluserfieldid-tc-005---sql-injection-in-path-param-patch-httpsappservices-debugappvitycom3920or2013d1-pass">
+      <td>API-004: PATCH {{baseUrl}}/{userFieldId}</td>
+      <td>TC-005 - SQL injection in path param</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/&#39;%20OR%201%3D1</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 405</td>
+      <td>405</td>
+      <td>59</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="fail" data-api="API-004-PATCH-baseUrluserFieldId" data-search="api-004-patch-baseurluserfieldid-tc-006---missing-request-body-patch-httpsappservices-debugappvitycom7buserfieldid7d-fail">
+      <td>API-004: PATCH {{baseUrl}}/{userFieldId}</td>
+      <td>TC-006 - Missing request body</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BuserFieldId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>405</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-004-PATCH-baseUrluserFieldId-5">View</button><div id="err-API-004-PATCH-baseUrluserFieldId-5" class="error-detail">Expected 400, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-004-PATCH-baseUrluserFieldId" data-search="api-004-patch-baseurluserfieldid-tc-007---invalid-json-body-patch-httpsappservices-debugappvitycom7buserfieldid7d-fail">
+      <td>API-004: PATCH {{baseUrl}}/{userFieldId}</td>
+      <td>TC-007 - Invalid JSON body</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BuserFieldId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>405</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-004-PATCH-baseUrluserFieldId-6">View</button><div id="err-API-004-PATCH-baseUrluserFieldId-6" class="error-detail">Expected 400, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-004-PATCH-baseUrluserFieldId" data-search="api-004-patch-baseurluserfieldid-tc-008---invalid-content-type-patch-httpsappservices-debugappvitycom7buserfieldid7d-fail">
+      <td>API-004: PATCH {{baseUrl}}/{userFieldId}</td>
+      <td>TC-008 - Invalid Content-Type</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BuserFieldId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>415</td>
+      <td>405</td>
+      <td>56</td>
+      <td><button class="view-btn" data-target="err-API-004-PATCH-baseUrluserFieldId-7">View</button><div id="err-API-004-PATCH-baseUrluserFieldId-7" class="error-detail">Expected 415, but Actual 405</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-004-PATCH-baseUrluserFieldId" data-search="api-004-patch-baseurluserfieldid-tc-009---response-time-check-patch-httpsappservices-debugappvitycom7buserfieldid7d-pass">
+      <td>API-004: PATCH {{baseUrl}}/{userFieldId}</td>
+      <td>TC-009 - Response time check</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BuserFieldId%7D</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 405</td>
+      <td>405</td>
+      <td>56</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr class="group-sep" data-api="API-005-DELETE-baseUrluserFieldId"><td colspan="10"><strong>API-005: DELETE {{baseUrl}}/{userFieldId}</strong></td></tr>
+<tr data-status="fail" data-api="API-005-DELETE-baseUrluserFieldId" data-search="api-005-delete-baseurluserfieldid-tc-001---valid-delete-request-delete-httpsappservices-debugappvitycom7buserfieldid7d-fail">
+      <td>API-005: DELETE {{baseUrl}}/{userFieldId}</td>
+      <td>TC-001 - Valid DELETE request</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/%7BuserFieldId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>200 or 299</td>
+      <td>405</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-005-DELETE-baseUrluserFieldId-0">View</button><div id="err-API-005-DELETE-baseUrluserFieldId-0" class="error-detail">Expected 200 or 299, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-005-DELETE-baseUrluserFieldId" data-search="api-005-delete-baseurluserfieldid-tc-002---invalid-http-method-get-httpsappservices-debugappvitycom7buserfieldid7d-fail">
+      <td>API-005: DELETE {{baseUrl}}/{userFieldId}</td>
+      <td>TC-002 - Invalid HTTP method</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BuserFieldId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>405</td>
+      <td>404</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-005-DELETE-baseUrluserFieldId-1">View</button><div id="err-API-005-DELETE-baseUrluserFieldId-1" class="error-detail">Expected 405, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-005-DELETE-baseUrluserFieldId" data-search="api-005-delete-baseurluserfieldid-tc-003---invalid-userfieldid-delete-httpsappservices-debugappvitycominvalid-id-fail">
+      <td>API-005: DELETE {{baseUrl}}/{userFieldId}</td>
+      <td>TC-003 - Invalid userFieldId</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/invalid-id</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400 or 404</td>
+      <td>405</td>
+      <td>64</td>
+      <td><button class="view-btn" data-target="err-API-005-DELETE-baseUrluserFieldId-2">View</button><div id="err-API-005-DELETE-baseUrluserFieldId-2" class="error-detail">Expected 400 or 404, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-005-DELETE-baseUrluserFieldId" data-search="api-005-delete-baseurluserfieldid-tc-004---missing-userfieldid-delete-httpsappservices-debugappvitycomnone-fail">
+      <td>API-005: DELETE {{baseUrl}}/{userFieldId}</td>
+      <td>TC-004 - Missing userFieldId</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/None</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>405</td>
+      <td>56</td>
+      <td><button class="view-btn" data-target="err-API-005-DELETE-baseUrluserFieldId-3">View</button><div id="err-API-005-DELETE-baseUrluserFieldId-3" class="error-detail">Expected 400, but Actual 405</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-005-DELETE-baseUrluserFieldId" data-search="api-005-delete-baseurluserfieldid-tc-005---sql-injection-in-path-param-delete-httpsappservices-debugappvitycom3920or2013d1-pass">
+      <td>API-005: DELETE {{baseUrl}}/{userFieldId}</td>
+      <td>TC-005 - SQL injection in path param</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/&#39;%20OR%201%3D1</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 405</td>
+      <td>405</td>
+      <td>57</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="pass" data-api="API-005-DELETE-baseUrluserFieldId" data-search="api-005-delete-baseurluserfieldid-tc-006---response-time-check-delete-httpsappservices-debugappvitycom7buserfieldid7d-pass">
+      <td>API-005: DELETE {{baseUrl}}/{userFieldId}</td>
+      <td>TC-006 - Response time check</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/%7BuserFieldId%7D</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 405</td>
+      <td>405</td>
+      <td>56</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr class="group-sep" data-api="API-006-PATCH-baseUrlconnectionId"><td colspan="10"><strong>API-006: PATCH {{baseUrl}}/{connectionId}</strong></td></tr>
+<tr data-status="fail" data-api="API-006-PATCH-baseUrlconnectionId" data-search="api-006-patch-baseurlconnectionid-tc-001---valid-patch-request-patch-httpsappservices-debugappvitycom7bconnectionid7d-fail">
+      <td>API-006: PATCH {{baseUrl}}/{connectionId}</td>
+      <td>TC-001 - Valid PATCH request</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>200 or 299</td>
+      <td>405</td>
+      <td>56</td>
+      <td><button class="view-btn" data-target="err-API-006-PATCH-baseUrlconnectionId-0">View</button><div id="err-API-006-PATCH-baseUrlconnectionId-0" class="error-detail">Expected 200 or 299, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-006-PATCH-baseUrlconnectionId" data-search="api-006-patch-baseurlconnectionid-tc-002---invalid-http-method-get-httpsappservices-debugappvitycom7bconnectionid7d-fail">
+      <td>API-006: PATCH {{baseUrl}}/{connectionId}</td>
+      <td>TC-002 - Invalid HTTP method</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>405</td>
+      <td>404</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-006-PATCH-baseUrlconnectionId-1">View</button><div id="err-API-006-PATCH-baseUrlconnectionId-1" class="error-detail">Expected 405, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-006-PATCH-baseUrlconnectionId" data-search="api-006-patch-baseurlconnectionid-tc-003---invalid-connectionid-patch-httpsappservices-debugappvitycominvalid-id-fail">
+      <td>API-006: PATCH {{baseUrl}}/{connectionId}</td>
+      <td>TC-003 - Invalid connectionId</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/invalid-id</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400 or 404</td>
+      <td>405</td>
+      <td>56</td>
+      <td><button class="view-btn" data-target="err-API-006-PATCH-baseUrlconnectionId-2">View</button><div id="err-API-006-PATCH-baseUrlconnectionId-2" class="error-detail">Expected 400 or 404, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-006-PATCH-baseUrlconnectionId" data-search="api-006-patch-baseurlconnectionid-tc-004---missing-connectionid-patch-httpsappservices-debugappvitycomnone-fail">
+      <td>API-006: PATCH {{baseUrl}}/{connectionId}</td>
+      <td>TC-004 - Missing connectionId</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/None</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>405</td>
+      <td>61</td>
+      <td><button class="view-btn" data-target="err-API-006-PATCH-baseUrlconnectionId-3">View</button><div id="err-API-006-PATCH-baseUrlconnectionId-3" class="error-detail">Expected 400, but Actual 405</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-006-PATCH-baseUrlconnectionId" data-search="api-006-patch-baseurlconnectionid-tc-005---sql-injection-in-path-param-patch-httpsappservices-debugappvitycom3920or2013d1-pass">
+      <td>API-006: PATCH {{baseUrl}}/{connectionId}</td>
+      <td>TC-005 - SQL injection in path param</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/&#39;%20OR%201%3D1</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 405</td>
+      <td>405</td>
+      <td>60</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="fail" data-api="API-006-PATCH-baseUrlconnectionId" data-search="api-006-patch-baseurlconnectionid-tc-006---missing-request-body-patch-httpsappservices-debugappvitycom7bconnectionid7d-fail">
+      <td>API-006: PATCH {{baseUrl}}/{connectionId}</td>
+      <td>TC-006 - Missing request body</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>405</td>
+      <td>59</td>
+      <td><button class="view-btn" data-target="err-API-006-PATCH-baseUrlconnectionId-5">View</button><div id="err-API-006-PATCH-baseUrlconnectionId-5" class="error-detail">Expected 400, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-006-PATCH-baseUrlconnectionId" data-search="api-006-patch-baseurlconnectionid-tc-007---invalid-json-body-patch-httpsappservices-debugappvitycom7bconnectionid7d-fail">
+      <td>API-006: PATCH {{baseUrl}}/{connectionId}</td>
+      <td>TC-007 - Invalid JSON body</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>405</td>
+      <td>59</td>
+      <td><button class="view-btn" data-target="err-API-006-PATCH-baseUrlconnectionId-6">View</button><div id="err-API-006-PATCH-baseUrlconnectionId-6" class="error-detail">Expected 400, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-006-PATCH-baseUrlconnectionId" data-search="api-006-patch-baseurlconnectionid-tc-008---invalid-content-type-patch-httpsappservices-debugappvitycom7bconnectionid7d-fail">
+      <td>API-006: PATCH {{baseUrl}}/{connectionId}</td>
+      <td>TC-008 - Invalid Content-Type</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>415</td>
+      <td>405</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-006-PATCH-baseUrlconnectionId-7">View</button><div id="err-API-006-PATCH-baseUrlconnectionId-7" class="error-detail">Expected 415, but Actual 405</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-006-PATCH-baseUrlconnectionId" data-search="api-006-patch-baseurlconnectionid-tc-009---response-time-check-patch-httpsappservices-debugappvitycom7bconnectionid7d-pass">
+      <td>API-006: PATCH {{baseUrl}}/{connectionId}</td>
+      <td>TC-009 - Response time check</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 405</td>
+      <td>405</td>
+      <td>56</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr class="group-sep" data-api="API-007-GET-baseUrlconnectionId"><td colspan="10"><strong>API-007: GET {{baseUrl}}/{connectionId}</strong></td></tr>
+<tr data-status="fail" data-api="API-007-GET-baseUrlconnectionId" data-search="api-007-get-baseurlconnectionid-tc-001---valid-get-request-get-httpsappservices-debugappvitycom7bconnectionid7d-fail">
+      <td>API-007: GET {{baseUrl}}/{connectionId}</td>
+      <td>TC-001 - Valid GET request</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>200 or 299</td>
+      <td>404</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-007-GET-baseUrlconnectionId-0">View</button><div id="err-API-007-GET-baseUrlconnectionId-0" class="error-detail">Expected 200 or 299, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-007-GET-baseUrlconnectionId" data-search="api-007-get-baseurlconnectionid-tc-002---invalid-http-method-post-httpsappservices-debugappvitycom7bconnectionid7d-fail">
+      <td>API-007: GET {{baseUrl}}/{connectionId}</td>
+      <td>TC-002 - Invalid HTTP method</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>405</td>
+      <td>404</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-007-GET-baseUrlconnectionId-1">View</button><div id="err-API-007-GET-baseUrlconnectionId-1" class="error-detail">Expected 405, but Actual 404</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-007-GET-baseUrlconnectionId" data-search="api-007-get-baseurlconnectionid-tc-003---invalid-connectionid-get-httpsappservices-debugappvitycominvalid-id-pass">
+      <td>API-007: GET {{baseUrl}}/{connectionId}</td>
+      <td>TC-003 - Invalid connectionId</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/invalid-id</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>57</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="fail" data-api="API-007-GET-baseUrlconnectionId" data-search="api-007-get-baseurlconnectionid-tc-004---missing-connectionid-get-httpsappservices-debugappvitycomnone-fail">
+      <td>API-007: GET {{baseUrl}}/{connectionId}</td>
+      <td>TC-004 - Missing connectionId</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/None</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>404</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-007-GET-baseUrlconnectionId-3">View</button><div id="err-API-007-GET-baseUrlconnectionId-3" class="error-detail">Expected 400, but Actual 404</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-007-GET-baseUrlconnectionId" data-search="api-007-get-baseurlconnectionid-tc-005---sql-injection-in-path-param-get-httpsappservices-debugappvitycom3920or2013d1-pass">
+      <td>API-007: GET {{baseUrl}}/{connectionId}</td>
+      <td>TC-005 - SQL injection in path param</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/&#39;%20OR%201%3D1</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>59</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="pass" data-api="API-007-GET-baseUrlconnectionId" data-search="api-007-get-baseurlconnectionid-tc-006---response-time-check-get-httpsappservices-debugappvitycom7bconnectionid7d-pass">
+      <td>API-007: GET {{baseUrl}}/{connectionId}</td>
+      <td>TC-006 - Response time check</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>56</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr class="group-sep" data-api="API-008-DELETE-baseUrlconnectionId"><td colspan="10"><strong>API-008: DELETE {{baseUrl}}/{connectionId}</strong></td></tr>
+<tr data-status="fail" data-api="API-008-DELETE-baseUrlconnectionId" data-search="api-008-delete-baseurlconnectionid-tc-001---valid-delete-request-delete-httpsappservices-debugappvitycom7bconnectionid7d-fail">
+      <td>API-008: DELETE {{baseUrl}}/{connectionId}</td>
+      <td>TC-001 - Valid DELETE request</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>200 or 299</td>
+      <td>405</td>
+      <td>58</td>
+      <td><button class="view-btn" data-target="err-API-008-DELETE-baseUrlconnectionId-0">View</button><div id="err-API-008-DELETE-baseUrlconnectionId-0" class="error-detail">Expected 200 or 299, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-008-DELETE-baseUrlconnectionId" data-search="api-008-delete-baseurlconnectionid-tc-002---invalid-http-method-get-httpsappservices-debugappvitycom7bconnectionid7d-fail">
+      <td>API-008: DELETE {{baseUrl}}/{connectionId}</td>
+      <td>TC-002 - Invalid HTTP method</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>405</td>
+      <td>404</td>
+      <td>59</td>
+      <td><button class="view-btn" data-target="err-API-008-DELETE-baseUrlconnectionId-1">View</button><div id="err-API-008-DELETE-baseUrlconnectionId-1" class="error-detail">Expected 405, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-008-DELETE-baseUrlconnectionId" data-search="api-008-delete-baseurlconnectionid-tc-003---invalid-connectionid-delete-httpsappservices-debugappvitycominvalid-id-fail">
+      <td>API-008: DELETE {{baseUrl}}/{connectionId}</td>
+      <td>TC-003 - Invalid connectionId</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/invalid-id</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400 or 404</td>
+      <td>405</td>
+      <td>62</td>
+      <td><button class="view-btn" data-target="err-API-008-DELETE-baseUrlconnectionId-2">View</button><div id="err-API-008-DELETE-baseUrlconnectionId-2" class="error-detail">Expected 400 or 404, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-008-DELETE-baseUrlconnectionId" data-search="api-008-delete-baseurlconnectionid-tc-004---missing-connectionid-delete-httpsappservices-debugappvitycomnone-fail">
+      <td>API-008: DELETE {{baseUrl}}/{connectionId}</td>
+      <td>TC-004 - Missing connectionId</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/None</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>405</td>
+      <td>59</td>
+      <td><button class="view-btn" data-target="err-API-008-DELETE-baseUrlconnectionId-3">View</button><div id="err-API-008-DELETE-baseUrlconnectionId-3" class="error-detail">Expected 400, but Actual 405</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-008-DELETE-baseUrlconnectionId" data-search="api-008-delete-baseurlconnectionid-tc-005---sql-injection-in-path-param-delete-httpsappservices-debugappvitycom3920or2013d1-pass">
+      <td>API-008: DELETE {{baseUrl}}/{connectionId}</td>
+      <td>TC-005 - SQL injection in path param</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/&#39;%20OR%201%3D1</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 405</td>
+      <td>405</td>
+      <td>59</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="pass" data-api="API-008-DELETE-baseUrlconnectionId" data-search="api-008-delete-baseurlconnectionid-tc-006---response-time-check-delete-httpsappservices-debugappvitycom7bconnectionid7d-pass">
+      <td>API-008: DELETE {{baseUrl}}/{connectionId}</td>
+      <td>TC-006 - Response time check</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 405</td>
+      <td>405</td>
+      <td>57</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr class="group-sep" data-api="API-009-POST-baseUrlconnectionId"><td colspan="10"><strong>API-009: POST {{baseUrl}}/{connectionId}</strong></td></tr>
+<tr data-status="fail" data-api="API-009-POST-baseUrlconnectionId" data-search="api-009-post-baseurlconnectionid-tc-001---valid-post-request-post-httpsappservices-debugappvitycom7bconnectionid7d-fail">
+      <td>API-009: POST {{baseUrl}}/{connectionId}</td>
+      <td>TC-001 - Valid POST request</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>200 or 299</td>
+      <td>404</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-009-POST-baseUrlconnectionId-0">View</button><div id="err-API-009-POST-baseUrlconnectionId-0" class="error-detail">Expected 200 or 299, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-009-POST-baseUrlconnectionId" data-search="api-009-post-baseurlconnectionid-tc-002---invalid-http-method-get-httpsappservices-debugappvitycom7bconnectionid7d-fail">
+      <td>API-009: POST {{baseUrl}}/{connectionId}</td>
+      <td>TC-002 - Invalid HTTP method</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>405</td>
+      <td>404</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-009-POST-baseUrlconnectionId-1">View</button><div id="err-API-009-POST-baseUrlconnectionId-1" class="error-detail">Expected 405, but Actual 404</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-009-POST-baseUrlconnectionId" data-search="api-009-post-baseurlconnectionid-tc-003---invalid-connectionid-post-httpsappservices-debugappvitycominvalid-id-pass">
+      <td>API-009: POST {{baseUrl}}/{connectionId}</td>
+      <td>TC-003 - Invalid connectionId</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/invalid-id</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>56</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="fail" data-api="API-009-POST-baseUrlconnectionId" data-search="api-009-post-baseurlconnectionid-tc-004---missing-connectionid-post-httpsappservices-debugappvitycomnone-fail">
+      <td>API-009: POST {{baseUrl}}/{connectionId}</td>
+      <td>TC-004 - Missing connectionId</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/None</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>404</td>
+      <td>56</td>
+      <td><button class="view-btn" data-target="err-API-009-POST-baseUrlconnectionId-3">View</button><div id="err-API-009-POST-baseUrlconnectionId-3" class="error-detail">Expected 400, but Actual 404</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-009-POST-baseUrlconnectionId" data-search="api-009-post-baseurlconnectionid-tc-005---sql-injection-in-path-param-post-httpsappservices-debugappvitycom3920or2013d1-pass">
+      <td>API-009: POST {{baseUrl}}/{connectionId}</td>
+      <td>TC-005 - SQL injection in path param</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/&#39;%20OR%201%3D1</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>56</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="fail" data-api="API-009-POST-baseUrlconnectionId" data-search="api-009-post-baseurlconnectionid-tc-006---missing-request-body-post-httpsappservices-debugappvitycom7bconnectionid7d-fail">
+      <td>API-009: POST {{baseUrl}}/{connectionId}</td>
+      <td>TC-006 - Missing request body</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>404</td>
+      <td>58</td>
+      <td><button class="view-btn" data-target="err-API-009-POST-baseUrlconnectionId-5">View</button><div id="err-API-009-POST-baseUrlconnectionId-5" class="error-detail">Expected 400, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-009-POST-baseUrlconnectionId" data-search="api-009-post-baseurlconnectionid-tc-007---invalid-json-body-post-httpsappservices-debugappvitycom7bconnectionid7d-fail">
+      <td>API-009: POST {{baseUrl}}/{connectionId}</td>
+      <td>TC-007 - Invalid JSON body</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>404</td>
+      <td>58</td>
+      <td><button class="view-btn" data-target="err-API-009-POST-baseUrlconnectionId-6">View</button><div id="err-API-009-POST-baseUrlconnectionId-6" class="error-detail">Expected 400, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-009-POST-baseUrlconnectionId" data-search="api-009-post-baseurlconnectionid-tc-008---invalid-content-type-post-httpsappservices-debugappvitycom7bconnectionid7d-fail">
+      <td>API-009: POST {{baseUrl}}/{connectionId}</td>
+      <td>TC-008 - Invalid Content-Type</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>415</td>
+      <td>404</td>
+      <td>56</td>
+      <td><button class="view-btn" data-target="err-API-009-POST-baseUrlconnectionId-7">View</button><div id="err-API-009-POST-baseUrlconnectionId-7" class="error-detail">Expected 415, but Actual 404</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-009-POST-baseUrlconnectionId" data-search="api-009-post-baseurlconnectionid-tc-009---response-time-check-post-httpsappservices-debugappvitycom7bconnectionid7d-pass">
+      <td>API-009: POST {{baseUrl}}/{connectionId}</td>
+      <td>TC-009 - Response time check</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>56</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr class="group-sep" data-api="API-010-POST-baseUrlconnectionIdrun"><td colspan="10"><strong>API-010: POST {{baseUrl}}/{connectionId}/run</strong></td></tr>
+<tr data-status="fail" data-api="API-010-POST-baseUrlconnectionIdrun" data-search="api-010-post-baseurlconnectionidrun-tc-001---valid-post-request-post-httpsappservices-debugappvitycom7bconnectionid7drun-fail">
+      <td>API-010: POST {{baseUrl}}/{connectionId}/run</td>
+      <td>TC-001 - Valid POST request</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D/run</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>200 or 299</td>
+      <td>404</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-010-POST-baseUrlconnectionIdrun-0">View</button><div id="err-API-010-POST-baseUrlconnectionIdrun-0" class="error-detail">Expected 200 or 299, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-010-POST-baseUrlconnectionIdrun" data-search="api-010-post-baseurlconnectionidrun-tc-002---invalid-http-method-get-httpsappservices-debugappvitycom7bconnectionid7drun-fail">
+      <td>API-010: POST {{baseUrl}}/{connectionId}/run</td>
+      <td>TC-002 - Invalid HTTP method</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D/run</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>405</td>
+      <td>404</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-010-POST-baseUrlconnectionIdrun-1">View</button><div id="err-API-010-POST-baseUrlconnectionIdrun-1" class="error-detail">Expected 405, but Actual 404</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-010-POST-baseUrlconnectionIdrun" data-search="api-010-post-baseurlconnectionidrun-tc-003---invalid-connectionid-post-httpsappservices-debugappvitycominvalid-idrun-pass">
+      <td>API-010: POST {{baseUrl}}/{connectionId}/run</td>
+      <td>TC-003 - Invalid connectionId</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/invalid-id/run</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>57</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="fail" data-api="API-010-POST-baseUrlconnectionIdrun" data-search="api-010-post-baseurlconnectionidrun-tc-004---missing-connectionid-post-httpsappservices-debugappvitycomnonerun-fail">
+      <td>API-010: POST {{baseUrl}}/{connectionId}/run</td>
+      <td>TC-004 - Missing connectionId</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/None/run</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>404</td>
+      <td>63</td>
+      <td><button class="view-btn" data-target="err-API-010-POST-baseUrlconnectionIdrun-3">View</button><div id="err-API-010-POST-baseUrlconnectionIdrun-3" class="error-detail">Expected 400, but Actual 404</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-010-POST-baseUrlconnectionIdrun" data-search="api-010-post-baseurlconnectionidrun-tc-005---sql-injection-in-path-param-post-httpsappservices-debugappvitycom3920or2013d1run-pass">
+      <td>API-010: POST {{baseUrl}}/{connectionId}/run</td>
+      <td>TC-005 - SQL injection in path param</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/&#39;%20OR%201%3D1/run</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>71</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="fail" data-api="API-010-POST-baseUrlconnectionIdrun" data-search="api-010-post-baseurlconnectionidrun-tc-006---missing-request-body-post-httpsappservices-debugappvitycom7bconnectionid7drun-fail">
+      <td>API-010: POST {{baseUrl}}/{connectionId}/run</td>
+      <td>TC-006 - Missing request body</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D/run</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>404</td>
+      <td>78</td>
+      <td><button class="view-btn" data-target="err-API-010-POST-baseUrlconnectionIdrun-5">View</button><div id="err-API-010-POST-baseUrlconnectionIdrun-5" class="error-detail">Expected 400, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-010-POST-baseUrlconnectionIdrun" data-search="api-010-post-baseurlconnectionidrun-tc-007---invalid-json-body-post-httpsappservices-debugappvitycom7bconnectionid7drun-fail">
+      <td>API-010: POST {{baseUrl}}/{connectionId}/run</td>
+      <td>TC-007 - Invalid JSON body</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D/run</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>404</td>
+      <td>65</td>
+      <td><button class="view-btn" data-target="err-API-010-POST-baseUrlconnectionIdrun-6">View</button><div id="err-API-010-POST-baseUrlconnectionIdrun-6" class="error-detail">Expected 400, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-010-POST-baseUrlconnectionIdrun" data-search="api-010-post-baseurlconnectionidrun-tc-008---invalid-content-type-post-httpsappservices-debugappvitycom7bconnectionid7drun-fail">
+      <td>API-010: POST {{baseUrl}}/{connectionId}/run</td>
+      <td>TC-008 - Invalid Content-Type</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D/run</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>415</td>
+      <td>404</td>
+      <td>59</td>
+      <td><button class="view-btn" data-target="err-API-010-POST-baseUrlconnectionIdrun-7">View</button><div id="err-API-010-POST-baseUrlconnectionIdrun-7" class="error-detail">Expected 415, but Actual 404</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-010-POST-baseUrlconnectionIdrun" data-search="api-010-post-baseurlconnectionidrun-tc-009---response-time-check-post-httpsappservices-debugappvitycom7bconnectionid7drun-pass">
+      <td>API-010: POST {{baseUrl}}/{connectionId}/run</td>
+      <td>TC-009 - Response time check</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/%7BconnectionId%7D/run</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>61</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr class="group-sep" data-api="API-011-POST-baseUrlcallback"><td colspan="10"><strong>API-011: POST {{baseUrl}}/callback</strong></td></tr>
+<tr data-status="fail" data-api="API-011-POST-baseUrlcallback" data-search="api-011-post-baseurlcallback-tc-001---valid-post-request-post-httpsappservices-debugappvitycomcallback-fail">
+      <td>API-011: POST {{baseUrl}}/callback</td>
+      <td>TC-001 - Valid POST request</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/callback</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>200 or 299</td>
+      <td>404</td>
+      <td>59</td>
+      <td><button class="view-btn" data-target="err-API-011-POST-baseUrlcallback-0">View</button><div id="err-API-011-POST-baseUrlcallback-0" class="error-detail">Expected 200 or 299, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-011-POST-baseUrlcallback" data-search="api-011-post-baseurlcallback-tc-002---invalid-http-method-get-httpsappservices-debugappvitycomcallback-fail">
+      <td>API-011: POST {{baseUrl}}/callback</td>
+      <td>TC-002 - Invalid HTTP method</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/callback</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>405</td>
+      <td>404</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-011-POST-baseUrlcallback-1">View</button><div id="err-API-011-POST-baseUrlcallback-1" class="error-detail">Expected 405, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-011-POST-baseUrlcallback" data-search="api-011-post-baseurlcallback-tc-003---missing-request-body-post-httpsappservices-debugappvitycomcallback-fail">
+      <td>API-011: POST {{baseUrl}}/callback</td>
+      <td>TC-003 - Missing request body</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/callback</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>404</td>
+      <td>59</td>
+      <td><button class="view-btn" data-target="err-API-011-POST-baseUrlcallback-2">View</button><div id="err-API-011-POST-baseUrlcallback-2" class="error-detail">Expected 400, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-011-POST-baseUrlcallback" data-search="api-011-post-baseurlcallback-tc-004---invalid-json-body-post-httpsappservices-debugappvitycomcallback-fail">
+      <td>API-011: POST {{baseUrl}}/callback</td>
+      <td>TC-004 - Invalid JSON body</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/callback</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>404</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-011-POST-baseUrlcallback-3">View</button><div id="err-API-011-POST-baseUrlcallback-3" class="error-detail">Expected 400, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-011-POST-baseUrlcallback" data-search="api-011-post-baseurlcallback-tc-005---invalid-content-type-post-httpsappservices-debugappvitycomcallback-fail">
+      <td>API-011: POST {{baseUrl}}/callback</td>
+      <td>TC-005 - Invalid Content-Type</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/callback</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>415</td>
+      <td>404</td>
+      <td>56</td>
+      <td><button class="view-btn" data-target="err-API-011-POST-baseUrlcallback-4">View</button><div id="err-API-011-POST-baseUrlcallback-4" class="error-detail">Expected 415, but Actual 404</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-011-POST-baseUrlcallback" data-search="api-011-post-baseurlcallback-tc-006---response-time-check-post-httpsappservices-debugappvitycomcallback-pass">
+      <td>API-011: POST {{baseUrl}}/callback</td>
+      <td>TC-006 - Response time check</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/callback</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>62</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr class="group-sep" data-api="API-012-PATCH-baseUrlsubscriptionId"><td colspan="10"><strong>API-012: PATCH {{baseUrl}}/{subscriptionId}</strong></td></tr>
+<tr data-status="fail" data-api="API-012-PATCH-baseUrlsubscriptionId" data-search="api-012-patch-baseurlsubscriptionid-tc-001---valid-patch-request-patch-httpsappservices-debugappvitycom7bsubscriptionid7d-fail">
+      <td>API-012: PATCH {{baseUrl}}/{subscriptionId}</td>
+      <td>TC-001 - Valid PATCH request</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BsubscriptionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>200 or 299</td>
+      <td>405</td>
+      <td>59</td>
+      <td><button class="view-btn" data-target="err-API-012-PATCH-baseUrlsubscriptionId-0">View</button><div id="err-API-012-PATCH-baseUrlsubscriptionId-0" class="error-detail">Expected 200 or 299, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-012-PATCH-baseUrlsubscriptionId" data-search="api-012-patch-baseurlsubscriptionid-tc-002---invalid-http-method-get-httpsappservices-debugappvitycom7bsubscriptionid7d-fail">
+      <td>API-012: PATCH {{baseUrl}}/{subscriptionId}</td>
+      <td>TC-002 - Invalid HTTP method</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BsubscriptionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>405</td>
+      <td>404</td>
+      <td>56</td>
+      <td><button class="view-btn" data-target="err-API-012-PATCH-baseUrlsubscriptionId-1">View</button><div id="err-API-012-PATCH-baseUrlsubscriptionId-1" class="error-detail">Expected 405, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-012-PATCH-baseUrlsubscriptionId" data-search="api-012-patch-baseurlsubscriptionid-tc-003---invalid-subscriptionid-patch-httpsappservices-debugappvitycominvalid-id-fail">
+      <td>API-012: PATCH {{baseUrl}}/{subscriptionId}</td>
+      <td>TC-003 - Invalid subscriptionId</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/invalid-id</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400 or 404</td>
+      <td>405</td>
+      <td>389</td>
+      <td><button class="view-btn" data-target="err-API-012-PATCH-baseUrlsubscriptionId-2">View</button><div id="err-API-012-PATCH-baseUrlsubscriptionId-2" class="error-detail">Expected 400 or 404, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-012-PATCH-baseUrlsubscriptionId" data-search="api-012-patch-baseurlsubscriptionid-tc-004---missing-subscriptionid-patch-httpsappservices-debugappvitycomnone-fail">
+      <td>API-012: PATCH {{baseUrl}}/{subscriptionId}</td>
+      <td>TC-004 - Missing subscriptionId</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/None</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>405</td>
+      <td>60</td>
+      <td><button class="view-btn" data-target="err-API-012-PATCH-baseUrlsubscriptionId-3">View</button><div id="err-API-012-PATCH-baseUrlsubscriptionId-3" class="error-detail">Expected 400, but Actual 405</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-012-PATCH-baseUrlsubscriptionId" data-search="api-012-patch-baseurlsubscriptionid-tc-005---sql-injection-in-path-param-patch-httpsappservices-debugappvitycom3920or2013d1-pass">
+      <td>API-012: PATCH {{baseUrl}}/{subscriptionId}</td>
+      <td>TC-005 - SQL injection in path param</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/&#39;%20OR%201%3D1</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 405</td>
+      <td>405</td>
+      <td>60</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="fail" data-api="API-012-PATCH-baseUrlsubscriptionId" data-search="api-012-patch-baseurlsubscriptionid-tc-006---missing-request-body-patch-httpsappservices-debugappvitycom7bsubscriptionid7d-fail">
+      <td>API-012: PATCH {{baseUrl}}/{subscriptionId}</td>
+      <td>TC-006 - Missing request body</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BsubscriptionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>405</td>
+      <td>68</td>
+      <td><button class="view-btn" data-target="err-API-012-PATCH-baseUrlsubscriptionId-5">View</button><div id="err-API-012-PATCH-baseUrlsubscriptionId-5" class="error-detail">Expected 400, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-012-PATCH-baseUrlsubscriptionId" data-search="api-012-patch-baseurlsubscriptionid-tc-007---invalid-json-body-patch-httpsappservices-debugappvitycom7bsubscriptionid7d-fail">
+      <td>API-012: PATCH {{baseUrl}}/{subscriptionId}</td>
+      <td>TC-007 - Invalid JSON body</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BsubscriptionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>405</td>
+      <td>85</td>
+      <td><button class="view-btn" data-target="err-API-012-PATCH-baseUrlsubscriptionId-6">View</button><div id="err-API-012-PATCH-baseUrlsubscriptionId-6" class="error-detail">Expected 400, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-012-PATCH-baseUrlsubscriptionId" data-search="api-012-patch-baseurlsubscriptionid-tc-008---invalid-content-type-patch-httpsappservices-debugappvitycom7bsubscriptionid7d-fail">
+      <td>API-012: PATCH {{baseUrl}}/{subscriptionId}</td>
+      <td>TC-008 - Invalid Content-Type</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BsubscriptionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>415</td>
+      <td>405</td>
+      <td>81</td>
+      <td><button class="view-btn" data-target="err-API-012-PATCH-baseUrlsubscriptionId-7">View</button><div id="err-API-012-PATCH-baseUrlsubscriptionId-7" class="error-detail">Expected 415, but Actual 405</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-012-PATCH-baseUrlsubscriptionId" data-search="api-012-patch-baseurlsubscriptionid-tc-009---response-time-check-patch-httpsappservices-debugappvitycom7bsubscriptionid7d-pass">
+      <td>API-012: PATCH {{baseUrl}}/{subscriptionId}</td>
+      <td>TC-009 - Response time check</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BsubscriptionId%7D</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 405</td>
+      <td>405</td>
+      <td>88</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr class="group-sep" data-api="API-013-DELETE-baseUrlsubscriptionId"><td colspan="10"><strong>API-013: DELETE {{baseUrl}}/{subscriptionId}</strong></td></tr>
+<tr data-status="fail" data-api="API-013-DELETE-baseUrlsubscriptionId" data-search="api-013-delete-baseurlsubscriptionid-tc-001---valid-delete-request-delete-httpsappservices-debugappvitycom7bsubscriptionid7d-fail">
+      <td>API-013: DELETE {{baseUrl}}/{subscriptionId}</td>
+      <td>TC-001 - Valid DELETE request</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/%7BsubscriptionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>200 or 299</td>
+      <td>405</td>
+      <td>77</td>
+      <td><button class="view-btn" data-target="err-API-013-DELETE-baseUrlsubscriptionId-0">View</button><div id="err-API-013-DELETE-baseUrlsubscriptionId-0" class="error-detail">Expected 200 or 299, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-013-DELETE-baseUrlsubscriptionId" data-search="api-013-delete-baseurlsubscriptionid-tc-002---invalid-http-method-get-httpsappservices-debugappvitycom7bsubscriptionid7d-fail">
+      <td>API-013: DELETE {{baseUrl}}/{subscriptionId}</td>
+      <td>TC-002 - Invalid HTTP method</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BsubscriptionId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>405</td>
+      <td>404</td>
+      <td>92</td>
+      <td><button class="view-btn" data-target="err-API-013-DELETE-baseUrlsubscriptionId-1">View</button><div id="err-API-013-DELETE-baseUrlsubscriptionId-1" class="error-detail">Expected 405, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-013-DELETE-baseUrlsubscriptionId" data-search="api-013-delete-baseurlsubscriptionid-tc-003---invalid-subscriptionid-delete-httpsappservices-debugappvitycominvalid-id-fail">
+      <td>API-013: DELETE {{baseUrl}}/{subscriptionId}</td>
+      <td>TC-003 - Invalid subscriptionId</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/invalid-id</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400 or 404</td>
+      <td>405</td>
+      <td>59</td>
+      <td><button class="view-btn" data-target="err-API-013-DELETE-baseUrlsubscriptionId-2">View</button><div id="err-API-013-DELETE-baseUrlsubscriptionId-2" class="error-detail">Expected 400 or 404, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-013-DELETE-baseUrlsubscriptionId" data-search="api-013-delete-baseurlsubscriptionid-tc-004---missing-subscriptionid-delete-httpsappservices-debugappvitycomnone-fail">
+      <td>API-013: DELETE {{baseUrl}}/{subscriptionId}</td>
+      <td>TC-004 - Missing subscriptionId</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/None</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>405</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-013-DELETE-baseUrlsubscriptionId-3">View</button><div id="err-API-013-DELETE-baseUrlsubscriptionId-3" class="error-detail">Expected 400, but Actual 405</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-013-DELETE-baseUrlsubscriptionId" data-search="api-013-delete-baseurlsubscriptionid-tc-005---sql-injection-in-path-param-delete-httpsappservices-debugappvitycom3920or2013d1-pass">
+      <td>API-013: DELETE {{baseUrl}}/{subscriptionId}</td>
+      <td>TC-005 - SQL injection in path param</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/&#39;%20OR%201%3D1</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 405</td>
+      <td>405</td>
+      <td>65</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="pass" data-api="API-013-DELETE-baseUrlsubscriptionId" data-search="api-013-delete-baseurlsubscriptionid-tc-006---response-time-check-delete-httpsappservices-debugappvitycom7bsubscriptionid7d-pass">
+      <td>API-013: DELETE {{baseUrl}}/{subscriptionId}</td>
+      <td>TC-006 - Response time check</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/%7BsubscriptionId%7D</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 405</td>
+      <td>405</td>
+      <td>69</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr class="group-sep" data-api="API-014-POST-baseUrlpopulate"><td colspan="10"><strong>API-014: POST {{baseUrl}}/populate</strong></td></tr>
+<tr data-status="fail" data-api="API-014-POST-baseUrlpopulate" data-search="api-014-post-baseurlpopulate-tc-001---valid-post-request-post-httpsappservices-debugappvitycompopulate-fail">
+      <td>API-014: POST {{baseUrl}}/populate</td>
+      <td>TC-001 - Valid POST request</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/populate</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>200 or 299</td>
+      <td>404</td>
+      <td>68</td>
+      <td><button class="view-btn" data-target="err-API-014-POST-baseUrlpopulate-0">View</button><div id="err-API-014-POST-baseUrlpopulate-0" class="error-detail">Expected 200 or 299, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-014-POST-baseUrlpopulate" data-search="api-014-post-baseurlpopulate-tc-002---invalid-http-method-get-httpsappservices-debugappvitycompopulate-fail">
+      <td>API-014: POST {{baseUrl}}/populate</td>
+      <td>TC-002 - Invalid HTTP method</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/populate</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>405</td>
+      <td>404</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-014-POST-baseUrlpopulate-1">View</button><div id="err-API-014-POST-baseUrlpopulate-1" class="error-detail">Expected 405, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-014-POST-baseUrlpopulate" data-search="api-014-post-baseurlpopulate-tc-003---missing-request-body-post-httpsappservices-debugappvitycompopulate-fail">
+      <td>API-014: POST {{baseUrl}}/populate</td>
+      <td>TC-003 - Missing request body</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/populate</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>404</td>
+      <td>55</td>
+      <td><button class="view-btn" data-target="err-API-014-POST-baseUrlpopulate-2">View</button><div id="err-API-014-POST-baseUrlpopulate-2" class="error-detail">Expected 400, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-014-POST-baseUrlpopulate" data-search="api-014-post-baseurlpopulate-tc-004---invalid-json-body-post-httpsappservices-debugappvitycompopulate-fail">
+      <td>API-014: POST {{baseUrl}}/populate</td>
+      <td>TC-004 - Invalid JSON body</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/populate</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>404</td>
+      <td>66</td>
+      <td><button class="view-btn" data-target="err-API-014-POST-baseUrlpopulate-3">View</button><div id="err-API-014-POST-baseUrlpopulate-3" class="error-detail">Expected 400, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-014-POST-baseUrlpopulate" data-search="api-014-post-baseurlpopulate-tc-005---invalid-content-type-post-httpsappservices-debugappvitycompopulate-fail">
+      <td>API-014: POST {{baseUrl}}/populate</td>
+      <td>TC-005 - Invalid Content-Type</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/populate</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>415</td>
+      <td>404</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-014-POST-baseUrlpopulate-4">View</button><div id="err-API-014-POST-baseUrlpopulate-4" class="error-detail">Expected 415, but Actual 404</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-014-POST-baseUrlpopulate" data-search="api-014-post-baseurlpopulate-tc-006---response-time-check-post-httpsappservices-debugappvitycompopulate-pass">
+      <td>API-014: POST {{baseUrl}}/populate</td>
+      <td>TC-006 - Response time check</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/populate</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>60</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr class="group-sep" data-api="API-015-GET-baseUrluserId"><td colspan="10"><strong>API-015: GET {{baseUrl}}/{userId}</strong></td></tr>
+<tr data-status="fail" data-api="API-015-GET-baseUrluserId" data-search="api-015-get-baseurluserid-tc-001---valid-get-request-get-httpsappservices-debugappvitycom7buserid7d-fail">
+      <td>API-015: GET {{baseUrl}}/{userId}</td>
+      <td>TC-001 - Valid GET request</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BuserId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>200 or 299</td>
+      <td>404</td>
+      <td>56</td>
+      <td><button class="view-btn" data-target="err-API-015-GET-baseUrluserId-0">View</button><div id="err-API-015-GET-baseUrluserId-0" class="error-detail">Expected 200 or 299, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-015-GET-baseUrluserId" data-search="api-015-get-baseurluserid-tc-002---invalid-http-method-post-httpsappservices-debugappvitycom7buserid7d-fail">
+      <td>API-015: GET {{baseUrl}}/{userId}</td>
+      <td>TC-002 - Invalid HTTP method</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/%7BuserId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>405</td>
+      <td>404</td>
+      <td>57</td>
+      <td><button class="view-btn" data-target="err-API-015-GET-baseUrluserId-1">View</button><div id="err-API-015-GET-baseUrluserId-1" class="error-detail">Expected 405, but Actual 404</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-015-GET-baseUrluserId" data-search="api-015-get-baseurluserid-tc-003---invalid-userid-get-httpsappservices-debugappvitycominvalid-id-pass">
+      <td>API-015: GET {{baseUrl}}/{userId}</td>
+      <td>TC-003 - Invalid userId</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/invalid-id</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>57</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="fail" data-api="API-015-GET-baseUrluserId" data-search="api-015-get-baseurluserid-tc-004---missing-userid-get-httpsappservices-debugappvitycomnone-fail">
+      <td>API-015: GET {{baseUrl}}/{userId}</td>
+      <td>TC-004 - Missing userId</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/None</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>404</td>
+      <td>59</td>
+      <td><button class="view-btn" data-target="err-API-015-GET-baseUrluserId-3">View</button><div id="err-API-015-GET-baseUrluserId-3" class="error-detail">Expected 400, but Actual 404</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-015-GET-baseUrluserId" data-search="api-015-get-baseurluserid-tc-005---sql-injection-in-path-param-get-httpsappservices-debugappvitycom3920or2013d1-pass">
+      <td>API-015: GET {{baseUrl}}/{userId}</td>
+      <td>TC-005 - SQL injection in path param</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/&#39;%20OR%201%3D1</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>166</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="pass" data-api="API-015-GET-baseUrluserId" data-search="api-015-get-baseurluserid-tc-006---response-time-check-get-httpsappservices-debugappvitycom7buserid7d-pass">
+      <td>API-015: GET {{baseUrl}}/{userId}</td>
+      <td>TC-006 - Response time check</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BuserId%7D</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>56</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr class="group-sep" data-api="API-016-PATCH-baseUrluserId"><td colspan="10"><strong>API-016: PATCH {{baseUrl}}/{userId}</strong></td></tr>
+<tr data-status="fail" data-api="API-016-PATCH-baseUrluserId" data-search="api-016-patch-baseurluserid-tc-001---valid-patch-request-patch-httpsappservices-debugappvitycom7buserid7d-fail">
+      <td>API-016: PATCH {{baseUrl}}/{userId}</td>
+      <td>TC-001 - Valid PATCH request</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BuserId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>200 or 299</td>
+      <td>405</td>
+      <td>54</td>
+      <td><button class="view-btn" data-target="err-API-016-PATCH-baseUrluserId-0">View</button><div id="err-API-016-PATCH-baseUrluserId-0" class="error-detail">Expected 200 or 299, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-016-PATCH-baseUrluserId" data-search="api-016-patch-baseurluserid-tc-002---invalid-http-method-get-httpsappservices-debugappvitycom7buserid7d-fail">
+      <td>API-016: PATCH {{baseUrl}}/{userId}</td>
+      <td>TC-002 - Invalid HTTP method</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BuserId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>405</td>
+      <td>404</td>
+      <td>55</td>
+      <td><button class="view-btn" data-target="err-API-016-PATCH-baseUrluserId-1">View</button><div id="err-API-016-PATCH-baseUrluserId-1" class="error-detail">Expected 405, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-016-PATCH-baseUrluserId" data-search="api-016-patch-baseurluserid-tc-003---invalid-userid-patch-httpsappservices-debugappvitycominvalid-id-fail">
+      <td>API-016: PATCH {{baseUrl}}/{userId}</td>
+      <td>TC-003 - Invalid userId</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/invalid-id</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400 or 404</td>
+      <td>405</td>
+      <td>55</td>
+      <td><button class="view-btn" data-target="err-API-016-PATCH-baseUrluserId-2">View</button><div id="err-API-016-PATCH-baseUrluserId-2" class="error-detail">Expected 400 or 404, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-016-PATCH-baseUrluserId" data-search="api-016-patch-baseurluserid-tc-004---missing-userid-patch-httpsappservices-debugappvitycomnone-fail">
+      <td>API-016: PATCH {{baseUrl}}/{userId}</td>
+      <td>TC-004 - Missing userId</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/None</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>405</td>
+      <td>55</td>
+      <td><button class="view-btn" data-target="err-API-016-PATCH-baseUrluserId-3">View</button><div id="err-API-016-PATCH-baseUrluserId-3" class="error-detail">Expected 400, but Actual 405</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-016-PATCH-baseUrluserId" data-search="api-016-patch-baseurluserid-tc-005---sql-injection-in-path-param-patch-httpsappservices-debugappvitycom3920or2013d1-pass">
+      <td>API-016: PATCH {{baseUrl}}/{userId}</td>
+      <td>TC-005 - SQL injection in path param</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/&#39;%20OR%201%3D1</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 405</td>
+      <td>405</td>
+      <td>54</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="fail" data-api="API-016-PATCH-baseUrluserId" data-search="api-016-patch-baseurluserid-tc-006---missing-request-body-patch-httpsappservices-debugappvitycom7buserid7d-fail">
+      <td>API-016: PATCH {{baseUrl}}/{userId}</td>
+      <td>TC-006 - Missing request body</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BuserId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>405</td>
+      <td>55</td>
+      <td><button class="view-btn" data-target="err-API-016-PATCH-baseUrluserId-5">View</button><div id="err-API-016-PATCH-baseUrluserId-5" class="error-detail">Expected 400, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-016-PATCH-baseUrluserId" data-search="api-016-patch-baseurluserid-tc-007---invalid-json-body-patch-httpsappservices-debugappvitycom7buserid7d-fail">
+      <td>API-016: PATCH {{baseUrl}}/{userId}</td>
+      <td>TC-007 - Invalid JSON body</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BuserId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>405</td>
+      <td>55</td>
+      <td><button class="view-btn" data-target="err-API-016-PATCH-baseUrluserId-6">View</button><div id="err-API-016-PATCH-baseUrluserId-6" class="error-detail">Expected 400, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-016-PATCH-baseUrluserId" data-search="api-016-patch-baseurluserid-tc-008---invalid-content-type-patch-httpsappservices-debugappvitycom7buserid7d-fail">
+      <td>API-016: PATCH {{baseUrl}}/{userId}</td>
+      <td>TC-008 - Invalid Content-Type</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BuserId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>415</td>
+      <td>405</td>
+      <td>55</td>
+      <td><button class="view-btn" data-target="err-API-016-PATCH-baseUrluserId-7">View</button><div id="err-API-016-PATCH-baseUrluserId-7" class="error-detail">Expected 415, but Actual 405</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-016-PATCH-baseUrluserId" data-search="api-016-patch-baseurluserid-tc-009---response-time-check-patch-httpsappservices-debugappvitycom7buserid7d-pass">
+      <td>API-016: PATCH {{baseUrl}}/{userId}</td>
+      <td>TC-009 - Response time check</td>
+      <td>PATCH</td>
+      <td>https://appservices-debug.appvity.com/%7BuserId%7D</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 405</td>
+      <td>405</td>
+      <td>54</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr class="group-sep" data-api="API-017-DELETE-baseUrluserId"><td colspan="10"><strong>API-017: DELETE {{baseUrl}}/{userId}</strong></td></tr>
+<tr data-status="fail" data-api="API-017-DELETE-baseUrluserId" data-search="api-017-delete-baseurluserid-tc-001---valid-delete-request-delete-httpsappservices-debugappvitycom7buserid7d-fail">
+      <td>API-017: DELETE {{baseUrl}}/{userId}</td>
+      <td>TC-001 - Valid DELETE request</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/%7BuserId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>200 or 299</td>
+      <td>405</td>
+      <td>56</td>
+      <td><button class="view-btn" data-target="err-API-017-DELETE-baseUrluserId-0">View</button><div id="err-API-017-DELETE-baseUrluserId-0" class="error-detail">Expected 200 or 299, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-017-DELETE-baseUrluserId" data-search="api-017-delete-baseurluserid-tc-002---invalid-http-method-get-httpsappservices-debugappvitycom7buserid7d-fail">
+      <td>API-017: DELETE {{baseUrl}}/{userId}</td>
+      <td>TC-002 - Invalid HTTP method</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BuserId%7D</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>405</td>
+      <td>404</td>
+      <td>56</td>
+      <td><button class="view-btn" data-target="err-API-017-DELETE-baseUrluserId-1">View</button><div id="err-API-017-DELETE-baseUrluserId-1" class="error-detail">Expected 405, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-017-DELETE-baseUrluserId" data-search="api-017-delete-baseurluserid-tc-003---invalid-userid-delete-httpsappservices-debugappvitycominvalid-id-fail">
+      <td>API-017: DELETE {{baseUrl}}/{userId}</td>
+      <td>TC-003 - Invalid userId</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/invalid-id</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400 or 404</td>
+      <td>405</td>
+      <td>55</td>
+      <td><button class="view-btn" data-target="err-API-017-DELETE-baseUrluserId-2">View</button><div id="err-API-017-DELETE-baseUrluserId-2" class="error-detail">Expected 400 or 404, but Actual 405</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-017-DELETE-baseUrluserId" data-search="api-017-delete-baseurluserid-tc-004---missing-userid-delete-httpsappservices-debugappvitycomnone-fail">
+      <td>API-017: DELETE {{baseUrl}}/{userId}</td>
+      <td>TC-004 - Missing userId</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/None</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>405</td>
+      <td>55</td>
+      <td><button class="view-btn" data-target="err-API-017-DELETE-baseUrluserId-3">View</button><div id="err-API-017-DELETE-baseUrluserId-3" class="error-detail">Expected 400, but Actual 405</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-017-DELETE-baseUrluserId" data-search="api-017-delete-baseurluserid-tc-005---sql-injection-in-path-param-delete-httpsappservices-debugappvitycom3920or2013d1-pass">
+      <td>API-017: DELETE {{baseUrl}}/{userId}</td>
+      <td>TC-005 - SQL injection in path param</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/&#39;%20OR%201%3D1</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 405</td>
+      <td>405</td>
+      <td>55</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="pass" data-api="API-017-DELETE-baseUrluserId" data-search="api-017-delete-baseurluserid-tc-006---response-time-check-delete-httpsappservices-debugappvitycom7buserid7d-pass">
+      <td>API-017: DELETE {{baseUrl}}/{userId}</td>
+      <td>TC-006 - Response time check</td>
+      <td>DELETE</td>
+      <td>https://appservices-debug.appvity.com/%7BuserId%7D</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 405</td>
+      <td>405</td>
+      <td>54</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr class="group-sep" data-api="API-018-GET-baseUrluserIdphoto"><td colspan="10"><strong>API-018: GET {{baseUrl}}/{userId}/photo</strong></td></tr>
+<tr data-status="fail" data-api="API-018-GET-baseUrluserIdphoto" data-search="api-018-get-baseurluseridphoto-tc-001---valid-get-request-get-httpsappservices-debugappvitycom7buserid7dphoto-fail">
+      <td>API-018: GET {{baseUrl}}/{userId}/photo</td>
+      <td>TC-001 - Valid GET request</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BuserId%7D/photo</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>200 or 299</td>
+      <td>404</td>
+      <td>54</td>
+      <td><button class="view-btn" data-target="err-API-018-GET-baseUrluserIdphoto-0">View</button><div id="err-API-018-GET-baseUrluserIdphoto-0" class="error-detail">Expected 200 or 299, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-018-GET-baseUrluserIdphoto" data-search="api-018-get-baseurluseridphoto-tc-002---invalid-http-method-post-httpsappservices-debugappvitycom7buserid7dphoto-fail">
+      <td>API-018: GET {{baseUrl}}/{userId}/photo</td>
+      <td>TC-002 - Invalid HTTP method</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/%7BuserId%7D/photo</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>405</td>
+      <td>404</td>
+      <td>56</td>
+      <td><button class="view-btn" data-target="err-API-018-GET-baseUrluserIdphoto-1">View</button><div id="err-API-018-GET-baseUrluserIdphoto-1" class="error-detail">Expected 405, but Actual 404</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-018-GET-baseUrluserIdphoto" data-search="api-018-get-baseurluseridphoto-tc-003---invalid-userid-get-httpsappservices-debugappvitycominvalid-idphoto-pass">
+      <td>API-018: GET {{baseUrl}}/{userId}/photo</td>
+      <td>TC-003 - Invalid userId</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/invalid-id/photo</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>56</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="fail" data-api="API-018-GET-baseUrluserIdphoto" data-search="api-018-get-baseurluseridphoto-tc-004---missing-userid-get-httpsappservices-debugappvitycomnonephoto-fail">
+      <td>API-018: GET {{baseUrl}}/{userId}/photo</td>
+      <td>TC-004 - Missing userId</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/None/photo</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>404</td>
+      <td>56</td>
+      <td><button class="view-btn" data-target="err-API-018-GET-baseUrluserIdphoto-3">View</button><div id="err-API-018-GET-baseUrluserIdphoto-3" class="error-detail">Expected 400, but Actual 404</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-018-GET-baseUrluserIdphoto" data-search="api-018-get-baseurluseridphoto-tc-005---sql-injection-in-path-param-get-httpsappservices-debugappvitycom3920or2013d1photo-pass">
+      <td>API-018: GET {{baseUrl}}/{userId}/photo</td>
+      <td>TC-005 - SQL injection in path param</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/&#39;%20OR%201%3D1/photo</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>55</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="pass" data-api="API-018-GET-baseUrluserIdphoto" data-search="api-018-get-baseurluseridphoto-tc-006---response-time-check-get-httpsappservices-debugappvitycom7buserid7dphoto-pass">
+      <td>API-018: GET {{baseUrl}}/{userId}/photo</td>
+      <td>TC-006 - Response time check</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BuserId%7D/photo</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>54</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr class="group-sep" data-api="API-019-GET-baseUrluserIdprofile"><td colspan="10"><strong>API-019: GET {{baseUrl}}/{userId}/profile</strong></td></tr>
+<tr data-status="fail" data-api="API-019-GET-baseUrluserIdprofile" data-search="api-019-get-baseurluseridprofile-tc-001---valid-get-request-get-httpsappservices-debugappvitycom7buserid7dprofile-fail">
+      <td>API-019: GET {{baseUrl}}/{userId}/profile</td>
+      <td>TC-001 - Valid GET request</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BuserId%7D/profile</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>200 or 299</td>
+      <td>404</td>
+      <td>60</td>
+      <td><button class="view-btn" data-target="err-API-019-GET-baseUrluserIdprofile-0">View</button><div id="err-API-019-GET-baseUrluserIdprofile-0" class="error-detail">Expected 200 or 299, but Actual 404</div></td>
+    </tr>
+<tr data-status="fail" data-api="API-019-GET-baseUrluserIdprofile" data-search="api-019-get-baseurluseridprofile-tc-002---invalid-http-method-post-httpsappservices-debugappvitycom7buserid7dprofile-fail">
+      <td>API-019: GET {{baseUrl}}/{userId}/profile</td>
+      <td>TC-002 - Invalid HTTP method</td>
+      <td>POST</td>
+      <td>https://appservices-debug.appvity.com/%7BuserId%7D/profile</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>405</td>
+      <td>404</td>
+      <td>58</td>
+      <td><button class="view-btn" data-target="err-API-019-GET-baseUrluserIdprofile-1">View</button><div id="err-API-019-GET-baseUrluserIdprofile-1" class="error-detail">Expected 405, but Actual 404</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-019-GET-baseUrluserIdprofile" data-search="api-019-get-baseurluseridprofile-tc-003---invalid-userid-get-httpsappservices-debugappvitycominvalid-idprofile-pass">
+      <td>API-019: GET {{baseUrl}}/{userId}/profile</td>
+      <td>TC-003 - Invalid userId</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/invalid-id/profile</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>57</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="fail" data-api="API-019-GET-baseUrluserIdprofile" data-search="api-019-get-baseurluseridprofile-tc-004---missing-userid-get-httpsappservices-debugappvitycomnoneprofile-fail">
+      <td>API-019: GET {{baseUrl}}/{userId}/profile</td>
+      <td>TC-004 - Missing userId</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/None/profile</td>
+      <td><span class="badge fail">Fail</span></td>
+      <td>400</td>
+      <td>404</td>
+      <td>54</td>
+      <td><button class="view-btn" data-target="err-API-019-GET-baseUrluserIdprofile-3">View</button><div id="err-API-019-GET-baseUrluserIdprofile-3" class="error-detail">Expected 400, but Actual 404</div></td>
+    </tr>
+<tr data-status="pass" data-api="API-019-GET-baseUrluserIdprofile" data-search="api-019-get-baseurluseridprofile-tc-005---sql-injection-in-path-param-get-httpsappservices-debugappvitycom3920or2013d1profile-pass">
+      <td>API-019: GET {{baseUrl}}/{userId}/profile</td>
+      <td>TC-005 - SQL injection in path param</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/&#39;%20OR%201%3D1/profile</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>55</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+<tr data-status="pass" data-api="API-019-GET-baseUrluserIdprofile" data-search="api-019-get-baseurluseridprofile-tc-006---response-time-check-get-httpsappservices-debugappvitycom7buserid7dprofile-pass">
+      <td>API-019: GET {{baseUrl}}/{userId}/profile</td>
+      <td>TC-006 - Response time check</td>
+      <td>GET</td>
+      <td>https://appservices-debug.appvity.com/%7BuserId%7D/profile</td>
+      <td><span class="badge pass">Pass</span></td>
+      <td>Status 404</td>
+      <td>404</td>
+      <td>54</td>
+      <td><span class="muted">-</span></td>
+    </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+<script>
+const search = document.getElementById('search');
+const statusFilter = document.getElementById('statusFilter');
+const tbody = document.getElementById('resultsBody');
+
+function applyFilter(){
+  const q = (search.value || '').toLowerCase().trim();
+  const status = statusFilter.value;
+  const rows = [...tbody.querySelectorAll('tr')];
+  const apiHasVisible = new Map();
+
+  for (const row of rows) {
+    if (row.classList.contains('group-sep')) continue;
+    const rs = row.getAttribute('data-status');
+    const txt = row.getAttribute('data-search') || '';
+    const showStatus = status === 'all' || status === rs;
+    const showText = !q || txt.includes(q);
+    const show = showStatus && showText;
+    row.style.display = show ? '' : 'none';
+    const api = row.getAttribute('data-api');
+    if (show) apiHasVisible.set(api, true);
+  }
+
+  for (const row of rows) {
+    if (!row.classList.contains('group-sep')) continue;
+    const api = row.getAttribute('data-api');
+    row.style.display = apiHasVisible.get(api) ? '' : 'none';
+  }
+}
+
+search.addEventListener('input', applyFilter);
+statusFilter.addEventListener('change', applyFilter);
+
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.view-btn');
+  if (!btn) return;
+  const detail = document.getElementById(btn.dataset.target);
+  if (!detail) return;
+  const opened = detail.style.display === 'block';
+  detail.style.display = opened ? 'none' : 'block';
+  btn.textContent = opened ? 'View' : 'Hide';
+});
+
+applyFilter();
+</script>
+</body>
+</html>
