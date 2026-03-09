@@ -71,7 +71,7 @@ export class WorkflowRunnerComponent implements OnDestroy {
 		if (!this.canViewReport()) {
 		  return;
 		}
-		const reportUrl = 'reports/summary.html';
+		const reportUrl = 'http://localhost:8000/reports/summary.html'; // Start server: python -m http.server 8000
 		window.open(reportUrl, '_blank', 'noopener,noreferrer');
 	}
 

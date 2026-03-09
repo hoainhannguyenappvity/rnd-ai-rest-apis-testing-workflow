@@ -2,16 +2,16 @@
 
 Get the output by running command `newman run ./postman/eProduct.postman_collection.json -e ./postman/eProduct.postman_environment.json`. Capture and analyze the complete output from the Newman execution and summarize findings clearly and professionally.
 
-All outputs MUST be written to the `./FE/public/reports/` folder using the following files:
+All outputs MUST be written to the `./reports/` folder using the following files:
 
-1. `./FE/public/reports/test-results.md`
+1. `./reports/test-results.md`
    - List each API tested
    - Test cases executed (based on Postman test scripts)
    - Pass/Fail status from Newman execution
    - Actual vs expected results
    - Raw Newman output or relevant excerpts
 
-2. `./FE/public/reports/summary.md`
+2. `./reports/summary.md`
 
    Include:
    - Total APIs tested
@@ -26,7 +26,7 @@ All outputs MUST be written to the `./FE/public/reports/` folder using the follo
    Do NOT mention assertions.
    Use simple, stakeholder-friendly language.
 
-3. `./FE/public/reports/summary.html`
+3. `./reports/summary.html`
 
 Generate a standalone professional HTML API Test Report dashboard with embedded CSS only (no external libraries).
 

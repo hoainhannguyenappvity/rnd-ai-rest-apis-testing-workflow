@@ -5,6 +5,7 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "eProduct-rest-apis-testing",
+        "responseMode": "responseNode",
         "options": {}
       },
       "type": "n8n-nodes-base.webhook",
@@ -163,6 +164,43 @@
     },
     {
       "parameters": {
+        "keepOnlySet": false,
+        "values": {
+          "string": [
+            {
+              "name": "status",
+              "value": "OK"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        4128,
+        1072
+      ],
+      "id": "9d438177-8f9a-488d-abed-2b9b80fb17d7",
+      "name": "Set"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        4352,
+        1072
+      ],
+      "id": "06d3dbca-c67a-4db7-adfd-45e13e0b9ff5",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
         "rules": {
           "values": [
             {
@@ -259,6 +297,28 @@
         [
           {
             "node": "Run Test",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Test": {
+      "main": [
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
             "type": "main",
             "index": 0
           }
