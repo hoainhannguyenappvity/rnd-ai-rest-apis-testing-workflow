@@ -1,13 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  ElementRef,
-  OnDestroy,
-  ViewChild,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { ReportModalComponent } from '../../components/report-modal/report-modal.component';
@@ -24,11 +16,7 @@ export class WorkflowRunnerComponent implements OnDestroy {
   private readonly workflowService = inject(WorkflowExecutionService);
   private executionSub?: Subscription;
 
-  @ViewChild('fileInput') fileInput?: ElementRef<HTMLInputElement>;
-
   readonly selectedService = signal<WorkflowServiceName>('ups');
-  readonly selectedFile = signal<File | null>(null);
-  readonly fileError = signal<string>('');
   readonly logs = signal<WorkflowLogEntry[]>([]);
   readonly executionError = signal<string>('');
   readonly isReportOpen = signal(false);
@@ -42,9 +30,7 @@ export class WorkflowRunnerComponent implements OnDestroy {
     Math.round((this.completedStepCount() / this.steps.length) * 100),
   );
 
-  readonly canExecute = computed(
-    () => this.status() !== 'running' && !!this.selectedFile() && !this.fileError(),
-  );
+  readonly canExecute = computed(() => this.status() !== 'running');
 
   readonly canViewReport = computed(() => this.status() === 'completed' && !!this.report());
 
@@ -53,31 +39,8 @@ export class WorkflowRunnerComponent implements OnDestroy {
     this.selectedService.set(target.value as WorkflowServiceName);
   }
 
-  onFileSelected(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    const file = target.files?.[0] ?? null;
-    this.fileError.set('');
-
-    if (!file) {
-      this.selectedFile.set(null);
-      return;
-    }
-
-    const extension = file.name.toLowerCase().split('.').pop();
-    const isAllowed = extension ? ['csv', 'json', 'xlsx'].includes(extension) : false;
-
-    if (!isAllowed) {
-      this.selectedFile.set(null);
-      this.fileError.set('Only .csv, .json, .xlsx files are allowed.');
-      return;
-    }
-
-    this.selectedFile.set(file);
-  }
-
   executeWorkflow(): void {
-    const file = this.selectedFile();
-    if (!file || !this.canExecute()) {
+    if (!this.canExecute()) {
       return;
     }
 
@@ -86,16 +49,14 @@ export class WorkflowRunnerComponent implements OnDestroy {
     this.executionError.set('');
     this.isReportOpen.set(false);
 
-    this.executionSub = this.workflowService
-      .executeWorkflow(this.selectedService(), file)
-      .subscribe({
-        next: (entry) => {
-          this.logs.update((prev) => [...prev, entry]);
-        },
-        error: (error: Error) => {
-          this.executionError.set(error.message);
-        },
-      });
+    this.executionSub = this.workflowService.executeWorkflow(this.selectedService()).subscribe({
+      next: (entry) => {
+        this.logs.update((prev) => [...prev, entry]);
+      },
+      error: (error: Error) => {
+        this.executionError.set(error.message);
+      },
+    });
   }
 
   openReport(): void {
@@ -113,13 +74,7 @@ export class WorkflowRunnerComponent implements OnDestroy {
     this.workflowService.reset();
     this.logs.set([]);
     this.executionError.set('');
-    this.fileError.set('');
-    this.selectedFile.set(null);
     this.isReportOpen.set(false);
-
-    if (this.fileInput?.nativeElement) {
-      this.fileInput.nativeElement.value = '';
-    }
   }
 
   statusBadgeClass(): string {
