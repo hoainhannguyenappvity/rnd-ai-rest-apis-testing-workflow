@@ -1,0 +1,119 @@
+<section class="grid gap-5 lg:grid-cols-[1.1fr,0.9fr]">
+  <article
+    class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-xl shadow-slate-950/50"
+  >
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <h2 class="text-lg font-semibold text-white">Workflow Runner</h2>
+      <span
+        class="rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em]"
+        [class]="statusBadgeClass()"
+      >
+        {{ status() }}
+      </span>
+    </div>
+
+    <p class="mt-2 text-sm text-slate-400">
+      Select service, upload test cases, then execute mocked n8n workflow.
+    </p>
+
+    <div class="mt-5 grid gap-4 sm:grid-cols-2">
+      <label class="block">
+        <span class="mb-2 block text-xs font-medium uppercase tracking-[0.16em] text-slate-400"
+          >Service</span
+        >
+        <select
+          class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-cyan-400"
+          [value]="selectedService()"
+          (change)="onServiceChange($event)"
+        >
+          <option value="ups">ups</option>
+          <option value="numbering">numbering</option>
+        </select>
+      </label>
+
+      <label class="block">
+        <span class="mb-2 block text-xs font-medium uppercase tracking-[0.16em] text-slate-400"
+          >Test case file</span
+        >
+        <input
+          #fileInput
+          type="file"
+          accept=".csv,.json,.xlsx"
+          class="block w-full cursor-pointer rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 file:mr-4 file:rounded-md file:border-0 file:bg-cyan-500/20 file:px-3 file:py-1 file:text-cyan-200 hover:file:bg-cyan-500/30"
+          (change)="onFileSelected($event)"
+        />
+      </label>
+    </div>
+
+    <div class="mt-3 min-h-6 text-sm">
+      @if (selectedFile()) {
+        <p class="text-slate-300">
+          Selected file: <span class="font-medium text-cyan-300">{{ selectedFile()?.name }}</span>
+        </p>
+      } @else {
+        <p class="text-slate-500">No file selected</p>
+      }
+
+      @if (fileError()) {
+        <p class="mt-1 text-rose-300">{{ fileError() }}</p>
+      }
+    </div>
+
+    <div class="mt-5">
+      <div
+        class="mb-2 flex items-center justify-between text-xs uppercase tracking-[0.16em] text-slate-400"
+      >
+        <span>Progress</span>
+        <span>{{ progressPercent() }}%</span>
+      </div>
+      <div class="h-2 overflow-hidden rounded-full bg-slate-800">
+        <div
+          class="h-full rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-500"
+          [style.width.%]="progressPercent()"
+        ></div>
+      </div>
+    </div>
+
+    <div class="mt-6 flex flex-wrap gap-3">
+      <button
+        type="button"
+        class="rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
+        [disabled]="!canExecute()"
+        (click)="executeWorkflow()"
+      >
+        @if (status() === 'running') {
+          Executing...
+        } @else {
+          Execute Workflow
+        }
+      </button>
+
+      <button
+        type="button"
+        class="rounded-xl border border-cyan-500/40 px-5 py-2.5 text-sm font-semibold text-cyan-200 transition hover:border-cyan-300 hover:text-cyan-100 disabled:cursor-not-allowed disabled:opacity-40"
+        [disabled]="!canViewReport()"
+        (click)="openReport()"
+      >
+        View Report
+      </button>
+
+      <button
+        type="button"
+        class="rounded-xl border border-slate-600 px-5 py-2.5 text-sm font-semibold text-slate-300 transition hover:border-slate-400 hover:text-white"
+        (click)="reset()"
+      >
+        Reset
+      </button>
+    </div>
+
+    @if (executionError()) {
+      <div
+        class="mt-4 rounded-xl border border-rose-500/40 bg-rose-500/10 px-3 py-2 text-sm text-rose-200"
+      >
+        {{ executionError() }}
+      </div>
+    }
+  </article>
+</section>
+
+<app-report-modal [isOpen]="isReportOpen()" [report]="report()" (closeModal)="closeReport()" />
