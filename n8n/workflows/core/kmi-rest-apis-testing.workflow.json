@@ -58,7 +58,7 @@
     },
     {
       "parameters": {
-        "command": "node run-test.mjs"
+        "command": "node scripts/workflow/run-test.mjs"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,

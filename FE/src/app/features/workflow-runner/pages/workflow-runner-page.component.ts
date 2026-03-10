@@ -2,16 +2,17 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
 import { Subscription, interval } from 'rxjs';
 
-import { WorkflowLogEntry, WorkflowServiceName } from '../../models/workflow.models';
-import { WorkflowExecutionService } from '../../services/workflow-execution.service';
+import { workflowConfig } from '../../../core/config/workflow.config';
+import { WorkflowLogEntry, WorkflowServiceName } from '../../../core/models/workflow.model';
+import { WorkflowExecutionService } from '../../../core/services/workflow-execution.service';
 
 @Component({
 	selector: 'app-workflow-runner',
 	standalone: true,
 	imports: [CommonModule],
-	templateUrl: './workflow-runner.component.html',
+	templateUrl: './workflow-runner-page.component.html',
 })
-export class WorkflowRunnerComponent implements OnDestroy {
+export class WorkflowRunnerPageComponent implements OnDestroy {
 	private readonly workflowService = inject(WorkflowExecutionService);
 	private executionSub?: Subscription;
 	private progressSub?: Subscription;
@@ -104,8 +105,7 @@ export class WorkflowRunnerComponent implements OnDestroy {
 		if (!this.canViewReport()) {
 		  return;
 		}
-		const reportUrl = 'http://localhost:8000/reports/summary.html'; // Start server: python -m http.server 8000
-		window.open(reportUrl, '_blank', 'noopener,noreferrer');
+		window.open(workflowConfig.reportUrl, '_blank', 'noopener,noreferrer');
 	}
 
 	reset(fileInput?: HTMLInputElement): void {

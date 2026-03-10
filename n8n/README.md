@@ -52,7 +52,7 @@ pm2 start $HOME/.nvm/versions/node/v24.12.0/bin/n8n
 
 ## Import Workflow
 
-Import **AI REST APIs Testing Workflow.json** file to your n8n workflows
+Import workflow files under `n8n/workflows/` (for example `product/eproduct-services.workflow.json`) into n8n
 
 ## Codex CLI
 

@@ -86,7 +86,7 @@
     },
     {
       "parameters": {
-        "command": "node run-test.mjs"
+        "command": "node scripts/workflow/run-test.mjs"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -284,7 +284,7 @@
     },
     {
       "parameters": {
-        "command": "=node src/components/ups/run-ups-openapi.mjs"
+        "command": "=node scripts/openapi/ups/openapi-to-postman.mjs"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -297,7 +297,7 @@
     },
     {
       "parameters": {
-        "command": "node src/components/numbering/run-numbering-openapi.mjs"
+        "command": "node scripts/openapi/numbering/openapi-to-postman.mjs"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -310,7 +310,7 @@
     },
     {
       "parameters": {
-        "command": "node postman-to-csv-converter.mjs"
+        "command": "node scripts/postman/postman-to-xlsx-testcases.mjs"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -323,7 +323,7 @@
     },
     {
       "parameters": {
-        "command": "node src/components/ups/generate-env-ups.mjs"
+        "command": "node scripts/environment/ups/generate-postman-environment.mjs"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -336,7 +336,7 @@
     },
     {
       "parameters": {
-        "command": "node src/components/numbering/generate-env-numbering.mjs"
+        "command": "node scripts/environment/numbering/generate-postman-environment.mjs"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -349,7 +349,7 @@
     },
     {
       "parameters": {
-        "command": "node generate-postman.mjs"
+        "command": "node scripts/postman/generate-postman-collection.mjs"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,

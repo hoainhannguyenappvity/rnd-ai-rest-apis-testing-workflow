@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync } from 'fs';
-import config from "./config/app.config.mjs";
+import config from '../../config/app.config.mjs';
 
 const apiXlsxPath = 'output.xlsx';
 const envMdPath = config.envMd;

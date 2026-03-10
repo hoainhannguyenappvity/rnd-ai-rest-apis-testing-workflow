@@ -2,28 +2,20 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+import { WORKFLOW_STEPS, workflowConfig } from '../config/workflow.config';
 import {
   WorkflowLogEntry,
   WorkflowReport,
   WorkflowServiceName,
   WorkflowStatus,
-  WorkflowStep,
-} from '../models/workflow.models';
+} from '../models/workflow.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WorkflowExecutionService {
-  readonly steps: WorkflowStep[] = [
-    { id: 'trigger', label: 'webhook triggered' },
-    { id: 'routing', label: 'routing by service' },
-    { id: 'compile', label: 'compile/convert' },
-    { id: 'test', label: 'run test' },
-    { id: 'report', label: 'report generated' },
-  ];
+  readonly steps = WORKFLOW_STEPS;
 
-  private readonly webhookUrl = 'http://localhost:5678/webhook/eProduct-rest-apis-testing';
-  private readonly importFileWebhookUrl = 'http://localhost:5678/webhook/eProduct-rest-apis-testing-import-file';
   private readonly http = inject(HttpClient);
 
   private readonly statusSignal = signal<WorkflowStatus>('ready');
@@ -49,7 +41,7 @@ export class WorkflowExecutionService {
 
       const request$ = testCaseFile
         ? this.executeImportWorkflowRequest(serviceName, testCaseFile)
-        : this.http.post<Record<string, unknown>>(this.webhookUrl, { service_mode: serviceName });
+        : this.http.post<Record<string, unknown>>(workflowConfig.webhookUrl, { service_mode: serviceName });
 
       const subscription = request$.subscribe({
         next: () => {
@@ -108,7 +100,7 @@ export class WorkflowExecutionService {
     const formData = new FormData();
     formData.append('test_case', testCaseFile);
     formData.append('service_mode', serviceName);
-    return this.http.post<Record<string, unknown>>(this.importFileWebhookUrl, formData);
+    return this.http.post<Record<string, unknown>>(workflowConfig.importFileWebhookUrl, formData);
   }
 
   private getErrorMessage(error: unknown): string {
