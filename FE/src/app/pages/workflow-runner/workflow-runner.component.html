@@ -22,6 +22,7 @@
         <select
           class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-cyan-400"
           [value]="selectedService()"
+          [disabled]="isServiceSelectionDisabled()"
           (change)="onServiceChange($event)"
         >
           <option value="ups">ups</option>
@@ -38,6 +39,7 @@
           type="file"
           class="block w-full cursor-pointer rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 file:mr-3 file:rounded-lg file:border-0 file:bg-cyan-400 file:px-3 file:py-1.5 file:font-semibold file:text-slate-950 hover:file:brightness-110"
           accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          [disabled]="isFileSelectionDisabled()"
           (change)="onFileChange($event)"
         />
         @if (selectedFile()) {
@@ -46,6 +48,7 @@
             <button
               type="button"
               class="rounded-md border border-slate-600 px-2 py-1 text-slate-300 transition hover:border-slate-400 hover:text-white"
+              [disabled]="isFileSelectionDisabled()"
               (click)="clearSelectedFile(testCaseFileInput)"
             >
               Clear

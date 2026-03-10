@@ -29,10 +29,16 @@ export class WorkflowRunnerComponent implements OnDestroy {
 	readonly completedStepCount = computed(() => this.logs().filter((log) => log.level === 'info').length);
 
 	readonly canExecute = computed(() => this.status() !== 'running');
+	readonly isServiceSelectionDisabled = computed(() => this.status() === 'running');
+	readonly isFileSelectionDisabled = computed(() => this.status() === 'running');
 
 	readonly canViewReport = computed(() => this.status() === 'completed' && this.progressPercent() === 100);
 
 	onServiceChange(event: Event): void {
+		if (this.isServiceSelectionDisabled()) {
+			return;
+		}
+
 		const target = event.target as HTMLSelectElement;
 		this.selectedService.set(target.value as WorkflowServiceName);
 	}
