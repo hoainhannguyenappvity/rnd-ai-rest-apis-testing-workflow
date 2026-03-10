@@ -3,7 +3,7 @@ import { WorkflowStep } from '../models/workflow.model';
 export const workflowConfig = {
   webhookUrl: 'http://localhost:5678/webhook/eProduct-rest-apis-testing',
   importFileWebhookUrl: 'http://localhost:5678/webhook/eProduct-rest-apis-testing-import-file',
-  reportUrl: 'http://localhost:8000/reports/summary.html',
+  reportUrl: 'http://localhost:8000/reports/summary.html', // Start server: python -m http.server 8000
 } as const;
 
 export const WORKFLOW_STEPS: WorkflowStep[] = [

@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
+import { WorkflowRunnerPageComponent } from './features/workflow-runner/pages/workflow-runner-page.component';
 
-import { WorkflowRunnerComponent } from './pages/workflow-runner/workflow-runner.component';
 
-export const routes: Routes = [{ path: '', component: WorkflowRunnerComponent }];
+export const routes: Routes = [{ path: '', component: WorkflowRunnerPageComponent }];
