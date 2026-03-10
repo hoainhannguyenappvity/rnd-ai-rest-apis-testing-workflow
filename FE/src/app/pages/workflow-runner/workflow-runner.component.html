@@ -12,9 +12,7 @@
       </span>
     </div>
 
-    <p class="mt-2 text-sm text-slate-400">
-      Select service, then execute n8n workflow webhook.
-    </p>
+    <p class="mt-2 text-sm text-slate-400">Select service, then execute n8n workflow webhook.</p>
 
     <div class="mt-5 grid gap-4 sm:grid-cols-2">
       <label class="block">
@@ -30,6 +28,31 @@
           <option value="numbering">numbering</option>
         </select>
       </label>
+
+      <div class="block">
+        <span class="mb-2 block text-xs font-medium uppercase tracking-[0.16em] text-slate-400"
+          >Choose File</span
+        >
+        <input
+          #testCaseFileInput
+          type="file"
+          class="block w-full cursor-pointer rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 file:mr-3 file:rounded-lg file:border-0 file:bg-cyan-400 file:px-3 file:py-1.5 file:font-semibold file:text-slate-950 hover:file:brightness-110"
+          accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          (change)="onFileChange($event)"
+        />
+        @if (selectedFile()) {
+          <div class="mt-2 flex items-center justify-between gap-2 text-xs text-slate-300">
+            <span class="truncate">{{ selectedFile()?.name }}</span>
+            <button
+              type="button"
+              class="rounded-md border border-slate-600 px-2 py-1 text-slate-300 transition hover:border-slate-400 hover:text-white"
+              (click)="clearSelectedFile(testCaseFileInput)"
+            >
+              Clear
+            </button>
+          </div>
+        }
+      </div>
     </div>
 
     <div class="mt-5">
@@ -73,7 +96,7 @@
       <button
         type="button"
         class="rounded-xl border border-slate-600 px-5 py-2.5 text-sm font-semibold text-slate-300 transition hover:border-slate-400 hover:text-white"
-        (click)="reset()"
+        (click)="reset(testCaseFileInput)"
       >
         Reset
       </button>

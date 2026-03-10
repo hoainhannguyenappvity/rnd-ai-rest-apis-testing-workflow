@@ -20,6 +20,7 @@ export class WorkflowRunnerComponent implements OnDestroy {
 	readonly logs = signal<WorkflowLogEntry[]>([]);
 	readonly executionError = signal<string>('');
 	readonly progressPercent = signal(0);
+	readonly selectedFile = signal<File | null>(null);
 
 	readonly status = this.workflowService.status;
 	readonly report = this.workflowService.report;
@@ -36,6 +37,32 @@ export class WorkflowRunnerComponent implements OnDestroy {
 		this.selectedService.set(target.value as WorkflowServiceName);
 	}
 
+	onFileChange(event: Event): void {
+		const target = event.target as HTMLInputElement;
+		const file = target.files?.[0] ?? null;
+
+		if (!file) {
+			this.selectedFile.set(null);
+			return;
+		}
+
+		const isExcelFile = file.name.toLowerCase().endsWith('.xlsx');
+		if (!isExcelFile) {
+			this.selectedFile.set(null);
+			this.executionError.set('Only .xlsx file is supported for import.');
+			target.value = '';
+			return;
+		}
+
+		this.executionError.set('');
+		this.selectedFile.set(file);
+	}
+
+	clearSelectedFile(fileInput: HTMLInputElement): void {
+		fileInput.value = '';
+		this.selectedFile.set(null);
+	}
+
 	executeWorkflow(): void {
 		if (!this.canExecute()) {
 			return;
@@ -49,7 +76,7 @@ export class WorkflowRunnerComponent implements OnDestroy {
 		const startedAt = Date.now();
 		this.startProgressTimer(startedAt);
 
-		this.executionSub = this.workflowService.executeWorkflow(this.selectedService()).subscribe({
+		this.executionSub = this.workflowService.executeWorkflow(this.selectedService(), this.selectedFile()).subscribe({
 			next: (entry) => {
 				console.log('entry..........::', entry);
 				this.logs.update((prev) => [...prev, entry]);
@@ -75,13 +102,17 @@ export class WorkflowRunnerComponent implements OnDestroy {
 		window.open(reportUrl, '_blank', 'noopener,noreferrer');
 	}
 
-	reset(): void {
+	reset(fileInput?: HTMLInputElement): void {
 		this.executionSub?.unsubscribe();
 		this.progressSub?.unsubscribe();
 		this.workflowService.reset();
 		this.logs.set([]);
 		this.executionError.set('');
 		this.progressPercent.set(0);
+		this.selectedFile.set(null);
+		if (fileInput) {
+			fileInput.value = '';
+		}
 	}
 
 	statusBadgeClass(): string {
