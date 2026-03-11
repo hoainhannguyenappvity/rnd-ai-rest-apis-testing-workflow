@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 
 export interface WorkflowConfig {
   base_url: string;
@@ -14,12 +13,23 @@ export interface WorkflowConfig {
 
 @Injectable({ providedIn: 'root' })
 export class ConfigService {
-  private readonly apiBase = '/api/config';
+  private readonly storageKey = 'workflow-dashboard-config';
+  private config: WorkflowConfig = {
+    base_url: 'https://selidasitetestapi.360awareqa.com',
+    env: {
+      apiUrl: 'https://selidasitetestapi.360awareqa.com/idsrv/connect/token',
+      username: 'thuytrangle2205@gmail.com',
+      password: 'P@ssword220595'
+    },
+    apiSpecPathTask: ''
+  };
 
-  constructor(private readonly http: HttpClient) {}
+  constructor() {
+    this.restoreFromStorage();
+  }
 
   getConfig(): Observable<WorkflowConfig> {
-    return this.http.get<WorkflowConfig>(this.apiBase);
+    return of({ ...this.config, env: { ...this.config.env } });
   }
 
   saveConfig(payload: {
@@ -29,13 +39,49 @@ export class ConfigService {
     password: string;
     apiSpecPathTask: string;
   }): Observable<{ message: string }> {
-    return this.http.put<{ message: string }>(`${this.apiBase}/update`, payload);
+    this.config = {
+      base_url: payload.base_url,
+      env: {
+        apiUrl: payload.apiUrl,
+        username: payload.username,
+        password: payload.password
+      },
+      apiSpecPathTask: payload.apiSpecPathTask
+    };
+
+    this.persistToStorage();
+    return of({ message: 'Configuration saved in browser storage (UI-only mode).' });
   }
 
   uploadTask(file: File): Observable<{ message: string; apiSpecPathTask: string }> {
-    const formData = new FormData();
-    formData.append('taskFile', file);
+    if (!file.name.toLowerCase().endsWith('.md')) {
+      return throwError(() => new Error('Only .md file is allowed.'));
+    }
 
-    return this.http.post<{ message: string; apiSpecPathTask: string }>(`${this.apiBase}/upload-task`, formData);
+    const apiSpecPathTask = `./${file.name}`;
+    return of({
+      message: 'Task file selected successfully (UI-only mode).',
+      apiSpecPathTask
+    });
+  }
+
+  private restoreFromStorage(): void {
+    const raw = localStorage.getItem(this.storageKey);
+    if (!raw) {
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(raw) as WorkflowConfig;
+      if (parsed?.base_url && parsed?.env?.apiUrl && parsed?.env?.username && parsed?.env?.password) {
+        this.config = parsed;
+      }
+    } catch {
+      localStorage.removeItem(this.storageKey);
+    }
+  }
+
+  private persistToStorage(): void {
+    localStorage.setItem(this.storageKey, JSON.stringify(this.config));
   }
 }

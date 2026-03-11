@@ -29,8 +29,7 @@
           "builder": "@angular/build:dev-server",
           "options": {
             "buildTarget": "workflow-dashboard-fe:build",
-            "port": 3000,
-            "proxyConfig": "proxy.conf.json"
+            "port": 4400
           }
         }
       }

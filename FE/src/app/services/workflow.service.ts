@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { tap } from 'rxjs/operators';
 import { ConfigService } from './config.service';
 
 @Injectable({ providedIn: 'root' })
 export class WorkflowService {
-  constructor(private readonly configService: ConfigService) {}
+  private readonly configService = inject(ConfigService);
+  constructor() { }
 
   executeWorkflow() {
     return this.configService.getConfig().pipe(
