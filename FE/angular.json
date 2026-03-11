@@ -23,13 +23,29 @@
               }
             ],
             "styles": ["src/styles.css"]
+          },
+          "configurations": {
+            "development": {
+              "sourceMap": {
+                "scripts": true,
+                "styles": true,
+                "vendor": true
+              },
+              "optimization": false,
+              "namedChunks": true,
+              "extractLicenses": false
+            }
           }
         },
         "serve": {
           "builder": "@angular/build:dev-server",
-          "options": {
-            "buildTarget": "workflow-dashboard-fe:build",
-            "port": 4400
+          "defaultConfiguration": "development",
+          "configurations": {
+            "development": {
+              "buildTarget": "workflow-dashboard-fe:build:development",
+              "port": 4400,
+              "proxyConfig": "proxy.conf.json"
+            }
           }
         }
       }
