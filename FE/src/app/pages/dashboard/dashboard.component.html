@@ -1,0 +1,92 @@
+<section class="mx-auto max-w-4xl px-4 py-10">
+  <div class="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-slate-200 sm:p-8">
+    <h1 class="text-2xl font-bold text-slate-900">Workflow Dashboard</h1>
+
+    <div class="mt-6 rounded-xl border border-slate-200 p-5">
+      <h2 class="text-lg font-semibold text-slate-900">Configuration</h2>
+
+      <form [formGroup]="configForm" class="mt-4 grid gap-4 sm:grid-cols-2">
+        <label class="flex flex-col gap-1 text-sm font-medium text-slate-700">
+          Base URL
+          <input
+            type="text"
+            formControlName="base_url"
+            class="rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500"
+          />
+        </label>
+
+        <label class="flex flex-col gap-1 text-sm font-medium text-slate-700">
+          API URL
+          <input
+            type="text"
+            formControlName="apiUrl"
+            class="rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500"
+          />
+        </label>
+
+        <label class="flex flex-col gap-1 text-sm font-medium text-slate-700">
+          Username
+          <input
+            type="text"
+            formControlName="username"
+            class="rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500"
+          />
+        </label>
+
+        <label class="flex flex-col gap-1 text-sm font-medium text-slate-700">
+          Password
+          <input
+            type="password"
+            formControlName="password"
+            class="rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500"
+          />
+        </label>
+      </form>
+
+      <button
+        type="button"
+        class="mt-5 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+        [disabled]="isSaving"
+        (click)="saveConfig()"
+      >
+        {{ isSaving ? 'Saving...' : 'SAVE' }}
+      </button>
+    </div>
+
+    <div class="mt-6 rounded-xl border border-slate-200 p-5">
+      <h2 class="text-lg font-semibold text-slate-900">Import TASK File</h2>
+      <p class="mt-2 text-sm text-slate-600">Upload TASK156958.md</p>
+
+      <input
+        class="mt-3 block w-full cursor-pointer rounded-lg border border-slate-300 bg-white p-2 text-sm text-slate-700 file:mr-3 file:rounded-md file:border-0 file:bg-slate-100 file:px-3 file:py-2 file:font-semibold file:text-slate-700 hover:file:bg-slate-200"
+        type="file"
+        accept=".md"
+        (change)="onTaskFileSelected($event)"
+      />
+
+      <p *ngIf="selectedFileName" class="mt-2 text-sm text-slate-600">Selected: {{ selectedFileName }}</p>
+      <p *ngIf="isUploading" class="mt-2 text-sm text-slate-600">Uploading...</p>
+    </div>
+
+    <div class="mt-6 flex flex-wrap gap-3">
+      <button
+        type="button"
+        class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
+        [disabled]="isExecuting"
+        (click)="executeWorkflow()"
+      >
+        {{ isExecuting ? 'Executing...' : 'Execute Workflow' }}
+      </button>
+
+      <button
+        type="button"
+        class="rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-500"
+        (click)="goToReports()"
+      >
+        View Reports
+      </button>
+    </div>
+
+    <p *ngIf="message" class="mt-4 rounded-lg bg-slate-100 px-3 py-2 text-sm text-slate-700">{{ message }}</p>
+  </div>
+</section>
