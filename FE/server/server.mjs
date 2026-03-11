@@ -58,9 +58,9 @@ app.get('/api/config', async (_req, res) => {
 
 app.put('/api/config/update', async (req, res) => {
   try {
-    const { base_url, apiUrl, username, password } = req.body ?? {};
-    if (!base_url || !apiUrl || !username || !password) {
-      return res.status(400).json({ message: 'base_url, apiUrl, username, password are required.' });
+    const { base_url, apiUrl, username, password, apiSpecPathTask } = req.body ?? {};
+    if (!base_url || !apiUrl || !username || !password || !apiSpecPathTask) {
+      return res.status(400).json({ message: 'base_url, apiUrl, username, password, apiSpecPathTask are required.' });
     }
 
     let content = await fs.readFile(configPath, 'utf8');
@@ -68,6 +68,7 @@ app.put('/api/config/update', async (req, res) => {
     content = updateConfigValue(content, 'apiUrl', String(apiUrl));
     content = updateConfigValue(content, 'username', String(username));
     content = updateConfigValue(content, 'password', String(password));
+    content = updateConfigValue(content, 'apiSpecPathTask', String(apiSpecPathTask));
 
     await fs.writeFile(configPath, content, 'utf8');
     return res.json({ message: 'Configuration saved.' });
@@ -98,12 +99,9 @@ app.post('/api/config/upload-task', upload.single('taskFile'), async (req, res) 
     await fs.writeFile(targetPath, file.buffer);
 
     const apiSpecPathTask = `./${safeFileName}`;
-    let content = await fs.readFile(configPath, 'utf8');
-    content = updateConfigValue(content, 'apiSpecPathTask', apiSpecPathTask);
-    await fs.writeFile(configPath, content, 'utf8');
 
     return res.json({
-      message: 'Task file uploaded and config updated.',
+      message: 'Task file uploaded successfully.',
       apiSpecPathTask
     });
   } catch (error) {

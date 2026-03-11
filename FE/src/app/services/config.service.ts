@@ -27,6 +27,7 @@ export class ConfigService {
     apiUrl: string;
     username: string;
     password: string;
+    apiSpecPathTask: string;
   }): Observable<{ message: string }> {
     return this.http.put<{ message: string }>(`${this.apiBase}/update`, payload);
   }

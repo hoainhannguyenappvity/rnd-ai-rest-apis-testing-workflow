@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { retry, timer } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { ConfigService } from '../../services/config.service';
 import { WorkflowService } from '../../services/workflow.service';
@@ -20,9 +21,12 @@ export class DashboardComponent implements OnInit {
 
   message = '';
   selectedFileName = '';
+  uploadedApiSpecPathTask = '';
   isSaving = false;
   isUploading = false;
   isExecuting = false;
+  showPassword = false;
+  apiReady = false;
 
   readonly configForm = this.fb.nonNullable.group({
     base_url: ['', Validators.required],
@@ -42,11 +46,18 @@ export class DashboardComponent implements OnInit {
       this.configForm.markAllAsTouched();
       return;
     }
+    if (!this.uploadedApiSpecPathTask) {
+      this.message = 'Please import TASK file successfully before saving.';
+      return;
+    }
 
     this.message = '';
     this.isSaving = true;
     this.configService
-      .saveConfig(this.configForm.getRawValue())
+      .saveConfig({
+        ...this.configForm.getRawValue(),
+        apiSpecPathTask: this.uploadedApiSpecPathTask
+      })
       .pipe(finalize(() => (this.isSaving = false)))
       .subscribe({
         next: () => {
@@ -70,16 +81,22 @@ export class DashboardComponent implements OnInit {
     this.isUploading = true;
     this.configService
       .uploadTask(file)
-      .pipe(finalize(() => (this.isUploading = false)))
+      .pipe(
+        retry({ count: 1, delay: 800 }),
+        // API may not be ready immediately when `npm start` launches FE and API together.
+        // Retry once after a short delay to avoid "first upload fails, second succeeds".
+        finalize(() => (this.isUploading = false))
+      )
       .subscribe({
         next: (response) => {
           this.selectedFileName = file.name;
-          this.message = `Uploaded ${file.name}. Updated apiSpecPathTask to ${response.apiSpecPathTask}.`;
+          this.uploadedApiSpecPathTask = response.apiSpecPathTask;
+          this.message = `Uploaded ${file.name} successfully. Click SAVE to update config.`;
         },
-        error: (error) => {
-          this.message = error?.error?.message ?? 'Failed to upload file.';
-        }
-      });
+      error: (error) => {
+        this.message = error?.error?.message ?? 'Failed to upload file.';
+      }
+    });
   }
 
   executeWorkflow(): void {
@@ -106,19 +123,31 @@ export class DashboardComponent implements OnInit {
     void this.router.navigate(['/reports']);
   }
 
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
   private loadConfig(): void {
     this.configService.getConfig().subscribe({
       next: (config) => {
+        this.apiReady = true;
         this.configForm.setValue({
           base_url: config.base_url,
           apiUrl: config.env.apiUrl,
           username: config.env.username,
           password: config.env.password
         });
+        this.uploadedApiSpecPathTask = '';
       },
       error: (error) => {
-        this.message = error?.error?.message ?? 'Failed to load config.';
+        this.apiReady = false;
+        this.message = 'API is starting. Retrying config load...';
+        timer(1200).subscribe(() => this.loadConfig());
       }
     });
+  }
+
+  canSave(): boolean {
+    return this.apiReady && this.configForm.valid && !!this.uploadedApiSpecPathTask && !this.isSaving;
   }
 }
