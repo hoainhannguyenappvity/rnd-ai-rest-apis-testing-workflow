@@ -6,9 +6,9 @@ import { promises as fs } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
 const app = express();
-const port = 3000;
+const port = 3001;
 const rootDir = process.cwd();
-const configPath = path.resolve(rootDir, 'config/app.config.mjs');
+const configPath = path.resolve(rootDir, '../config/app.config.mjs');
 const specsDir = path.resolve(rootDir, 'src/specs');
 
 if (!existsSync(specsDir)) {
@@ -27,6 +27,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.use(express.json());
+
+app.get('/', (_req, res) => {
+  res.send('Workflow API is running. Open UI at http://localhost:4400');
+});
 
 const escapeForSingleQuote = (value) => value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 

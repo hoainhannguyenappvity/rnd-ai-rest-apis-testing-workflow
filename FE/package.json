@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "concurrently \"npm:api\" \"npm:ng\"",
-    "ng": "ng serve",
+    "ng": "ng serve --port 4400",
     "api": "node server/server.mjs",
     "build": "ng build",
     "test": "ng test"
