@@ -14,6 +14,9 @@ import { WorkflowService } from '../../services/workflow.service';
 })
 export class DashboardComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
+  private readonly configService = inject(ConfigService);
+  private readonly workflowService = inject(WorkflowService);
 
   message = '';
   selectedFileName = '';
@@ -28,11 +31,7 @@ export class DashboardComponent implements OnInit {
     password: ['', Validators.required]
   });
 
-  constructor(
-    private readonly router: Router,
-    private readonly configService: ConfigService,
-    private readonly workflowService: WorkflowService
-  ) {}
+  constructor() { }
 
   ngOnInit(): void {
     this.loadConfig();

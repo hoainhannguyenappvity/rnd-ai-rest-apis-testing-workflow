@@ -1,30 +1,18 @@
 import express from 'express';
 import multer from 'multer';
 import path from 'node:path';
-import { existsSync, mkdirSync } from 'node:fs';
 import { promises as fs } from 'node:fs';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const app = express();
 const port = 3001;
-const rootDir = process.cwd();
-const configPath = path.resolve(rootDir, '../config/app.config.mjs');
-const specsDir = path.resolve(rootDir, 'src/specs');
+const serverDir = path.dirname(fileURLToPath(import.meta.url));
+const feDir = path.resolve(serverDir, '..');
+const repoDir = path.resolve(feDir, '..');
+const configPath = path.resolve(repoDir, 'config/app.config.mjs');
+const taskFilesDir = repoDir;
 
-if (!existsSync(specsDir)) {
-  mkdirSync(specsDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
-    cb(null, specsDir);
-  },
-  filename: (_req, file, cb) => {
-    cb(null, path.basename(file.originalname));
-  }
-});
-
-const upload = multer({ storage });
+const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(express.json());
 
@@ -33,6 +21,7 @@ app.get('/', (_req, res) => {
 });
 
 const escapeForSingleQuote = (value) => value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+const sanitizeFileName = (fileName) => path.basename(fileName).replace(/[^a-zA-Z0-9._-]/g, '_');
 
 const updateConfigValue = (content, key, value) => {
   const safeValue = escapeForSingleQuote(value);
@@ -96,11 +85,19 @@ app.post('/api/config/upload-task', upload.single('taskFile'), async (req, res) 
     }
 
     if (!file.originalname.toLowerCase().endsWith('.md')) {
-      await fs.unlink(file.path);
       return res.status(400).json({ message: 'Only .md file is allowed.' });
     }
 
-    const apiSpecPathTask = `./src/specs/${path.basename(file.originalname)}`;
+    const safeFileName = sanitizeFileName(file.originalname);
+    const targetPath = path.resolve(taskFilesDir, safeFileName);
+    const rootWithSep = `${taskFilesDir}${path.sep}`;
+    if (!targetPath.startsWith(rootWithSep)) {
+      return res.status(400).json({ message: 'Invalid file path.' });
+    }
+
+    await fs.writeFile(targetPath, file.buffer);
+
+    const apiSpecPathTask = `./${safeFileName}`;
     let content = await fs.readFile(configPath, 'utf8');
     content = updateConfigValue(content, 'apiSpecPathTask', apiSpecPathTask);
     await fs.writeFile(configPath, content, 'utf8');
