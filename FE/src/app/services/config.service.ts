@@ -3,39 +3,51 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface WorkflowConfig {
-  base_url: string;
-  env: {
-    apiUrl: string;
-    username: string;
-    password: string;
-  };
-  apiSpecPathTask: string;
+	base_url: string;
+	env: {
+		apiUrl: string;
+		username: string;
+		password: string;
+	};
+	selectedProductKey?: string;
+	selectedRoleKey?: string;
+	kmi_product?: Record<
+		string,
+		{
+			base_url: string;
+			access_token_api: string;
+			roles: Record<string, { username: string; password: string }>;
+		}
+	>;
+	apiSpecPathTask: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class ConfigService {
-  private readonly apiBase = '/api/config';
+	private readonly apiBase = '/api/config';
 
-  constructor(private readonly http: HttpClient) {}
+	constructor(private readonly http: HttpClient) { }
 
-  getConfig(): Observable<WorkflowConfig> {
-    return this.http.get<WorkflowConfig>(this.apiBase);
-  }
+	getConfig(): Observable<WorkflowConfig> {
+		return this.http.get<WorkflowConfig>(this.apiBase);
+	}
 
-  saveConfig(payload: {
-    base_url: string;
-    apiUrl: string;
-    username: string;
-    password: string;
-    apiSpecPathTask: string;
-  }): Observable<{ message: string }> {
-    return this.http.put<{ message: string }>(`${this.apiBase}/update`, payload);
-  }
+	saveConfig(payload: {
+		base_url: string;
+		apiUrl: string;
+		username: string;
+		password: string;
+		apiSpecPathTask: string;
+		productKey?: string;
+		roleKey?: string;
+	}): Observable<{ message: string }> {
+		return this.http.put<{ message: string }>(`${this.apiBase}/update`, payload);
+	}
 
-  uploadTask(file: File): Observable<{ message: string; apiSpecPathTask: string }> {
-    const formData = new FormData();
-    formData.append('taskFile', file);
+	uploadTask(file: File): Observable<{ message: string; apiSpecPathTask: string }> {
+		const formData = new FormData();
+		formData.append('taskFile', file);
 
-    return this.http.post<{ message: string; apiSpecPathTask: string }>(`${this.apiBase}/upload-task`, formData);
-  }
+		return this.http.post<{ message: string; apiSpecPathTask: string }>(`${this.apiBase}/upload-task`, formData);
+	}
 }
