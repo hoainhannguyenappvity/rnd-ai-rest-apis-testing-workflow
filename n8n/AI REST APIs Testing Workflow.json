@@ -5,15 +5,16 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "kmi-rest-apis-testing",
+        "responseMode": "responseNode",
         "options": {}
       },
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -1344,
-        160
+        0,
+        0
       ],
-      "id": "b913230d-5e28-4c2c-8939-37406e002ee4",
+      "id": "767ac374-25fa-43ae-ae6e-a44679556842",
       "name": "Webhook",
       "webhookId": "91146eee-cded-4b0b-8fbd-c1cc989e173a"
     },
@@ -24,10 +25,10 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        -1120,
-        160
+        224,
+        0
       ],
-      "id": "8414a7bc-cb05-482e-b6c5-c34376d6e9d5",
+      "id": "0fbc03a7-ad92-48a4-bd25-2fb4e720eb21",
       "name": "Compile Environment"
     },
     {
@@ -37,10 +38,10 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        -672,
-        160
+        672,
+        0
       ],
-      "id": "6377b864-f41a-4ab2-8b81-3609550004a1",
+      "id": "49242806-1f64-4b6d-84a9-00342e45d41a",
       "name": "Get Access Token"
     },
     {
@@ -50,10 +51,10 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        -896,
-        160
+        448,
+        0
       ],
-      "id": "efffaeb4-fd0a-4dce-9a9a-edeab581cc1b",
+      "id": "22e31b90-4664-41af-b866-cfe46d90ccc8",
       "name": "Compile Collection"
     },
     {
@@ -63,11 +64,41 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        -448,
-        160
+        896,
+        0
       ],
-      "id": "8e07684e-4f3f-48e4-ab25-a5a13319bd2d",
+      "id": "e9313cd6-eb12-4fb1-ac32-4bfb27d80451",
       "name": "Run Test"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"status\": \"OK\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        0
+      ],
+      "id": "a88b2a14-22a1-4c3a-a092-809d888e45c6",
+      "name": "Set"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1344,
+        0
+      ],
+      "id": "5c0f9cd9-20ab-42ce-a3f3-798398ffb23c",
+      "name": "Respond to Webhook"
     }
   ],
   "pinData": {},
@@ -118,19 +149,35 @@
     },
     "Run Test": {
       "main": [
-        []
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "3ed30521-2def-4ce0-971d-a6ebb040be6c",
+  "versionId": "ddb5ebf7-1d39-4135-9e04-ff7724b8e3f3",
   "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "d0a98d1883d50ab1fb11f1c2089250d1d7492821be2ab8133be1cc4d824c5a45"
+    "instanceId": "2c6c5c5d5054faa3d924207b750b56f86155bf8571728794386ee16d17e1cabc"
   },
-  "id": "E0f5cnzVIdBg7CwD",
+  "id": "Atel2Nfv18AuGeXN",
   "tags": []
 }
