@@ -1,6 +1,6 @@
 <section class="mx-auto max-w-4xl px-4 py-10">
 	<div class="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-slate-200 sm:p-8">
-		<h1 class="text-2xl font-bold text-slate-900">Workflow Dashboard</h1>
+		<h1 class="text-2xl font-bold text-slate-900">Workflow Run Test Rest API</h1>
 
 		<div class="mt-6 rounded-xl border border-slate-200 p-5">
 			<h2 class="text-lg font-semibold text-slate-900">Configuration</h2>
@@ -12,7 +12,7 @@
 				</label>
 
 				<label class="flex flex-col gap-1 text-sm font-medium text-slate-700">
-					API URL
+					Access Token API
 					<input type="text" formControlName="apiUrl" class="rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500" />
 				</label>
 
@@ -62,7 +62,7 @@
 				{{ isExecuting() ? 'Executing...' : 'Execute Workflow' }}
 			</button>
 
-			<button type="button" class="rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-500" (click)="goToReports()">View Reports</button>
+			<button type="button" class="rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-500 disabled:cursor-not-allowed disabled:opacity-60" (click)="goToReports()" [disabled]="disabledReport()">View Reports</button>
 		</div>
 
 		@if (isExecuting()) {

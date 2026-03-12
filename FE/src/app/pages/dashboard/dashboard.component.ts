@@ -32,6 +32,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 	apiReady = signal(false);
 	executeElapsedMs = signal(0);
 	executeProgressPercent = signal(0);
+	disabledReport = signal(true);
 	private readonly isConfigFormValid = signal(false);
 	readonly executeElapsedLabel = computed(() => {
 		const totalSeconds = Math.floor(this.executeElapsedMs() / 1000);
@@ -128,25 +129,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 		this.message.set('');
 		this.isExecuting.set(true);
+		this.disabledReport.set(true);
 		this.startExecuteTimer();
 
-		this.workflowService
-			.executeWorkflow()
-			.pipe(
-				finalize(() => {
-					this.isExecuting.set(false);
-					this.executeProgressPercent.set(100);
-					this.stopExecuteTimer();
-				})
-			)
-			.subscribe({
-				next: (response) => {
-					this.message.set(response?.message ?? 'Workflow executed successfully.');
-				},
-				error: (error) => {
-					this.message.set(error?.error?.message ?? 'Failed to execute workflow.');
-				}
-			});
+		this.workflowService.executeWorkflow().pipe(
+			finalize(() => {
+				this.isExecuting.set(false);
+				this.executeProgressPercent.set(100);
+				this.disabledReport.set(false);
+				this.stopExecuteTimer();
+			})
+		).subscribe({
+			next: (response) => {
+				this.message.set(response?.message ?? 'Workflow executed successfully.');
+				this.isExecuting.set(true);
+			},
+			error: (error) => {
+				this.message.set(error?.error?.message ?? 'Failed to execute workflow.');
+				this.isExecuting.set(true);
+			}
+		});
 	}
 
 	goToReports(): void {
