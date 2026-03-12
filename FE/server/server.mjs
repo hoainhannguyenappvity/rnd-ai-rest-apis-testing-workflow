@@ -100,7 +100,7 @@ app.post('/api/config/upload-task', upload.single('taskFile'), async (req, res) 
 
 		await fs.writeFile(targetPath, file.buffer);
 
-		const apiSpecPathTask = `./${safeFileName}`;
+		const apiSpecPathTask = `./tasks_test_case/${safeFileName}`;
 
 		return res.json({
 			message: 'Task file uploaded successfully.',
