@@ -68,7 +68,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 		return `${minutes}:${seconds}`;
 	});
 	readonly canSave = computed(
-		() => this.apiReady() && this.isConfigFormValid() && !!this.uploadedApiSpecPathTask() && !this.isSaving()
+		() =>
+			this.apiReady() &&
+			this.isConfigFormValid() &&
+			!!this.uploadedApiSpecPathTask() &&
+			!this.isSaving() &&
+			!this.isExecuting()
 	);
 
 	readonly configForm = this.fb.nonNullable.group({
