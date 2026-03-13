@@ -22,6 +22,11 @@ export interface WorkflowConfig {
 	apiSpecPathTask: string;
 }
 
+export interface TaskFileItem {
+	name: string;
+	path: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ConfigService {
 	private readonly apiBase = '/api/config';
@@ -49,5 +54,9 @@ export class ConfigService {
 		formData.append('taskFile', file);
 
 		return this.http.post<{ message: string; apiSpecPathTask: string }>(`${this.apiBase}/upload-task`, formData);
+	}
+
+	getTaskFiles(): Observable<{ files: TaskFileItem[] }> {
+		return this.http.get<{ files: TaskFileItem[] }>(`${this.apiBase}/task-files`);
 	}
 }

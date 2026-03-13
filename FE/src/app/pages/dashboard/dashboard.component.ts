@@ -13,6 +13,7 @@ type ProductConfig = {
 	access_token_api: string;
 	roles: Record<string, RoleConfig>;
 };
+type TaskFileOption = { name: string; path: string };
 
 @Component({
 	selector: 'app-dashboard',
@@ -37,6 +38,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 	isExecuting = signal(false);
 	showPassword = signal(false);
 	apiReady = signal(false);
+	taskFileOptions = signal<TaskFileOption[]>([]);
+	selectedTaskFilePath = signal('');
 	executeElapsedMs = signal(0);
 	executeProgressPercent = signal(0);
 	disabledReport = signal(true);
@@ -67,6 +70,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 		const seconds = (totalSeconds % 60).toString().padStart(2, '0');
 		return `${minutes}:${seconds}`;
 	});
+	readonly isTaskFileFromListSelected = computed(() => !!this.selectedTaskFilePath());
+	readonly canImportTaskFile = computed(
+		() => !this.isTaskFileFromListSelected() && this.apiReady() && !this.isUploading() && !this.isExecuting()
+	);
 	readonly canSave = computed(
 		() =>
 			this.apiReady() &&
@@ -89,6 +96,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 		this.configForm.statusChanges
 			.pipe(startWith(this.configForm.status), takeUntilDestroyed(this.destroyRef))
 			.subscribe(() => this.isConfigFormValid.set(this.configForm.valid));
+		this.loadTaskFiles();
 		this.loadConfig();
 	}
 
@@ -146,6 +154,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 			.subscribe({
 				next: (response) => {
 					this.isUploading.set(false);
+					this.selectedTaskFilePath.set('');
 					this.selectedFileName.set(file.name);
 					this.uploadedApiSpecPathTask.set(response.apiSpecPathTask);
 					this.message.set(`Uploaded ${file.name} successfully. Click SAVE to update config.`);
@@ -154,6 +163,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
 					this.message.set(error?.error?.message ?? 'Failed to upload file.');
 				}
 			});
+	}
+
+	onTaskFileFromListChange(taskFilePath: string): void {
+		this.selectedTaskFilePath.set(taskFilePath);
+		if (!taskFilePath) {
+			this.selectedFileName.set('');
+			this.uploadedApiSpecPathTask.set('');
+			return;
+		}
+
+		const selected = this.taskFileOptions().find((file) => file.path === taskFilePath);
+		this.selectedFileName.set(selected?.name ?? '');
+		this.uploadedApiSpecPathTask.set(taskFilePath);
+		this.message.set('');
 	}
 
 	executeWorkflow(): void {
@@ -262,12 +285,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
 					Object.keys(this.productConfigMap()[preferredProduct]?.roles ?? {})[0] ||
 					'';
 				this.selectedRoleKey.set(preferredRole);
-				this.uploadedApiSpecPathTask.set('');
+				this.uploadedApiSpecPathTask.set(config.apiSpecPathTask ?? '');
+				this.selectedFileName.set(this.extractFileName(config.apiSpecPathTask ?? ''));
+				this.syncTaskSelectionWithUploadedPath();
 			},
 			error: () => {
 				this.apiReady.set(false);
 				this.message.set('API is starting. Retrying config load...');
 				timer(1200).subscribe(() => this.loadConfig());
+			}
+		});
+	}
+
+	private loadTaskFiles(): void {
+		this.configService.getTaskFiles().subscribe({
+			next: (response) => {
+				this.taskFileOptions.set(response.files ?? []);
+				this.syncTaskSelectionWithUploadedPath();
+			},
+			error: () => {
+				this.taskFileOptions.set([]);
 			}
 		});
 	}
@@ -315,5 +352,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 	private toRoleLabel(roleKey: string): string {
 		return roleKey.split('_').map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
+	}
+
+	private syncTaskSelectionWithUploadedPath(): void {
+		const uploadedPath = this.uploadedApiSpecPathTask();
+		if (!uploadedPath) {
+			this.selectedTaskFilePath.set('');
+			return;
+		}
+
+		const matched = this.taskFileOptions().find((file) => file.path === uploadedPath);
+		this.selectedTaskFilePath.set(matched ? uploadedPath : '');
+	}
+
+	private extractFileName(filePath: string): string {
+		if (!filePath) {
+			return '';
+		}
+
+		const parts = filePath.split('/');
+		return parts[parts.length - 1] ?? '';
 	}
 }

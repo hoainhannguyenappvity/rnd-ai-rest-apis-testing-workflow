@@ -151,6 +151,24 @@ app.post('/api/config/upload-task', upload.single('taskFile'), async (req, res) 
 	}
 });
 
+app.get('/api/config/task-files', async (_req, res) => {
+	try {
+		await fs.mkdir(taskFilesDir, { recursive: true });
+		const entries = await fs.readdir(taskFilesDir, { withFileTypes: true });
+		const files = entries
+			.filter((entry) => entry.isFile() && entry.name.toLowerCase().endsWith('.md'))
+			.map((entry) => ({
+				name: entry.name,
+				path: `./tasks_test_case/${entry.name}`
+			}))
+			.sort((a, b) => a.name.localeCompare(b.name));
+
+		return res.json({ files });
+	} catch (error) {
+		return res.status(500).json({ message: `Failed to list TASK files: ${error.message}` });
+	}
+});
+
 app.listen(port, () => {
 	console.log(`Workflow API is running at http://localhost:${port}`);
 });
