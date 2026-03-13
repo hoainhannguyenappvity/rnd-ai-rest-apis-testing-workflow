@@ -165,7 +165,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 			});
 	}
 
-	onTaskFileFromListChange(taskFilePath: string): void {
+	onTaskFileFromListChange(taskFilePath: string, fileInput?: HTMLInputElement): void {
 		this.selectedTaskFilePath.set(taskFilePath);
 		if (!taskFilePath) {
 			this.selectedFileName.set('');
@@ -176,6 +176,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 		const selected = this.taskFileOptions().find((file) => file.path === taskFilePath);
 		this.selectedFileName.set(selected?.name ?? '');
 		this.uploadedApiSpecPathTask.set(taskFilePath);
+		if (fileInput) {
+			fileInput.value = '';
+		}
 		this.message.set('');
 	}
 
