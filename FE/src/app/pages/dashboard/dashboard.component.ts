@@ -1,6 +1,7 @@
 import { Component, DestroyRef, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatDividerModule } from '@angular/material/divider';
 import { retry, startWith, timer } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { ConfigService } from '../../services/config.service';
@@ -17,7 +18,7 @@ type TaskFileOption = { name: string; path: string };
 @Component({
 	selector: 'app-dashboard',
 	standalone: true,
-	imports: [ReactiveFormsModule, FormsModule],
+	imports: [ReactiveFormsModule, FormsModule, MatDividerModule],
 	templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent implements OnInit, OnDestroy {

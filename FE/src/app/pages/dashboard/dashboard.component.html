@@ -21,7 +21,7 @@
 
 				<label class="mt-4 flex flex-col gap-1 text-sm font-medium text-slate-700">
 					Role
-						<select class="rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500" [value]="selectedRoleKey()" [disabled]="isExecuting()" (change)="onRoleChange($any($event.target).value)">
+					<select class="rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500" [value]="selectedRoleKey()" [disabled]="isExecuting()" (change)="onRoleChange($any($event.target).value)">
 						@for (role of roleOptions(); track role.key) {
 							<option [value]="role.key">{{ role.label }}</option>
 						}
@@ -31,17 +31,17 @@
 				<form [formGroup]="configForm" class="mt-4 grid gap-4 sm:grid-cols-2">
 					<label class="flex flex-col gap-1 text-sm font-medium text-slate-700">
 						Base URL
-							<input type="text" formControlName="base_url" [disabled]="isExecuting()" class="rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500" />
+						<input type="text" formControlName="base_url" [disabled]="isExecuting()" class="rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500" />
 					</label>
 
 					<label class="flex flex-col gap-1 text-sm font-medium text-slate-700">
 						Access Token API
-							<input type="text" formControlName="apiUrl" [disabled]="isExecuting()" class="rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500" />
+						<input type="text" formControlName="apiUrl" [disabled]="isExecuting()" class="rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500" />
 					</label>
 
 					<label class="flex flex-col gap-1 text-sm font-medium text-slate-700">
 						Username
-							<input type="text" formControlName="username" [disabled]="isExecuting()" class="rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500" />
+						<input type="text" formControlName="username" [disabled]="isExecuting()" class="rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500" />
 					</label>
 
 					<label class="flex flex-col gap-1 text-sm font-medium text-slate-700">
@@ -90,7 +90,11 @@
 			{{ isSaving() ? 'Save Successfully' : 'Save' }}
 		</button>
 
-		<div class="mt-6 flex flex-wrap gap-3">
+		<div class="mt-4">
+			<mat-divider></mat-divider>
+		</div>
+
+		<div class="mt-6 flex flex-wrap justify-end gap-3">
 			<button type="button" class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60" [disabled]="isExecuting() || selectedFileName() === ''" (click)="executeWorkflow()">
 				{{ isExecuting() ? 'Executing...' : 'Execute Workflow' }}
 			</button>
