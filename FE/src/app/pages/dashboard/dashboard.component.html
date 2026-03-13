@@ -62,7 +62,7 @@
 
 			<label class="mt-4 flex items-center gap-3 text-sm font-medium text-slate-700">
 				<span class="shrink-0">Select file:</span>
-				<select class="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500" [value]="selectedTaskFilePath()" [disabled]="isExecuting() || isUploading()" (change)="onTaskFileFromListChange($any($event.target).value, taskFileInput)">
+				<select class="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500" [ngModel]="selectedTaskFilePath()" (ngModelChange)="onTaskFileFromListChange($event, taskFileInput)" [disabled]="isExecuting() || isUploading()">
 					<option value="">-- No selection (use import form below) --</option>
 					@for (taskFile of taskFileOptions(); track taskFile.path) {
 						<option [value]="taskFile.path">{{ taskFile.name }}</option>

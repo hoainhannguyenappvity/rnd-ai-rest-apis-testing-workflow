@@ -1,7 +1,6 @@
-import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { retry, startWith, timer } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { ConfigService } from '../../services/config.service';
@@ -18,7 +17,7 @@ type TaskFileOption = { name: string; path: string };
 @Component({
 	selector: 'app-dashboard',
 	standalone: true,
-	imports: [CommonModule, ReactiveFormsModule],
+	imports: [ReactiveFormsModule, FormsModule],
 	templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent implements OnInit, OnDestroy {
