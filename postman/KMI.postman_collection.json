@@ -1,0 +1,1508 @@
+{
+  "info": {
+    "name": "KMI API Test Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "API-001: Task 156901: REST API > PLUS-4173 Web > History Report > Limit recent shapes per device - BE",
+      "item": [
+        {
+          "name": "TC-001 - Get report history with valid mandatory filters",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "1",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-ProjectId",
+                "value": "17680",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TargetIds",
+                "value": "106446",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-StartDate",
+                "value": "2026-01-01",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-EndDate",
+                "value": "2026-01-31",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-001",
+                  "// Expected: 200; history data returned",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-002 - Filter by motion type",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "1",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Motion",
+                "value": "driving",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-ProjectId",
+                "value": "17680",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TargetIds",
+                "value": "106446",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-StartDate",
+                "value": "2026-01-01",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-EndDate",
+                "value": "2026-01-31",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-002",
+                  "// Expected: 200; filtered motion data",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-003 - Filter by speed range",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "1",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-SpeedMin",
+                "value": "10",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-SpeedMax",
+                "value": "80",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-ProjectId",
+                "value": "17680",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TargetIds",
+                "value": "106446",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-003",
+                  "// Expected: 200; results within speed range",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-004 - Include invalid GPS data",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "1",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-IncludeInvalidGPS",
+                "value": "true",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-ProjectId",
+                "value": "17680",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TargetIds",
+                "value": "106446",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-004",
+                  "// Expected: 200; invalid GPS data included",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-005 - Filter by day of week",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "1",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-DayOfWeek",
+                "value": "Monday",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-ProjectId",
+                "value": "17680",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TargetIds",
+                "value": "106446",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-005",
+                  "// Expected: 200; results match selected day",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-006 - Apply search keyword filter",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "1",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Search",
+                "value": "vehicleA",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-ProjectId",
+                "value": "17680",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TargetIds",
+                "value": "106446",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-006",
+                  "// Expected: 200; filtered results",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-007 - Limit number of returned shapes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "50",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-ProjectId",
+                "value": "17680",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TargetIds",
+                "value": "106446",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-007",
+                  "// Expected: 200; limited dataset returned",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-008 - Limit number of returned records",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "1",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TopRecords",
+                "value": "100",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-ProjectId",
+                "value": "17680",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TargetIds",
+                "value": "106446",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-008",
+                  "// Expected: 200",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-009 - Apply timezone offset",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "1",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-UserOffset",
+                "value": "420",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-ProjectId",
+                "value": "17680",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TargetIds",
+                "value": "106446",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-009",
+                  "// Expected: 200; timestamps adjusted",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-010 - SpeedMin equals SpeedMax",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "1",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-SpeedMin",
+                "value": "50",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-SpeedMax",
+                "value": "50",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-ProjectId",
+                "value": "17680",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TargetIds",
+                "value": "106446",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-010",
+                  "// Expected: 200",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-011 - Large date range",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "1",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-StartDate",
+                "value": "2024-01-01",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-EndDate",
+                "value": "2026-01-31",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-ProjectId",
+                "value": "17680",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TargetIds",
+                "value": "106446",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-011",
+                  "// Expected: 200; performance acceptable",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-012 - Top value exceeds dataset size",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "10000",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-ProjectId",
+                "value": "17680",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TargetIds",
+                "value": "106446",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-012",
+                  "// Expected: 200; full dataset returned",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-013 - Get from main report- Missing ProjectId",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "1",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TargetIds",
+                "value": "106446",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-StartDate",
+                "value": "2026-01-01",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-EndDate",
+                "value": "2026-01-31",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-013",
+                  "// Expected: 200",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-014 - Missing TargetIds",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "1",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-ProjectId",
+                "value": "17680",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-StartDate",
+                "value": "2026-01-01",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-EndDate",
+                "value": "2026-01-31",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-014",
+                  "// Expected: 400/500",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 500]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-015 - Invalid date format",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "1",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-StartDate",
+                "value": "abc",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-EndDate",
+                "value": "abc",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-ProjectId",
+                "value": "17680",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TargetIds",
+                "value": "106446",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-015",
+                  "// Expected: 400",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-016 - StartDate greater than EndDate",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "1",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-StartDate",
+                "value": "2026-02-01",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-EndDate",
+                "value": "2026-01-01",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-ProjectId",
+                "value": "17680",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TargetIds",
+                "value": "106446",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-016",
+                  "// Expected: 400",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-017 - Invalid SpeedMin format",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "1",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-SpeedMin",
+                "value": "abc",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-ProjectId",
+                "value": "17680",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TargetIds",
+                "value": "106446",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-017",
+                  "// Expected: 400",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-018 - SpeedMin greater than SpeedMax",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "1",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-SpeedMin",
+                "value": "90",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-SpeedMax",
+                "value": "20",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-ProjectId",
+                "value": "1001",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TargetIds",
+                "value": "106446",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-018",
+                  "// Expected: 400",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-019 - Injection attempt in search parameter",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "1",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Search",
+                "value": "OR 1=1",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-ProjectId",
+                "value": "17680",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TargetIds",
+                "value": "106446",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-019",
+                  "// Expected: 400 or 500",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 500]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-020 - Script injection attempt",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "URL",
+                "value": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Top",
+                "value": "1",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-Search",
+                "value": "<script>alert(1)</script>",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-ProjectId",
+                "value": "17680",
+                "type": "text"
+              },
+              {
+                "key": "X-Sev2-TargetIds",
+                "value": "106446",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v2/web/odata/SEUsers/SE.GetReportHistoryOptShapeOnly",
+              "protocol": "",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v2",
+                "web",
+                "odata",
+                "SEUsers",
+                "SE.GetReportHistoryOptShapeOnly"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Test Case: TC-020",
+                  "// Expected: 400 or 500",
+                  "",
+                  "pm.test(\"Status code matches expected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 500]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
