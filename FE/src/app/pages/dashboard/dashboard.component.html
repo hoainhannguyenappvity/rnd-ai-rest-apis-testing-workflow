@@ -6,7 +6,7 @@
 			<h2 class="text-lg font-semibold text-slate-900">Product Configuration</h2>
 			<label class="mt-4 flex flex-col gap-1 text-sm font-medium text-slate-700">
 				Product
-				<select class="rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500" [value]="selectedProductKey()" [disabled]="isExecuting()" (change)="onProductChange($any($event.target).value)">
+				<select class="max-h-[250px] overflow-y-auto rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500" [value]="selectedProductKey()" [disabled]="isExecuting()" (change)="onProductChange($any($event.target).value)">
 					<!-- <option value="" disabled>Choose product</option> -->
 					@for (product of productOptions(); track product.key) {
 						<option [value]="product.key">{{ product.label }}</option>
@@ -21,7 +21,7 @@
 
 				<label class="mt-4 flex flex-col gap-1 text-sm font-medium text-slate-700">
 					Role
-					<select class="rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500" [value]="selectedRoleKey()" [disabled]="isExecuting()" (change)="onRoleChange($any($event.target).value)">
+					<select class="max-h-[250px] overflow-y-auto rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500" [value]="selectedRoleKey()" [disabled]="isExecuting()" (change)="onRoleChange($any($event.target).value)">
 						@for (role of roleOptions(); track role.key) {
 							<option [value]="role.key">{{ role.label }}</option>
 						}
@@ -62,7 +62,7 @@
 
 			<label class="mt-4 flex items-center gap-3 text-sm font-medium text-slate-700">
 				<span class="shrink-0">Select file:</span>
-				<select class="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500" [ngModel]="selectedTaskFilePath()" (ngModelChange)="onTaskFileFromListChange($event, taskFileInput)" [disabled]="isExecuting() || isUploading()">
+				<select class="min-w-0 max-h-[250px] flex-1 overflow-y-auto rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500" [ngModel]="selectedTaskFilePath()" (ngModelChange)="onTaskFileFromListChange($event, taskFileInput)" [disabled]="isExecuting() || isUploading()">
 					<option value="">-- No selection (use import form below) --</option>
 					@for (taskFile of taskFileOptions(); track taskFile.path) {
 						<option [value]="taskFile.path">{{ taskFile.name }}</option>
