@@ -7,7 +7,7 @@ export default {
         "username": "thuytrangle2205@gmail.com",
         "password": "P@ssword220595"
     },
-    "apiSpecPathTask": "./tasks_test_case/TASK154947.md",
+    "apiSpecPathTask": "",
     "envMdPath": "./env.md",
     "authPath": "./auth.mjs",
     "postmanCollectionOutput": "postman/KMI.postman_collection.json",
