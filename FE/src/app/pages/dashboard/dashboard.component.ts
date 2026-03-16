@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, ElementRef, HostListener, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
@@ -26,6 +26,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 	private readonly configService = inject(ConfigService);
 	private readonly workflowService = inject(WorkflowService);
 	private readonly destroyRef = inject(DestroyRef);
+	private readonly elementRef = inject(ElementRef<HTMLElement>);
 
 	private readonly executeStartedAt = signal(0);
 	private executeTimerId: ReturnType<typeof setInterval> | null = null;
@@ -39,6 +40,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 	showPassword = signal(false);
 	apiReady = signal(false);
 	taskFileOptions = signal<TaskFileOption[]>([]);
+	searchTerm = signal('');
+	isTaskFileDropdownOpen = signal(false);
 	selectedTaskFilePath = signal('');
 	executeElapsedMs = signal(0);
 	executeProgressPercent = signal(0);
@@ -71,6 +74,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
 		return `${minutes}:${seconds}`;
 	});
 	readonly isTaskFileFromListSelected = computed(() => !!this.selectedTaskFilePath());
+	filteredTaskFileOptions = computed(() => {
+		const keyword = this.searchTerm().trim().toLowerCase();
+		if (!keyword) {
+			return this.taskFileOptions();
+		}
+		return this.taskFileOptions().filter((file) => file.name.toLowerCase().includes(keyword));
+	});
+	readonly selectedTaskFileLabel = computed(() => {
+		const selected = this.taskFileOptions().find((file) => file.path === this.selectedTaskFilePath());
+		return selected?.name ?? '-- No selection (use import form below) --';
+	});
 	readonly canImportTaskFile = computed(
 		() => !this.isTaskFileFromListSelected() && this.apiReady() && !this.isUploading() && !this.isExecuting()
 	);
@@ -167,6 +181,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 	onTaskFileFromListChange(taskFilePath: string, fileInput?: HTMLInputElement): void {
 		this.selectedTaskFilePath.set(taskFilePath);
+		this.isTaskFileDropdownOpen.set(false);
 		if (!taskFilePath) {
 			this.selectedFileName.set('');
 			this.uploadedApiSpecPathTask.set('');
@@ -180,6 +195,43 @@ export class DashboardComponent implements OnInit, OnDestroy {
 			fileInput.value = '';
 		}
 		this.message.set('');
+	}
+
+	toggleTaskFileDropdown(event?: Event): void {
+		event?.stopPropagation();
+		if (this.isExecuting() || this.isUploading()) {
+			return;
+		}
+		this.isTaskFileDropdownOpen.update((value) => !value);
+	}
+
+	closeTaskFileDropdown(): void {
+		this.isTaskFileDropdownOpen.set(false);
+		this.searchTerm.set('');
+	}
+
+	onSearchTermChange(value: string): void {
+		this.searchTerm.set(value ?? '');
+	}
+
+	selectTaskFileFromDropdown(taskFilePath: string, fileInput?: HTMLInputElement): void {
+		this.onTaskFileFromListChange(taskFilePath, fileInput);
+	}
+
+	clearTaskFileSelection(fileInput?: HTMLInputElement): void {
+		this.onTaskFileFromListChange('', fileInput);
+	}
+
+	@HostListener('document:click', ['$event'])
+	onDocumentClick(event: MouseEvent): void {
+		if (!this.isTaskFileDropdownOpen()) {
+			return;
+		}
+
+		const targetNode = event.target as Node | null;
+		if (targetNode && !this.elementRef.nativeElement.contains(targetNode)) {
+			this.closeTaskFileDropdown();
+		}
 	}
 
 	executeWorkflow(): void {
