@@ -134,7 +134,7 @@ Requirements:
 Header
 
 Title:
-KMI API Test Summary
+eProduct API Test Summary
 
 Navigation tabs:
 
