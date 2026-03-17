@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 import config from '../../config/app.config.mjs';
 
-const apiXlsxPath = 'output.xlsx';
+const apiXlsxPath = config.apiXlsxPath;
 const envMdPath = config.envMd;
 const outputPath = config.postmanCollectionOutput;
 

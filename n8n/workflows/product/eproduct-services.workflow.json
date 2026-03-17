@@ -363,7 +363,7 @@
     {
       "parameters": {
         "operation": "write",
-        "fileName": "./output.xlsx",
+        "fileName": "./test_cases.xlsx",
         "dataPropertyName": "={{ Object.keys($binary)[0] }}",
         "options": {}
       },

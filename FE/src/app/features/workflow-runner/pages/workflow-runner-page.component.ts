@@ -1,7 +1,7 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
 import { Subscription, interval } from 'rxjs';
 
+import { MatDividerModule } from '@angular/material/divider';
 import { workflowConfig } from '../../../core/config/workflow.config';
 import { WorkflowLogEntry, WorkflowServiceName } from '../../../core/models/workflow.model';
 import { WorkflowExecutionService } from '../../../core/services/workflow-execution.service';
@@ -9,7 +9,7 @@ import { WorkflowExecutionService } from '../../../core/services/workflow-execut
 @Component({
 	selector: 'app-workflow-runner',
 	standalone: true,
-	imports: [CommonModule],
+	imports: [MatDividerModule],
 	templateUrl: './workflow-runner-page.component.html',
 })
 export class WorkflowRunnerPageComponent implements OnDestroy {
@@ -18,18 +18,24 @@ export class WorkflowRunnerPageComponent implements OnDestroy {
 	private progressSub?: Subscription;
 	private timerSub?: Subscription;
 
+	readonly serviceOptions = signal<{ value: WorkflowServiceName; label: string }[]>([
+		{ value: 'ups', label: 'UPS' },
+		{ value: 'numbering', label: 'Numbering' },
+	]);
 	readonly selectedService = signal<WorkflowServiceName>('ups');
 	readonly logs = signal<WorkflowLogEntry[]>([]);
 	readonly executionError = signal<string>('');
 	readonly progressPercent = signal(0);
 	readonly elapsedSeconds = signal(0);
 	readonly selectedFile = signal<File | null>(null);
+	readonly isDragOverFile = signal(false);
 
 	readonly status = this.workflowService.status;
 	readonly report = this.workflowService.report;
 	readonly steps = this.workflowService.steps;
 
 	readonly completedStepCount = computed(() => this.logs().filter((log) => log.level === 'info').length);
+	readonly selectedFileName = computed(() => this.selectedFile()?.name ?? '');
 
 	readonly canExecute = computed(() => this.status() !== 'running');
 	readonly isServiceSelectionDisabled = computed(() => this.status() === 'running');
@@ -56,27 +62,43 @@ export class WorkflowRunnerPageComponent implements OnDestroy {
 	onFileChange(event: Event): void {
 		const target = event.target as HTMLInputElement;
 		const file = target.files?.[0] ?? null;
+		this.handleFileSelection(file, target);
+	}
 
-		if (!file) {
-			this.selectedFile.set(null);
+	onFileDragOver(event: DragEvent): void {
+		event.preventDefault();
+		if (this.isFileSelectionDisabled()) {
 			return;
 		}
+		this.isDragOverFile.set(true);
+	}
 
-		const isExcelFile = file.name.toLowerCase().endsWith('.xlsx');
-		if (!isExcelFile) {
-			this.selectedFile.set(null);
-			this.executionError.set('Only .xlsx file is supported for import.');
-			target.value = '';
+	onFileDragLeave(event: DragEvent): void {
+		event.preventDefault();
+		this.isDragOverFile.set(false);
+	}
+
+	onFileDrop(event: DragEvent, fileInput: HTMLInputElement): void {
+		event.preventDefault();
+		if (this.isFileSelectionDisabled()) {
 			return;
 		}
+		this.isDragOverFile.set(false);
+		const file = event.dataTransfer?.files?.[0] ?? null;
+		this.handleFileSelection(file, fileInput);
+	}
 
-		this.executionError.set('');
-		this.selectedFile.set(file);
+	onFilePickerClick(fileInput: HTMLInputElement): void {
+		if (this.isFileSelectionDisabled()) {
+			return;
+		}
+		fileInput.click();
 	}
 
 	clearSelectedFile(fileInput: HTMLInputElement): void {
 		fileInput.value = '';
 		this.selectedFile.set(null);
+		this.executionError.set('');
 	}
 
 	executeWorkflow(): void {
@@ -97,18 +119,15 @@ export class WorkflowRunnerPageComponent implements OnDestroy {
 
 		this.executionSub = this.workflowService.executeWorkflow(this.selectedService(), this.selectedFile()).subscribe({
 			next: (entry) => {
-				console.log('entry..........::', entry);
 				this.logs.update((prev) => [...prev, entry]);
 			},
 			error: (error: Error) => {
-				console.log('error..........::', error);
 				this.elapsedSeconds.set(Math.floor((Date.now() - startedAt) / 1000));
 				this.progressSub?.unsubscribe();
 				this.timerSub?.unsubscribe();
 				this.executionError.set(error.message);
 			},
 			complete: () => {
-				console.log('complete..........::');
 				this.elapsedSeconds.set(Math.floor((Date.now() - startedAt) / 1000));
 				this.progressSub?.unsubscribe();
 				this.timerSub?.unsubscribe();
@@ -119,7 +138,7 @@ export class WorkflowRunnerPageComponent implements OnDestroy {
 
 	openReport(): void {
 		if (!this.canViewReport()) {
-		  return;
+			return;
 		}
 		window.open(workflowConfig.reportUrl, '_blank', 'noopener,noreferrer');
 	}
@@ -143,18 +162,18 @@ export class WorkflowRunnerPageComponent implements OnDestroy {
 		const status = this.status();
 
 		if (status === 'running') {
-			return 'bg-amber-400/15 text-amber-200 ring-1 ring-amber-400/30';
+			return 'bg-amber-50 text-amber-700 ring-1 ring-amber-200';
 		}
 
 		if (status === 'completed') {
-			return 'bg-emerald-400/15 text-emerald-200 ring-1 ring-emerald-400/30';
+			return 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200';
 		}
 
 		if (status === 'failed') {
-			return 'bg-rose-500/15 text-rose-200 ring-1 ring-rose-500/40';
+			return 'bg-rose-50 text-rose-700 ring-1 ring-rose-200';
 		}
 
-		return 'bg-cyan-400/15 text-cyan-200 ring-1 ring-cyan-300/30';
+		return 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200';
 	}
 
 	ngOnDestroy(): void {
@@ -180,4 +199,23 @@ export class WorkflowRunnerPageComponent implements OnDestroy {
 			this.elapsedSeconds.set(Math.floor(elapsedMs / 1000));
 		});
 	}
+
+	private handleFileSelection(file: File | null, fileInput: HTMLInputElement): void {
+		if (!file) {
+			this.selectedFile.set(null);
+			return;
+		}
+
+		const isExcelFile = file.name.toLowerCase().endsWith('.xlsx');
+		if (!isExcelFile) {
+			this.selectedFile.set(null);
+			this.executionError.set('Only .xlsx file is supported for import.');
+			fileInput.value = '';
+			return;
+		}
+
+		this.executionError.set('');
+		this.selectedFile.set(file);
+	}
 }
+

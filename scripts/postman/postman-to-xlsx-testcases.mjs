@@ -8,7 +8,7 @@ import { pathToFileURL } from 'node:url';
 import config from '../../config/app.config.mjs';
 
 const postmanFile = config.postmanCollectionOutput;
-const outputFile = 'output.xlsx';
+const outputFile = config.apiXlsxPath;
 const environmentFile = config.postmanEnvironmentOutput;
 
 class PostmanToCSVConverter {
@@ -566,10 +566,6 @@ async function main() {
 		[inputFile, outputFileArg] = args;
 		if (args.length === 3) environmentFileArg = args[2];
 	} else if (args.length !== 0) {
-		console.log('Usage: node scripts/postman/postman-to-xlsx-testcases.mjs [input.json output.xlsx [environment.json]]');
-		console.log('Example:');
-		console.log('node scripts/postman/postman-to-xlsx-testcases.mjs');
-		console.log('node scripts/postman/postman-to-xlsx-testcases.mjs postman/eProduct.postman_collection.json output.xlsx postman/eProduct.postman_environment.json');
 		process.exit(1);
 	}
 
