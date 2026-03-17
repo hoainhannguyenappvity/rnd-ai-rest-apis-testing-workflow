@@ -137,9 +137,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 				productKey: this.selectedProductKey() || undefined,
 				roleKey: this.selectedRoleKey() || undefined
 			})
-			.pipe(finalize(() => this.isSaving.set(false)))
+			.pipe(takeUntilDestroyed(this.destroyRef))
 			.subscribe({
 				next: () => {
+					this.isSaving.set(true);
 					this.message.set('Saved config successfully.');
 				},
 				error: (error) => {
@@ -241,12 +242,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 		this.message.set('');
 		this.isExecuting.set(true);
+		this.configForm.disable({ emitEvent: false });
 		this.disabledReport.set(true);
 		this.startExecuteTimer();
 
 		this.workflowService.executeWorkflow().pipe(
 			finalize(() => {
 				this.isExecuting.set(false);
+				this.configForm.enable({ emitEvent: false });
+				this.isConfigFormValid.set(this.configForm.valid);
 				this.executeProgressPercent.set(100);
 				this.disabledReport.set(false);
 				this.stopExecuteTimer();
