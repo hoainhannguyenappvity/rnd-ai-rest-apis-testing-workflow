@@ -5,24 +5,20 @@ const apiMdPath = config.apiSpecPathTask;
 const outputPath = config.postmanCollectionOutput;
 
 try {
-    // Read api.md
     const content = readFileSync(apiMdPath, 'utf8');
-
-    // Parse API blocks
     const apiBlocks = parseApiBlocks(content);
 
     console.log(`Found ${apiBlocks.length} API blocks`);
 
-    // Generate Postman collection
     const collection = {
         info: {
             name: 'KMI API Test Collection',
             schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json'
         },
+        variable: buildCollectionVariables(apiBlocks),
         item: []
     };
 
-    // Convert each API block to Postman folder
     apiBlocks.forEach(block => {
         console.log(`Processing ${block.name} with ${block.testCases.length} test cases`);
 
@@ -31,19 +27,16 @@ try {
             item: []
         };
 
-        // Create request for each test case
         block.testCases.forEach(tc => {
-            const request = buildRequest(block.baseRequest, tc);
-            folder.item.push(request);
+            const item = buildCollectionItem(block.baseRequest, tc);
+            folder.item.push(item);
         });
 
         collection.item.push(folder);
     });
 
-    // Write output
     writeFileSync(outputPath, JSON.stringify(collection, null, 2), 'utf8');
-    console.log(`✓ Created: ${outputPath} with ${collection.item.length} folders`);
-
+    console.log(`Created: ${outputPath} with ${collection.item.length} folders`);
 } catch (error) {
     console.error('Error:', error.message);
     process.exit(1);
@@ -51,24 +44,17 @@ try {
 
 function parseApiBlocks(content) {
     const blocks = [];
-
-    // Split by API sections
     const sections = content.split(/(?=## API-\d+:)/);
 
     sections.forEach(section => {
         if (!section.trim() || !section.startsWith('## API-')) return;
 
-        // Extract API ID and Name
         const headerMatch = section.match(/## (API-\d+): (.+)/);
         if (!headerMatch) return;
 
         const apiId = headerMatch[1];
         const apiName = headerMatch[2];
-
-        // Parse base request
         const baseRequest = parseBaseRequest(section);
-
-        // Parse test cases
         const testCases = parseTestCases(section);
 
         if (testCases.length > 0) {
@@ -84,29 +70,62 @@ function parseApiBlocks(content) {
     return blocks;
 }
 
+function buildCollectionVariables(apiBlocks) {
+    const defaults = new Map([
+        ['invite_code', ''],
+        ['old_invite_code', ''],
+        ['invite_code_sent_at', ''],
+        ['old_invite_code_sent_at', '']
+    ]);
+
+    apiBlocks.forEach(block => {
+        block.testCases.forEach(testCase => {
+            if (isFlowTestCase(block.baseRequest, testCase)) {
+                defaults.set('invite_code', defaults.get('invite_code') ?? '');
+                defaults.set('invite_code_sent_at', defaults.get('invite_code_sent_at') ?? '');
+
+                if (/old code|send new code twice/i.test(testCase.description || '') || /post twice then get/i.test(testCase.overrides.rawMethod || '')) {
+                    defaults.set('old_invite_code', defaults.get('old_invite_code') ?? '');
+                    defaults.set('old_invite_code_sent_at', defaults.get('old_invite_code_sent_at') ?? '');
+                }
+            }
+        });
+    });
+
+    return Array.from(defaults.entries()).map(([key, value]) => ({
+        key,
+        value,
+        type: 'string'
+    }));
+}
+
 function parseBaseRequest(section) {
     const request = {
+        rawMethod: 'POST',
         method: 'POST',
         url: '',
+        urls: [],
         headers: {},
         body: ''
     };
 
-    // Extract method
-    const methodMatch = section.match(/- Method:\s*(\w+)/);
-    if (methodMatch) request.method = methodMatch[1];
+    const methodMatch = section.match(/^- Method:\s*(.+)$/m);
+    if (methodMatch) {
+        request.rawMethod = methodMatch[1].trim();
+        request.method = extractPrimaryMethod(request.rawMethod) || 'POST';
+    }
 
-    // Extract URL
-    const urlMatch = section.match(/- URL:\s*`([^`]+)`/);
-    if (urlMatch) request.url = urlMatch[1];
+    const urlLineMatch = section.match(/^- URL:\s*(.+)$/m);
+    if (urlLineMatch) {
+        request.urls = Array.from(urlLineMatch[1].matchAll(/`([^`]+)`/g), match => match[1].trim());
+        request.url = request.urls[0] || '';
+    }
 
-    // Extract headers
     const headerMatches = section.matchAll(/\s+- ([\w-]+):\s*`([^`]+)`/g);
     for (const match of headerMatches) {
         request.headers[match[1]] = match[2];
     }
 
-    // Extract body - look for json code block
     const bodyMatch = section.match(/```json\n([\s\S]+?)\n```/);
     if (bodyMatch) {
         request.body = bodyMatch[1].trim();
@@ -117,16 +136,13 @@ function parseBaseRequest(section) {
 
 function parseTestCases(section) {
     const testCases = [];
-
-    // Find the test cases table
     const tableStart = section.indexOf('| ID');
     if (tableStart === -1) return testCases;
 
     const tableContent = section.substring(tableStart);
     const lines = tableContent.split('\n');
-
-    // Skip header and separator lines
     let inTable = false;
+
     lines.forEach(line => {
         if (line.includes('| ID') || line.includes('---')) {
             inTable = true;
@@ -135,206 +151,277 @@ function parseTestCases(section) {
 
         if (!inTable || !line.trim().startsWith('|')) return;
 
-        // Parse table row
-        const cells = line.split('|').map(c => c.trim()).filter(c => c);
+        const cells = line.split('|').map(cell => cell.trim()).filter(Boolean);
+        if (cells.length < 5) return;
 
-        if (cells.length >= 5) {
-            const tcId = cells[0];
-            const category = cells[1];
-            const description = cells[2];
-            const overrides = cells[3];
-            const expectedResult = cells[4];
-
-            testCases.push({
-                id: tcId,
-                category,
-                description,
-                overrides: parseOverrides(overrides),
-                expectedResult
-            });
-        }
+        testCases.push({
+            id: cells[0],
+            category: cells[1],
+            description: cells[2],
+            overrides: parseOverrides(cells[3]),
+            expectedResult: cells[4]
+        });
     });
 
     return testCases;
 }
 
 function parseOverrides(overrideText) {
-    const overrides = {};
+    const overrides = {
+        rawMethod: ''
+    };
 
-    // Method
-    const methodMatch = overrideText.match(/\*\*Method:\*\*\s*(\w+)/i);
-    if (methodMatch) overrides.method = methodMatch[1].toUpperCase();
+    const methodMatch = overrideText.match(/\*\*Method:\*\*\s*([^<]+)/i);
+    if (methodMatch) {
+        overrides.rawMethod = methodMatch[1].trim();
+        const primaryMethod = extractPrimaryMethod(overrides.rawMethod);
+        if (primaryMethod) overrides.method = primaryMethod;
+    }
 
-    // URL override (must be inside backticks)
     const urlMatch = overrideText.match(/\*\*URL:\*\*\s*`([^`]+)`/i);
     if (urlMatch) overrides.url = urlMatch[1].trim();
 
-    // Headers override (generic)
     if (overrideText.includes('**Headers:**')) {
-        overrides.headers = overrides.headers || {};
-
-        // Extract the headers section only (stop at **Body:** if present)
-        const headerSectionMatch = overrideText.match(/\*\*Headers:\*\*([\s\S]*?)(?=\*\*Body:\*\*|$)/i);
+        overrides.headers = {};
+        const headerSectionMatch = overrideText.match(/\*\*Headers:\*\*([\s\S]*?)(?=\*\*Body:\*\*|\*\*URL:\*\*|\*\*Params:\*\*|$)/i);
         const headerSection = headerSectionMatch ? headerSectionMatch[1] : '';
 
-        // Normalize separators: <br> and commas => newlines
-        const normalized = headerSection
+        headerSection
             .replace(/<br\s*\/?>/gi, '\n')
-            .replace(/,/g, '\n');
-
-        // Each line can be:
-        // - X-Sev2-FileType=JSON
-        // - X-Sev2-FileType: JSON
-        // - Authorization=None
-        // - Content-Type=text/plain
-        normalized
+            .replace(/,/g, '\n')
             .split('\n')
             .map(s => s.trim())
             .filter(Boolean)
             .forEach(line => {
-                // Strip wrapping backticks if user used them inside Headers block
                 line = line.replace(/^`|`$/g, '').trim();
+                const match = line.match(/^([\w-]+)\s*[:=]\s*(.+)$/);
+                if (!match) return;
 
-                const m = line.match(/^([\w-]+)\s*[:=]\s*(.+)$/);
-                if (!m) return;
+                const key = match[1].trim();
+                let value = match[2].trim();
 
-                const key = m[1].trim();
-                let value = m[2].trim();
-
-                // Treat None/null as remove header
                 if (/^(None|null)$/i.test(value)) {
                     overrides.headers[key] = null;
                     return;
                 }
 
-                // Remove quotes/backticks around value if any
-                value = value.replace(/^["'`]|["'`]$/g, '').trim();
-
+                value = stripWrappingQuotes(value);
                 overrides.headers[key] = value;
             });
     }
 
-
-    // Params override
-    const paramsMatch = overrideText.match(/\*\*Params:\*\*([\s\S]*?)(?=\*\*Body:\*\*|$)/i);
+    const paramsMatch = overrideText.match(/\*\*Params:\*\*([\s\S]*?)(?=\*\*Body:\*\*|\*\*URL:\*\*|\*\*Headers:\*\*|$)/i);
     if (paramsMatch) {
         overrides.params = {};
-
-        const normalized = paramsMatch[1]
+        paramsMatch[1]
             .replace(/<br\s*\/?>/gi, '\n')
-            .replace(/,/g, '\n');
-
-        normalized
+            .replace(/,/g, '\n')
             .split('\n')
             .map(s => s.trim())
             .filter(Boolean)
             .forEach(line => {
                 line = line.replace(/^`|`$/g, '').trim();
+                const match = line.match(/^([\w$-]+)\s*[:=]\s*(.+)$/);
+                if (!match) return;
 
-                const m = line.match(/^([\w$]+)\s*[:=]\s*(.+)$/);
-                if (!m) return;
-
-                overrides.params[m[1]] = m[2].replace(/^["'`]|["'`]$/g, '').trim();
+                overrides.params[match[1]] = stripWrappingQuotes(match[2]);
             });
     }
 
-    // Body override (requires backticks)
     const bodyMatch = overrideText.match(/\*\*Body:\*\*\s*`([\s\S]*?)`/i);
     if (bodyMatch) {
         overrides.body = bodyMatch[1].trim();
-    } else if (overrideText.toLowerCase().includes('malformed json')) {
+    } else if (/malformed json/i.test(overrideText)) {
         overrides.body = '{ invalid json';
-    } else if (overrideText.match(/\*\*Body:\*\*\s*None/i)) {
+    } else if (/\*\*Body:\*\*\s*None/i.test(overrideText)) {
         overrides.body = null;
     }
 
     return overrides;
 }
 
+function buildCollectionItem(baseRequest, testCase) {
+    if (isFlowTestCase(baseRequest, testCase)) {
+        return buildFlowFolder(baseRequest, testCase);
+    }
 
+    return buildSingleRequest(baseRequest, testCase);
+}
 
-function buildRequest(baseRequest, testCase) {
+function isFlowTestCase(baseRequest, testCase) {
+    return baseRequest.urls.length > 1 || /\bthen\b/i.test(testCase.overrides.rawMethod || '');
+}
+
+function buildSingleRequest(baseRequest, testCase) {
     const method = testCase.overrides.method || baseRequest.method;
+    const url = resolveRequestUrl(baseRequest, testCase);
+    const headers = resolveHeaders(baseRequest, testCase);
+    const body = testCase.overrides.body !== undefined ? testCase.overrides.body : baseRequest.body;
 
-    // ✅ Apply URL override if present
-    // If override is relative like `/SETeams(999)` or `(ruleID=19979)` => append to base_url path style
-    let url = baseRequest.url;
-    if (testCase.overrides.url) {
-        const o = testCase.overrides.url;
+    return createRequestItem({
+        name: `${testCase.id} - ${testCase.description}`,
+        method,
+        url,
+        headers,
+        body,
+        testScript: buildExpectedTestScript(testCase.expectedResult, testCase)
+    });
+}
 
-        if (o.startsWith('http') || o.includes('{{base_url}}')) {
-            url = o;
-        } else if (o.startsWith('/')) {
-            // relative to base_url
-            url = '{{base_url}}' + o;
-        } else if (o.startsWith('(')) {
-            // append (ruleID=...) to base URL path
-            url = baseRequest.url + o;
-        } else {
-            // fallback: treat as raw
-            url = o;
-        }
+function buildFlowFolder(baseRequest, testCase) {
+    const flowSteps = deriveFlowSteps(baseRequest, testCase);
+
+    return {
+        name: `${testCase.id} - ${testCase.description}`,
+        item: flowSteps.map(step => createRequestItem(step))
+    };
+}
+
+function deriveFlowSteps(baseRequest, testCase) {
+    const sendUrl = baseRequest.urls[0] || baseRequest.url;
+    const verifyTemplate = baseRequest.urls[1] || testCase.overrides.url || baseRequest.url;
+    const baseHeaders = resolveHeaders(baseRequest, testCase);
+    const sendBody = testCase.overrides.body !== undefined ? testCase.overrides.body : baseRequest.body;
+    const methodSpec = (testCase.overrides.rawMethod || '').toLowerCase();
+    const description = (testCase.description || '').toLowerCase();
+    const userName = extractUserName(sendBody, verifyTemplate) || 'thuytrangle2205@gmail.com';
+
+    const steps = [];
+
+    if (/post twice then get/.test(methodSpec) || /send new code twice/.test(description)) {
+        steps.push(buildSendStep('Step 1 - Send code #1', sendUrl, baseHeaders, sendBody, 'old_invite_code', 'old_invite_code_sent_at'));
+        steps.push(buildSendStep('Step 2 - Send code #2', sendUrl, baseHeaders, sendBody, 'invite_code', 'invite_code_sent_at'));
+        steps.push(buildVerifyStep('Step 3 - Verify old code', verifyTemplate, baseHeaders, 'old_invite_code', userName, '400/409/410/422; old code invalid after new code is issued'));
+        return steps;
     }
 
-    // Apply params override
-    if (testCase.overrides.params) {
-        const query = Object.entries(testCase.overrides.params)
-            .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
-            .join('&');
+    steps.push(buildSendStep('Step 1 - Send code', sendUrl, baseHeaders, sendBody, 'invite_code', 'invite_code_sent_at'));
 
-        url += (url.includes('?') ? '&' : '?') + query;
+    if (/wait\s+(\d+)s/.test(methodSpec)) {
+        const waitSeconds = Number(methodSpec.match(/wait\s+(\d+)s/)[1]);
+        steps.push(buildVerifyStep(
+            `Step 2 - Verify code after ${waitSeconds}s`,
+            verifyTemplate,
+            baseHeaders,
+            'invite_code',
+            userName,
+            testCase.expectedResult,
+            {
+                sentAtVariable: 'invite_code_sent_at',
+                minimumElapsedMs: waitSeconds * 1000,
+                waitUntilMs: waitSeconds * 1000
+            }
+        ));
+        return steps;
     }
 
-    // Clone headers
-    const headers = { ...baseRequest.headers };
+    if (/get x5/.test(methodSpec) && /4 wrong codes and 1 correct/.test(description)) {
+        steps.push(...buildWrongVerifySteps(verifyTemplate, baseHeaders, userName, 4, 2, undefined, {
+            sentAtVariable: 'invite_code_sent_at',
+            maximumElapsedMs: 60000
+        }));
+        steps.push(buildVerifyStep('Step 6 - Verify correct code', verifyTemplate, baseHeaders, 'invite_code', userName, '200; code valid', {
+            sentAtVariable: 'invite_code_sent_at',
+            maximumElapsedMs: 60000
+        }));
+        return steps;
+    }
 
-    // Apply header overrides
-    if (testCase.overrides.headers) {
-        Object.entries(testCase.overrides.headers).forEach(([key, value]) => {
-            if (value === null) delete headers[key];
-            else headers[key] = value;
+    if (/get x5/.test(methodSpec) && /wrong codes/.test(description)) {
+        steps.push(...buildWrongVerifySteps(verifyTemplate, baseHeaders, userName, 5, 2, testCase.expectedResult, {
+            sentAtVariable: 'invite_code_sent_at',
+            maximumElapsedMs: 60000
+        }));
+        return steps;
+    }
+
+    if (/multiple times/.test(methodSpec) || /lock threshold/.test(description)) {
+        steps.push(...buildWrongVerifySteps(verifyTemplate, baseHeaders, userName, 6, 2, testCase.expectedResult, {
+            sentAtVariable: 'invite_code_sent_at',
+            maximumElapsedMs: 60000
+        }));
+        return steps;
+    }
+
+    steps.push(buildVerifyStep('Step 2 - Verify code', verifyTemplate, baseHeaders, 'invite_code', userName, testCase.expectedResult));
+    return steps;
+}
+
+function buildSendStep(name, url, headers, body, targetVariable, sentAtVariable) {
+    return {
+        name,
+        method: 'POST',
+        url,
+        headers,
+        body,
+        testScript: buildExpectedTestScript('200/204; code sent successfully')
+            .concat(buildCaptureInviteCodeScript(targetVariable, sentAtVariable))
+    };
+}
+
+function buildWrongVerifySteps(urlTemplate, headers, userName, count, startIndex, expectedResult, timing = {}) {
+    const codes = ['111111', '222222', '333333', '444444', '555555', '666666', '777777'];
+    const steps = [];
+
+    for (let i = 0; i < count; i += 1) {
+        steps.push(buildVerifyStep(
+            `Step ${startIndex + i} - Verify wrong code ${i + 1}`,
+            urlTemplate,
+            headers,
+            codes[i],
+            userName,
+            expectedResult || '400/404/422; invalid code',
+            timing
+        ));
+    }
+
+    return steps;
+}
+
+function buildVerifyStep(name, urlTemplate, headers, codeValue, userName, expectedResult, timing = {}) {
+    return {
+        name,
+        method: 'GET',
+        url: buildVerifyUrl(urlTemplate, codeValue, userName),
+        headers,
+        testScript: buildExpectedTestScript(expectedResult).concat(buildTimingAssertionScript(timing, name)),
+        preRequestScript: buildTimingPreRequestScript(timing, name)
+    };
+}
+
+function createRequestItem({ name, method, url, headers, body, testScript = [], preRequestScript = [] }) {
+    const item = {
+        name,
+        request: {
+            method,
+            header: Object.entries(headers || {}).map(([key, value]) => ({ key, value, type: 'text' })),
+            url: parseUrl(url)
+        },
+        event: []
+    };
+
+    if (preRequestScript.length > 0) {
+        item.event.push({
+            listen: 'prerequest',
+            script: {
+                type: 'text/javascript',
+                exec: preRequestScript
+            }
         });
     }
 
-    // Apply body override
-    const body = testCase.overrides.body !== undefined
-        ? testCase.overrides.body
-        : baseRequest.body;
-
-    // Build header array for Postman
-    const headerArray = Object.entries(headers).map(([key, value]) => ({
-        key,
-        value,
-        type: 'text'
-    }));
-
-    // Parse URL for Postman format
-    const urlObj = parseUrl(url);
-
-    // Build request object
-    const testScript = buildTestScript(testCase);
-
-    const request = {
-        name: `${testCase.id} - ${testCase.description}`,
-        request: {
-            method,
-            header: headerArray,
-            url: urlObj
-        },
-        event: [
-            {
-                listen: 'test',
-                script: {
-                    type: 'text/javascript',
-                    exec: testScript
-                }
+    if (testScript.length > 0) {
+        item.event.push({
+            listen: 'test',
+            script: {
+                type: 'text/javascript',
+                exec: testScript
             }
-        ]
-    };
+        });
+    }
 
-    // Add body if present and method supports it
     if (body && ['POST', 'PUT', 'PATCH'].includes(method)) {
-        request.request.body = {
+        item.request.body = {
             mode: 'raw',
             raw: body,
             options: {
@@ -343,17 +430,192 @@ function buildRequest(baseRequest, testCase) {
         };
     }
 
-    return request;
+    return item;
 }
 
+function resolveRequestUrl(baseRequest, testCase) {
+    let url = baseRequest.url;
 
-function buildTestScript(testCase) {
-    const expected = deriveExpectations(testCase.expectedResult);
+    if (testCase.overrides.url) {
+        const overrideUrl = testCase.overrides.url;
+
+        if (overrideUrl.startsWith('http') || overrideUrl.includes('{{base_url}}')) {
+            url = overrideUrl;
+        } else if (overrideUrl.startsWith('/')) {
+            url = '{{base_url}}' + overrideUrl;
+        } else if (overrideUrl.startsWith('(')) {
+            url = baseRequest.url + overrideUrl;
+        } else {
+            url = overrideUrl;
+        }
+    }
+
+    if (testCase.overrides.params) {
+        const query = Object.entries(testCase.overrides.params)
+            .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+            .join('&');
+
+        url += (url.includes('?') ? '&' : '?') + query;
+    }
+
+    return url;
+}
+
+function resolveHeaders(baseRequest, testCase) {
+    const headers = { ...baseRequest.headers };
+
+    if (testCase.overrides.headers) {
+        Object.entries(testCase.overrides.headers).forEach(([key, value]) => {
+            if (value === null) delete headers[key];
+            else headers[key] = value;
+        });
+    }
+
+    return headers;
+}
+
+function extractPrimaryMethod(text) {
+    const match = (text || '').match(/\b(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\b/i);
+    return match ? match[1].toUpperCase() : '';
+}
+
+function extractUserName(body, verifyUrl) {
+    if (body) {
+        try {
+            const parsed = JSON.parse(body);
+            const directUserName = parsed?.userName;
+            const nestedUserName = parsed?.inviteCode?.userName;
+            const candidate = typeof directUserName === 'string' && directUserName.trim()
+                ? directUserName.trim()
+                : typeof nestedUserName === 'string' && nestedUserName.trim()
+                    ? nestedUserName.trim()
+                    : '';
+
+            if (candidate) return candidate;
+        } catch {
+        }
+    }
+
+    const match = (verifyUrl || '').match(/userName='([^']+)'/);
+    return match ? match[1] : '';
+}
+
+function buildVerifyUrl(urlTemplate, codeValue, userName) {
+    let url = urlTemplate;
+    const codeToken = isVariableReference(codeValue) ? `{{${codeValue}}}` : codeValue;
+
+    if (/inviteCode='[^']*'/i.test(url)) {
+        url = url.replace(/inviteCode='[^']*'/i, `inviteCode='${codeToken}'`);
+    } else {
+        url = url.replace('CODE', codeToken);
+    }
+
+    if (/userName='[^']*'/i.test(url) && userName) {
+        url = url.replace(/userName='[^']*'/i, `userName='${userName}'`);
+    }
+
+    return url;
+}
+
+function isVariableReference(value) {
+    return typeof value === 'string' && /^[a-z_][a-z0-9_]*$/i.test(value);
+}
+
+function buildTimingPreRequestScript(timing, stepName) {
+    const lines = [];
+    if (!timing || !timing.sentAtVariable) return lines;
+
+    lines.push(`const sentAtRaw = pm.collectionVariables.get('${timing.sentAtVariable}') || '';`);
+    lines.push('const sentAt = Number(sentAtRaw);');
+    lines.push(`pm.variables.set('current_step_name', ${JSON.stringify(stepName)});`);
+    lines.push(`pm.variables.set('timing_sent_at_variable', ${JSON.stringify(timing.sentAtVariable)});`);
+    lines.push('if (!Number.isFinite(sentAt) || sentAt <= 0) {');
+    lines.push(`    throw new Error('Missing or invalid sent timestamp in collection variable: ${timing.sentAtVariable}');`);
+    lines.push('}');
+
+    // if (timing.waitUntilMs) {
+    //     lines.push(const waitUntil = sentAt + ${timing.waitUntilMs};);
+    //     lines.push('while (Date.now() < waitUntil) {}');
+    //     lines.push(console.log('Waited until elapsed reached ${Math.round(timing.waitUntilMs / 1000)}s for ' + pm.variables.get('current_step_name')););
+    // }
+
+    lines.push('pm.variables.set("verify_started_at", Date.now().toString());');
+    lines.push(`console.log('Timing prerequest [' + pm.variables.get('current_step_name') + '] ${timing.sentAtVariable}=' + sentAtRaw + ', verify_started_at=' + pm.variables.get("verify_started_at"));`);
+    return lines;
+}
+
+function buildTimingAssertionScript(timing, stepName) {
+    const lines = [];
+    if (!timing || !timing.sentAtVariable) return lines;
+
+    lines.push('');
+    lines.push(`const sentAtForAssertion = Number(pm.collectionVariables.get('${timing.sentAtVariable}') || '0');`);
+    lines.push('const verifyStartedAt = Number(pm.variables.get("verify_started_at") || Date.now().toString());');
+    lines.push('const elapsedSinceSend = verifyStartedAt - sentAtForAssertion;');
+    lines.push(`console.log('Timing assertion [${stepName}] ${timing.sentAtVariable}=' + sentAtForAssertion + ', verify_started_at=' + verifyStartedAt + ', elapsedSinceSend=' + elapsedSinceSend + 'ms');`);
+
+    // if (timing.minimumElapsedMs) {
+    //     lines.push(pm.test(${JSON.stringify(${stepName} runs after at least  seconds)}, function () {);
+    //     lines.push(    pm.expect(elapsedSinceSend).to.be.at.least(${timing.minimumElapsedMs}););
+    //     lines.push('});');
+    // }
+
+    // if (timing.maximumElapsedMs) {
+    //     lines.push(pm.test(${JSON.stringify(${stepName} runs within  seconds)}, function () {);
+    //     lines.push(    pm.expect(elapsedSinceSend).to.be.below(${timing.maximumElapsedMs}););
+    //     lines.push('});');
+    // }
+
+    lines.push('pm.test("Timing metadata is available", function () {');
+    lines.push('    pm.expect(sentAtForAssertion).to.be.above(0);');
+    lines.push('    pm.expect(verifyStartedAt).to.be.at.least(sentAtForAssertion);');
+    lines.push('});');
+
+    return lines;
+}
+
+function buildCaptureInviteCodeScript(targetVariable, sentAtVariable) {
+    return [
+        `const targetVariable = '${targetVariable}';`,
+        `const sentAtVariable = '${sentAtVariable}';`,
+        'let bodyText = pm.response.text();',
+        'let json = null;',
+        'try { json = pm.response.json(); } catch (e) { json = null; }',
+        'let inviteCode = null;',
+        'const candidates = [',
+        '    json?.inviteCode,',
+        '    json?.code,',
+        '    json?.otp,',
+        '    json?.data?.inviteCode,',
+        '    json?.data?.code,',
+        '    json?.result?.inviteCode,',
+        '    json?.result?.code',
+        '].filter(Boolean);',
+        'if (candidates.length > 0) inviteCode = String(candidates[0]);',
+        'if (!inviteCode && bodyText) {',
+        '    const match = bodyText.match(/\b\d{4,8}\b/);',
+        '    if (match) inviteCode = match[0];',
+        '}',
+        'pm.collectionVariables.set(sentAtVariable, Date.now().toString());',
+        `console.log('Stored sent timestamp in variable: ${sentAtVariable}=' + pm.collectionVariables.get(sentAtVariable));`,
+        'if (inviteCode) {',
+        '    pm.collectionVariables.set(targetVariable, inviteCode);',
+        `    console.log('Stored invite code in variable: ${targetVariable}=' + pm.collectionVariables.get(targetVariable));`,
+        '} else {',
+        `    console.log('No invite code detected in response for variable: ${targetVariable}');`,
+        '}'
+    ];
+}
+
+function buildExpectedTestScript(expectedResult, testCase = null) {
+    const expected = deriveExpectations(expectedResult);
     const lines = [];
 
-    lines.push(`// Test Case: ${testCase.id}`);
-    lines.push(`// Expected: ${testCase.expectedResult}`);
-    lines.push('');
+    if (testCase) {
+        lines.push(`// Test Case: ${testCase.id}`);
+        lines.push(`// Expected: ${expectedResult}`);
+        lines.push('');
+    }
 
     if (expected.statusCodes.length > 0) {
         lines.push('pm.test("Status code matches expected", function () {');
@@ -411,76 +673,74 @@ function buildTestScript(testCase) {
         lines.push('');
     }
 
-    if (lines[lines.length - 1] === '') {
-        lines.pop();
-    }
-
+    if (lines[lines.length - 1] === '') lines.pop();
     return lines;
+}
+
+function stripWrappingQuotes(value) {
+    const trimmed = (value ?? '').trim();
+    if (trimmed.length >= 2) {
+        const first = trimmed[0];
+        const last = trimmed[trimmed.length - 1];
+        const quoteChars = ["'", '"', '`'];
+        if (first === last && quoteChars.includes(first)) {
+            return trimmed.slice(1, -1).trim();
+        }
+    }
+    return trimmed;
 }
 
 function deriveExpectations(expectedResult) {
     const text = expectedResult || '';
-    const statusCodes = extractStatusCodes(text);
-    const allowAny4xx = /appropriate 4xx/i.test(text);
-    const not5xx = /No 5xx/i.test(text);
-    const maxResponseTimeMs = extractResponseTime(text);
-
-    const requireId = /contains id\b/i.test(text);
-    const requireIdOrKey = /contains id\/key/i.test(text);
-    const requireName = /correct `name`/i.test(text) || /correct name/i.test(text);
-    const requireDescription = /correct `description`/i.test(text) || /correct description/i.test(text);
-
     return {
-        statusCodes,
-        allowAny4xx,
-        not5xx,
-        maxResponseTimeMs,
-        requireId,
-        requireIdOrKey,
-        requireName,
-        requireDescription
+        statusCodes: extractStatusCodes(text),
+        allowAny4xx: /appropriate 4xx/i.test(text),
+        not5xx: /No 5xx error|no server error/i.test(text),
+        maxResponseTimeMs: extractResponseTime(text),
+        requireId: /contains id\b/i.test(text),
+        requireIdOrKey: /contains id\/key/i.test(text),
+        requireName: /correct `name`/i.test(text) || /correct name/i.test(text),
+        requireDescription: /correct `description`/i.test(text) || /correct description/i.test(text)
     };
 }
 
 function extractStatusCodes(text) {
     const codes = new Set();
-
-    const slashMatch = text.match(/\b(\d{3})\s*\/\s*(\d{3})\b/g);
-    if (slashMatch) {
-        slashMatch.forEach(group => {
-            group.split('/').forEach(part => {
-                const num = Number(part.trim());
-                if (!Number.isNaN(num)) codes.add(num);
-            });
-        });
-    }
-
-    const orMatch = text.match(/\b(\d{3})\b/g);
-    if (orMatch) {
-        orMatch.forEach(code => {
-            const num = Number(code);
-            if (!Number.isNaN(num)) codes.add(num);
-        });
-    }
-
+    const matches = text.match(/\b\d{3}\b/g) || [];
+    matches.forEach(code => {
+        const num = Number(code);
+        if (!Number.isNaN(num)) codes.add(num);
+    });
     return Array.from(codes);
 }
 
 function extractResponseTime(text) {
-    const msMatch = text.match(/<\s*(\d+)\s*seconds/i);
-    if (msMatch) {
-        const seconds = Number(msMatch[1]);
-        if (!Number.isNaN(seconds)) return seconds * 1000;
-    }
-    return null;
+    const match = text.match(/<\s*(\d+)\s*seconds/i);
+    if (!match) return null;
+    const seconds = Number(match[1]);
+    return Number.isNaN(seconds) ? null : seconds * 1000;
 }
 
 function parseUrl(urlString) {
-    // Simple URL parser for Postman format
+    const raw = urlString;
+    const withoutBase = urlString
+        .replace(/^{{base_url}}/, '')
+        .replace(/^https?:\/\/[^/]+/i, '');
+
+    const [pathPart, queryString = ''] = withoutBase.split('?');
+    const path = pathPart.split('/').filter(Boolean);
+    const query = queryString
+        ? queryString.split('&').filter(Boolean).map(entry => {
+            const [key, value = ''] = entry.split('=');
+            return { key: decodeURIComponent(key), value: decodeURIComponent(value) };
+        })
+        : [];
+
     return {
-        raw: urlString,
-        protocol: '',
+        raw,
         host: ['{{base_url}}'],
-        path: urlString.split('/').filter(p => p && !p.includes('{{'))
+        path,
+        query
     };
 }
+

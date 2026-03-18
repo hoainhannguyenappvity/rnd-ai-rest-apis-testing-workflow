@@ -2,7 +2,7 @@ import { Component, DestroyRef, ElementRef, HostListener, OnDestroy, OnInit, com
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
-import { retry, startWith, timer } from 'rxjs';
+import { retry, startWith, switchMap, timer } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { ConfigService } from '../../services/config.service';
 import { WorkflowService } from '../../services/workflow.service';
@@ -46,6 +46,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 	executeElapsedMs = signal(0);
 	executeProgressPercent = signal(0);
 	disabledReport = signal(true);
+	hasSavedConfig = signal(false);
+	hasUnsavedChanges = signal(false);
 	private readonly isConfigFormValid = signal(false);
 	readonly productConfigMap = signal<Record<string, ProductConfig>>({});
 	readonly productOptions = computed(() =>
@@ -93,6 +95,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 			this.apiReady() &&
 			this.isConfigFormValid() &&
 			!!this.uploadedApiSpecPathTask() &&
+			this.hasUnsavedChanges() &&
 			!this.isSaving() &&
 			!this.isExecuting()
 	);
@@ -110,6 +113,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
 		this.configForm.statusChanges
 			.pipe(startWith(this.configForm.status), takeUntilDestroyed(this.destroyRef))
 			.subscribe(() => this.isConfigFormValid.set(this.configForm.valid));
+
+		this.configForm.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+			if (!this.apiReady() || this.isSaving()) {
+				return;
+			}
+			this.markConfigDirty();
+		});
+
 		this.loadTaskFiles();
 		this.loadConfig();
 	}
@@ -137,11 +148,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
 				productKey: this.selectedProductKey() || undefined,
 				roleKey: this.selectedRoleKey() || undefined
 			})
-			.pipe(takeUntilDestroyed(this.destroyRef))
+			.pipe(
+				switchMap(() => this.configService.getConfig()),
+				takeUntilDestroyed(this.destroyRef),
+				finalize(() => this.isSaving.set(false))
+			)
 			.subscribe({
-				next: () => {
-					this.isSaving.set(true);
-					this.message.set('Saved config successfully.');
+				next: (config) => {
+					this.applyLoadedConfig(config);
+					this.markConfigClean();
+					this.message.set('Saved config successfully. Reloaded latest config from server.');
 				},
 				error: (error) => {
 					this.message.set(error?.error?.message ?? 'Failed to save config.');
@@ -163,15 +179,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
 			.uploadTask(file)
 			.pipe(
 				retry({ count: 1, delay: 800 }),
-				// Retry once after a short delay to avoid "first upload fails, second succeeds".
-				finalize(() => (this.isUploading.set(false)))
+				finalize(() => this.isUploading.set(false))
 			)
 			.subscribe({
 				next: (response) => {
-					this.isUploading.set(false);
 					this.selectedTaskFilePath.set('');
 					this.selectedFileName.set(file.name);
 					this.uploadedApiSpecPathTask.set(response.apiSpecPathTask);
+					this.markConfigDirty();
 					this.message.set(`Uploaded ${file.name} successfully. Click SAVE to update config.`);
 				},
 				error: (error) => {
@@ -186,12 +201,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
 		if (!taskFilePath) {
 			this.selectedFileName.set('');
 			this.uploadedApiSpecPathTask.set('');
+			this.markConfigDirty();
 			return;
 		}
 
 		const selected = this.taskFileOptions().find((file) => file.path === taskFilePath);
 		this.selectedFileName.set(selected?.name ?? '');
 		this.uploadedApiSpecPathTask.set(taskFilePath);
+		this.markConfigDirty();
 		if (fileInput) {
 			fileInput.value = '';
 		}
@@ -258,17 +275,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
 		).subscribe({
 			next: (response) => {
 				this.message.set(response?.message ?? 'Workflow executed successfully.');
-				this.isExecuting.set(true);
 			},
 			error: (error) => {
 				this.message.set(error?.error?.message ?? 'Failed to execute workflow.');
-				this.isExecuting.set(true);
 			}
 		});
 	}
 
 	goToReports(): void {
-		window.open('http://localhost:3001/reports/summary.html', '_blank', 'noopener,noreferrer');
+		window.open('http://localhost:3001/reports/summary.html?t=' + Date.now(), '_blank', 'noopener,noreferrer');
 	}
 
 	togglePasswordVisibility(): void {
@@ -280,6 +295,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 		const product = this.productConfigMap()[productKey];
 		if (!product) {
 			this.selectedRoleKey.set('');
+			this.markConfigDirty();
 			return;
 		}
 
@@ -289,10 +305,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
 			apiUrl: product.access_token_api
 		});
 		this.applyRoleSelection(productKey, firstRoleKey);
+		this.markConfigDirty();
 	}
 
 	onRoleChange(roleKey: string): void {
 		this.applyRoleSelection(this.selectedProductKey(), roleKey);
+		this.markConfigDirty();
+	}
+
+	private markConfigDirty(): void {
+		this.hasSavedConfig.set(false);
+		this.hasUnsavedChanges.set(true);
+	}
+
+	private markConfigClean(): void {
+		this.hasSavedConfig.set(true);
+		this.hasUnsavedChanges.set(false);
 	}
 
 	private startExecuteTimer(): void {
@@ -320,33 +348,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 		this.configService.getConfig().subscribe({
 			next: (config) => {
 				this.apiReady.set(true);
-				this.productConfigMap.set(config.kmi_product ?? {});
-
-				this.configForm.setValue({
-					base_url: config.base_url,
-					apiUrl: config.env.apiUrl,
-					username: config.env.username,
-					password: config.env.password
-				});
-
-				const preferredProduct =
-					(config.selectedProductKey && this.productConfigMap()[config.selectedProductKey] ? config.selectedProductKey : '') ||
-					this.findProductByBaseUrl(config.base_url) ||
-					Object.keys(this.productConfigMap())[0] ||
-					'';
-				this.selectedProductKey.set(preferredProduct);
-
-				const preferredRole =
-					(config.selectedRoleKey && this.productConfigMap()[preferredProduct]?.roles?.[config.selectedRoleKey]
-						? config.selectedRoleKey
-						: '') ||
-					this.findRoleByCredentials(preferredProduct, config.env.username, config.env.password) ||
-					Object.keys(this.productConfigMap()[preferredProduct]?.roles ?? {})[0] ||
-					'';
-				this.selectedRoleKey.set(preferredRole);
-				this.uploadedApiSpecPathTask.set(config.apiSpecPathTask ?? '');
-				this.selectedFileName.set(this.extractFileName(config.apiSpecPathTask ?? ''));
-				this.syncTaskSelectionWithUploadedPath();
+				this.applyLoadedConfig(config);
+				this.markConfigClean();
 			},
 			error: () => {
 				this.apiReady.set(false);
@@ -366,6 +369,43 @@ export class DashboardComponent implements OnInit, OnDestroy {
 				this.taskFileOptions.set([]);
 			}
 		});
+	}
+
+	private applyLoadedConfig(config: {
+		base_url: string;
+		env: { apiUrl: string; username: string; password: string };
+		selectedProductKey?: string;
+		selectedRoleKey?: string;
+		kmi_product?: Record<string, ProductConfig>;
+		apiSpecPathTask: string;
+	}): void {
+		this.productConfigMap.set(config.kmi_product ?? {});
+
+		this.configForm.setValue({
+			base_url: config.base_url,
+			apiUrl: config.env.apiUrl,
+			username: config.env.username,
+			password: config.env.password
+		});
+
+		const preferredProduct =
+			(config.selectedProductKey && this.productConfigMap()[config.selectedProductKey] ? config.selectedProductKey : '') ||
+			this.findProductByBaseUrl(config.base_url) ||
+			Object.keys(this.productConfigMap())[0] ||
+			'';
+		this.selectedProductKey.set(preferredProduct);
+
+		const preferredRole =
+			(config.selectedRoleKey && this.productConfigMap()[preferredProduct]?.roles?.[config.selectedRoleKey]
+				? config.selectedRoleKey
+				: '') ||
+			this.findRoleByCredentials(preferredProduct, config.env.username, config.env.password) ||
+			Object.keys(this.productConfigMap()[preferredProduct]?.roles ?? {})[0] ||
+			'';
+		this.selectedRoleKey.set(preferredRole);
+		this.uploadedApiSpecPathTask.set(config.apiSpecPathTask ?? '');
+		this.selectedFileName.set(this.extractFileName(config.apiSpecPathTask ?? ''));
+		this.syncTaskSelectionWithUploadedPath();
 	}
 
 	private applyRoleSelection(productKey: string, roleKey: string): void {
@@ -433,3 +473,5 @@ export class DashboardComponent implements OnInit, OnDestroy {
 		return parts[parts.length - 1] ?? '';
 	}
 }
+
+

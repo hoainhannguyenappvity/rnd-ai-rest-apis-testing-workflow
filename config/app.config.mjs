@@ -7,7 +7,7 @@ export default {
         "username": "thuytrangle2205@gmail.com",
         "password": "P@ssword220595"
     },
-    "apiSpecPathTask": "",
+    "apiSpecPathTask": "./tasks_test_case/TASKPLUS File Tag.md",
     "envMdPath": "./env.md",
     "authPath": "./auth.mjs",
     "postmanCollectionOutput": "postman/KMI.postman_collection.json",
@@ -46,12 +46,12 @@ export default {
                     "password": "P@ssword2205"
                 },
                 "project_owner": {
-                    "username": "projectowner@gmail.com",
+                    "username": "projectowner2@gmail.com",
                     "password": "P@ssword2205"
                 },
                 "project_editor": {
-                    "username": "projecteditor@gmail.com",
-                    "password": "P@ssword2205"
+                    "username": "thuytrangle2205@gmail.com",
+                    "password": "P@ssword220595"
                 },
                 "project_viewer": {
                     "username": "projectviewer@gmail.com",
@@ -68,11 +68,11 @@ export default {
             "access_token_api": "https://portal.360awareqa.com/idsrv/connect/token",
             "roles": {
                 "system_admin": {
-                    "username": "systemadmin@gmail.com",
-                    "password": "P@ssword2205"
+                    "username": "thuytrangle2205@gmail.com",
+                    "password": "P@ssword220595"
                 },
                 "system_viewer": {
-                    "username": "systemviewer@gmail.com",
+                    "username": "trangle@appvity.com",
                     "password": "P@ssword2205"
                 }
             }

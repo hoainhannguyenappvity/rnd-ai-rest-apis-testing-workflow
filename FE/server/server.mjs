@@ -16,7 +16,15 @@ const reportsDir = path.resolve(repoDir, 'reports');
 const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(express.json());
-app.use('/reports', express.static(reportsDir));
+app.use('/reports', express.static(reportsDir, {
+	etag: false,
+	lastModified: false,
+	setHeaders: (res) => {
+		res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+		res.setHeader('Pragma', 'no-cache');
+		res.setHeader('Expires', '0');
+	}
+}));
 
 app.get('/', (_req, res) => {
 	res.send('Workflow API is running at http://localhost:3001');
